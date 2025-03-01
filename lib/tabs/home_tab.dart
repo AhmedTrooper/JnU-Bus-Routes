@@ -84,95 +84,100 @@ class _HomeTabState extends State<HomeTab> {
         ? const Center(
             child: CircularProgressIndicator()) // Show loading indicator
         : SingleChildScrollView(
-          child: Container(
-            height: 800,
-            padding: const EdgeInsets.all(20),
-            child: Column(
-            children: [
+            child: Container(
+                height: 800,
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
 // Display user name
 
- userName != null
-                  ? SizedBox(
-                    width: 150,
-                    child: Image.asset('assets/images/human.png',),
-                  )
-                  : const SizedBox(height: 10,),
-
-
-              userName != null
-                  ? Text(
-                      "Welcome, $userName!",
-                      style: const TextStyle(fontSize: 25),
-                    )
-                  : const Text(
-                      "Add you name from setting tab",
-                      style: TextStyle(fontSize: 25),
-                    ),
-
-              // Display bus name
-              busName != null
-                  ? Text(
-                      "Your selected bus is, $busName!",
-                      style: const TextStyle(fontSize: 20),
-                    )
-                  : const Text(
-                      "No Bus Selected",
-                      style: TextStyle(fontSize: 20),
-                    ),
-              ShadSwitch(
-                value: busOnUp,
-                label: busOnUp ? const Text("Up") : const Text("Down"),
-                onChanged: (v) => {
-                  setState(() => busOnUp = !busOnUp),
-                  _loadPlaceNames()
-                  },
-              ),
-
-              Expanded(
-                child: FutureBuilder<List<String>>(
-                  future: _placeNames,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No place names found.'));
-                    } else {
-                      final placeNames = snapshot.data!;
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: placeNames.length,
-                        itemBuilder: (context, index) {
-                          final placeName = placeNames[index];
-                          return ListTile(
-                            title: ShadCard(
-                              title: Text(placeName),
-                              leading: placeName == "Jagannath University"
-                                  ? const Icon(
-                                      Icons.school,
-                                      color: Colors.redAccent,
-                                      size: 35,
-                                    )
-                                  : const Icon(
-                                      Icons.arrow_circle_down,
-                                      color: Colors.redAccent,
-                                      size: 35,
-                                    ),
+                    userName != null
+                        ? SizedBox(
+                            width: 150,
+                            child: Image.asset(
+                              'assets/images/human.png',
                             ),
-                          );
+                          )
+                        : const SizedBox(
+                            height: 10,
+                          ),
+
+                    userName != null
+                        ? Text(
+                            "Welcome, $userName!",
+                            style: const TextStyle(fontSize: 25),
+                          )
+                        : const Text(
+                            "Add your name from setting tab",
+                            style: TextStyle(fontSize: 25),
+                          ),
+
+                    // Display bus name
+                    busName != null
+                        ? Text(
+                            "Your selected bus is, $busName!",
+                            style: const TextStyle(fontSize: 20),
+                          )
+                        : const Text(
+                            "No Bus Selected!",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                    ShadSwitch(
+                      value: busOnUp,
+                      label: busOnUp ? const Text("Up") : const Text("Down"),
+                      onChanged: (v) => {
+                        setState(() => busOnUp = !busOnUp),
+                        _loadPlaceNames()
+                      },
+                    ),
+
+                    Expanded(
+                      child: FutureBuilder<List<String>>(
+                        future: _placeNames,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text(
+                                    "No place's name found...Select bus first"));
+                          } else {
+                            final placeNames = snapshot.data!;
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: placeNames.length,
+                              itemBuilder: (context, index) {
+                                final placeName = placeNames[index];
+                                return ListTile(
+                                  title: ShadCard(
+                                    title: Text(placeName),
+                                    leading: placeName == "Jagannath University"
+                                        ? const Icon(
+                                            Icons.school,
+                                            color: Colors.redAccent,
+                                            size: 35,
+                                          )
+                                        : const Icon(
+                                            Icons.arrow_circle_down,
+                                            color: Colors.redAccent,
+                                            size: 35,
+                                          ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
                         },
-                      );
-                    }
-                  },
-                ),
-              )
-            ],
-          )),
-        );
+                      ),
+                    )
+                  ],
+                )),
+          );
   }
 }
-
-
-
-

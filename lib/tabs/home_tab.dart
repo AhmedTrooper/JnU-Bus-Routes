@@ -83,7 +83,11 @@ class _HomeTabState extends State<HomeTab> {
     return _isLoading
         ? const Center(
             child: CircularProgressIndicator()) // Show loading indicator
-        : Column(
+        : SingleChildScrollView(
+          child: Container(
+            height: 800,
+            padding: const EdgeInsets.all(20),
+            child: Column(
             children: [
 // Display user name
 
@@ -164,7 +168,8 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               )
             ],
-          );
+          )),
+        );
   }
 }
 

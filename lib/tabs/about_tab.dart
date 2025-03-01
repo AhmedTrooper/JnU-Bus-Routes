@@ -27,10 +27,10 @@ class _AboutTab extends State<AboutTab>{
       padding: const EdgeInsets.all(10),
       child:   SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: ShadCard(
-            title: Text("Md. Ramjan Miah"),
-            leading: Icon(LucideIcons.user),
+            title: const Text("Md. Ramjan Miah"),
+            leading: const Icon(LucideIcons.user),
             footer: Column(
               children: [
                 const Text("Developer Information :",style: TextStyle(
@@ -53,7 +53,8 @@ class _AboutTab extends State<AboutTab>{
                           borderRadius: BorderRadius.circular(8), // Optional: Rounded corners
                           side: BorderSide.none, // Remove border
                         ),
-                      ), child: const Text("AhmedTrooper",
+                      ),
+                      child: const Text("AhmedTrooper",
                       style:  TextStyle(
                           fontSize: 20,
                           fontStyle: FontStyle.italic,

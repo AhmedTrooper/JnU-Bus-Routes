@@ -52,6 +52,46 @@ class _BusTabState extends State<BusTab>{
         return ListTile(
           title: ShadCard(
             title: Text(busName),
+            footer: Column(
+              children: [
+                Row(
+                  children: [
+                    ElevatedButton(onPressed: ()=>context.push("/bus/$busName/1"),
+                        style: ElevatedButton.styleFrom(// Text color
+                          elevation: 0, // Remove shadow
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8), // Optional: Rounded corners
+                            side: BorderSide.none, // Remove border
+                          ),
+                        ),
+                        child: const Text("Up Time")),
+                    const Icon(
+                      LucideIcons.arrowRight,
+                      color: Colors.redAccent,
+                      size: 35,
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                        onPressed: ()=>context.push("/bus/$busName/0"),
+        style: ElevatedButton.styleFrom(// Text color
+        elevation: 0, // Remove shadow
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8), // Optional: Rounded corners
+        side: BorderSide.none, // Remove border
+        ),
+        ), child: const Text("Down Time")),                    const Icon(
+                      LucideIcons.arrowRight,
+                      color: Colors.redAccent,
+                      size: 35,
+                    )
+                  ],
+                ),
+
+              ],
+            )
           ),
           onTap: () {
             context.push("/bus/$busName");

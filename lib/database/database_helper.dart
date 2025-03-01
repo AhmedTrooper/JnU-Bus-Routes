@@ -50,9 +50,74 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> result = await db.query(
       'bus', // Table name
       columns: ['bus_name'], // Only fetch the bus_name column
+      orderBy: 'bus_name ASC',
     );
 
     // Extract bus names from the result
     return List.generate(result.length, (index) => result[index]['bus_name'] as String);
   }
+
+
+
+  Future<List<Map<String, dynamic>>> getAllBusInfo() async {
+    try {
+      final db = await database;
+
+      final List<Map<String, dynamic>> result = await db.query(
+        'bus', // Table name
+        orderBy: 'bus_name ASC', // Sort by bus_name in ascending order
+      );
+
+      return result;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Fetch detailed route information for a specific bus
+  Future<dynamic> getBusRouteDetails(String busName, int upOrDown) async {
+    try {
+      final db = await database;
+      const query = '''
+        SELECT 
+            place.place_name,
+        FROM 
+            relation
+        JOIN 
+            bus ON relation.bus_id = bus.id
+        JOIN 
+            place ON relation.place_id = place.id
+        WHERE 
+            bus.bus_name = ? AND relation.up_or_down = ?;
+      ''';
+      final result = await db.rawQuery(query, [busName, upOrDown]);
+      return result;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<String>> getPlaceNamesForBus(String busName, int upOrDown) async {
+    try {
+      final db = await database;
+      const query = '''
+      SELECT 
+          place.place_name
+      FROM 
+          relation
+      JOIN 
+          bus ON relation.bus_id = bus.id
+      JOIN 
+          place ON relation.place_id = place.id
+      WHERE 
+          bus.bus_name = ? AND relation.up_or_down = ?;
+    ''';
+      final List<Map<String, dynamic>> result = await db.rawQuery(query, [busName, upOrDown]);
+      return List.generate(result.length, (index) => result[index]['place_name'] as String);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
 }

@@ -22,14 +22,6 @@ class AppRouter {
           builder: (context, state) => const WelcomeScreen(),
         ),
         GoRoute(
-          path: '/bus/:busName', // Dynamic route with :id parameter
-          builder: (context, state) {
-            // Extract the 'id' parameter from the state
-            final String busName = state.pathParameters['busName']!;
-            return BusDetailsScreen(busName: busName,upOrDown: 1,);
-          },
-        ),
-        GoRoute(
           path: '/bus/:busName/:upOrDown', // Dynamic route with :id parameter
           builder: (context, state) {
             // Extract the 'id' parameter from the state

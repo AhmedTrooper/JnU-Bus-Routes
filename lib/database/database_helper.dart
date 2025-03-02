@@ -97,6 +97,7 @@ class DatabaseHelper {
     }
   }
 
+
   Future<List<String>> getPlaceNamesForBus(String busName, int upOrDown) async {
     try {
       final db = await database;
@@ -119,5 +120,56 @@ class DatabaseHelper {
     }
   }
 
+  Future<List<String>> getBusNamesForPlace(String placeName) async {
+    try {
+      final db = await database;
+      const query = '''
+      SELECT 
+          bus.bus_name
+      FROM 
+          relation
+      JOIN 
+          bus ON relation.bus_id = bus.id
+      JOIN 
+          place ON relation.place_id = place.id
+      WHERE 
+          place.place_name = ? AND relation.up_or_down = 1;
+    ''';
+      final List<Map<String, dynamic>> result = await db.rawQuery(query, [placeName]);
+      return List.generate(result.length, (index) => result[index]['bus_name'] as String);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+
+
+
+
+
+  Future<List<String>> getPlaceList() async {
+    try {
+      final db = await database;
+      const query = '''
+      SELECT DISTINCT 
+          place.place_name
+      FROM 
+          relation
+      JOIN 
+          place ON relation.place_id = place.id
+      WHERE 
+          relation.up_or_down = 1
+      ORDER BY 
+          place.place_name ASC; -- Sort in ascending order
+    ''';
+      final List<Map<String, dynamic>> result = await db.rawQuery(query);
+      return List.generate(result.length, (index) => result[index]['place_name'] as String);
+    } catch (e) {
+      print('Error fetching place names: $e');
+      rethrow;
+    }
+  }
 
 }

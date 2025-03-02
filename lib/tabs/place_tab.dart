@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
-import 'package:jnu_bus_routes/widgets/bus_list.dart';
+import 'package:jnu_bus_routes/widgets/place_list.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../database/database_helper.dart';
 
-class BusTab extends StatefulWidget {
-  const BusTab({super.key});
+class PlaceTab extends StatefulWidget {
+  const PlaceTab({super.key});
   @override
   State<StatefulWidget> createState() {
-    return _BusTabState();
+    return _PlaceTabState();
   }
 }
 
-class _BusTabState extends State<BusTab> {
-  List<String> _busNames = [];
+class _PlaceTabState extends State<PlaceTab> {
+  List<String> _placeNames = [];
   bool _isLoading = true;
 
   @override
@@ -26,9 +25,9 @@ class _BusTabState extends State<BusTab> {
   Future<void> _loadBusNames() async {
     try {
       final dbHelper = DatabaseHelper();
-      final busNames = await dbHelper.getBusList();
+      final placeNames = await dbHelper.getPlaceList();
       setState(() {
-        _busNames = busNames;
+        _placeNames = placeNames;
         _isLoading = false;
       });
     } catch (e) {
@@ -42,6 +41,6 @@ class _BusTabState extends State<BusTab> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(child: CircularProgressIndicator())
-        : BusList(busNames: _busNames);
+        : PlaceList(placeNames: _placeNames);
   }
 }

@@ -1,7 +1,6 @@
 //Updated....
 import 'package:flutter/material.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
-import 'package:jnu_bus_routes/screens/bus_details.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -50,7 +49,7 @@ class _HomeTabState extends State<HomeTab> {
     String? fetchedBusName = await getBusName();
     if (fetchedBusName != null) {
       setState(() {
-        busName = fetchedBusName; // Update the state with the fetched user name
+        busName = fetchedBusName; // Update the state with the fetched bus name
       });
     }
 

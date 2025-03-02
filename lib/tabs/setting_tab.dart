@@ -45,8 +45,19 @@ class _SettingTab extends State<SettingTab>{
                     children: [
                       ShadInputFormField(
                         controller: _userNameController,
+                        autofocus: true,
                         id: 'username',
-                        label: const Text('Username'),
+                        label: const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(LucideIcons.user),
+                             Text('Username', style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 20,
+                            ),
+                            ),
+                          ],
+                        ),
                         placeholder: const Text('Enter your username'),
                         description: const Text(
                             "This is your name for homepage"),
@@ -54,15 +65,20 @@ class _SettingTab extends State<SettingTab>{
                       ),
                       const SizedBox(height: 16),
                       ShadButton(
-                        child: const Text("Submit"),
+                        padding: const EdgeInsets.all(5),
+                        height: 60,
+                        width: 120,
+                        child: const Text("Submit",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                        ),
                         onPressed: () async {
                           if (formKey.currentState!.saveAndValidate()) {
                             if (_userNameController.text.isNotEmpty) {
                               SharedPreferencesHelper.setUserNameStatus(
                                   _userNameController.text);
-                              print("Username is : ");
-                              print(await SharedPreferencesHelper
-                                  .getUserNameStatus());
                             }
                           } else {
 

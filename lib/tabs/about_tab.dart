@@ -14,7 +14,7 @@ class AboutTab extends StatefulWidget {
 
 class _AboutTab extends State<AboutTab> {
   TextEditingController userName = TextEditingController.fromValue(
-      const TextEditingValue(text: "Md. Alp Arslan"));
+      const TextEditingValue(text: "John The Don"));
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _AboutTab extends State<AboutTab> {
                     ElevatedButton(
                       onPressed: _launchUrl,
                       style: ElevatedButton.styleFrom(
-                        // Text color
+
                         elevation: 0, // Remove shadow
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(

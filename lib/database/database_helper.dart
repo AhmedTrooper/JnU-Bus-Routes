@@ -15,45 +15,32 @@ class DatabaseHelper {
 
   DatabaseHelper._internal();
 
-  // Getter for the database instance
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
     return _database!;
   }
 
-  // Initialize the database
   Future<Database> _initDatabase() async {
-    // Get the directory for storing the database
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "jnu.db");
-
-    // Check if the database already exists
     bool dbExists = await databaseExists(path);
-
     if (!dbExists) {
-      // Copy the pre-populated database from assets
       ByteData data = await rootBundle.load("assets/database/jnu.db");
       List<int> bytes = data.buffer.asUint8List();
-
-      // Write the database file to the app's document directory
       await File(path).writeAsBytes(bytes, flush: true);
     }
 
-    // Open the database
     return await openDatabase(path, version: 1);
   }
 
-  // Function to fetch all bus names
   Future<List<String>> getBusList() async {
     final db = await database;
     final List<Map<String, dynamic>> result = await db.query(
-      'bus', // Table name
-      columns: ['bus_name'], // Only fetch the bus_name column
+      'bus',
+      columns: ['bus_name'],
       orderBy: 'bus_name ASC',
     );
-
-    // Extract bus names from the result
     return List.generate(result.length, (index) => result[index]['bus_name'] as String);
   }
 
@@ -64,8 +51,8 @@ class DatabaseHelper {
       final db = await database;
 
       final List<Map<String, dynamic>> result = await db.query(
-        'bus', // Table name
-        orderBy: 'bus_name ASC', // Sort by bus_name in ascending order
+        'bus',
+        orderBy: 'bus_name ASC',
       );
 
       return result;
@@ -167,7 +154,6 @@ class DatabaseHelper {
       final List<Map<String, dynamic>> result = await db.rawQuery(query);
       return List.generate(result.length, (index) => result[index]['place_name'] as String);
     } catch (e) {
-      print('Error fetching place names: $e');
       rethrow;
     }
   }

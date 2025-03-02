@@ -24,7 +24,7 @@ class _HomeTabState extends State<HomeTab> {
   void initState() {
     super.initState();
     _placeNames = Future.value([]);
-    loadData(); // Load both bus info and user name
+    loadData();
   }
 
   Future<void> _loadPlaceNames() async {
@@ -37,27 +37,23 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Future<void> loadData() async {
-    // Fetch user name
     String? fetchedUserName = await getUserName();
     if (fetchedUserName != null) {
       setState(() {
-        userName =
-            fetchedUserName; // Update the state with the fetched user name
+        userName = fetchedUserName;
       });
     }
 
     String? fetchedBusName = await getBusName();
     if (fetchedBusName != null) {
       setState(() {
-        busName = fetchedBusName; // Update the state with the fetched bus name
+        busName = fetchedBusName;
       });
     }
 
-    // Fetch bus info
     await getBusInfo();
     _loadPlaceNames();
 
-    // Mark loading as complete
     setState(() {
       _isLoading = false;
     });
@@ -81,15 +77,14 @@ class _HomeTabState extends State<HomeTab> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(
-            child: CircularProgressIndicator()) // Show loading indicator
+            child: CircularProgressIndicator(),
+          )
         : SingleChildScrollView(
             child: Container(
                 height: 800,
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-// Display user name
-
                     userName != null
                         ? SizedBox(
                             width: 150,

@@ -10,28 +10,10 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class WelcomeScreenState extends State<WelcomeScreen> {
-
-  bool _hasAgreed = false;
-
   @override
   void initState() {
     super.initState();
-    _checkAgreementStatus();
   }
-
-  Future<void> _checkAgreementStatus() async {
-    bool? agreed = await SharedPreferencesHelper.getAgreementStatus();
-    if(mounted){
-      if (agreed == true) {
-        context.go('/');
-      } else {
-        setState( () async {
-          _hasAgreed = false;
-        });
-      }
-    }
-  }
-
   Future<void> _onAgreePressed() async {
     await SharedPreferencesHelper.setAgreementStatus(true);
     if(mounted){

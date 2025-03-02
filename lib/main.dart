@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -17,7 +16,6 @@ class MyApp extends StatelessWidget {
     return ShadApp.materialRouter(
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
-
     );
   }
 }

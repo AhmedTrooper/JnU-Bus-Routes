@@ -14,8 +14,10 @@ class PlaceTab extends StatefulWidget {
 
 class _PlaceTabState extends State<PlaceTab> {
   List<String> _placeNames = [];
+  List<String> _filteredPlaceNames = [];
   bool _isLoading = true;
-
+  final _placeKeywords = TextEditingController();
+  String searchedKeywords = "";
   @override
   void initState() {
     super.initState();
@@ -28,6 +30,7 @@ class _PlaceTabState extends State<PlaceTab> {
       final placeNames = await dbHelper.getPlaceList();
       setState(() {
         _placeNames = placeNames;
+        _filteredPlaceNames = _placeNames;
         _isLoading = false;
       });
     } catch (e) {
@@ -41,6 +44,48 @@ class _PlaceTabState extends State<PlaceTab> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(child: CircularProgressIndicator())
-        : PlaceList(placeNames: _placeNames);
+        : ListView(
+      children: [
+       Container(
+         padding: const EdgeInsets.all(20),
+         child: Column(
+           children: [
+             ShadInputFormField(
+               controller: _placeKeywords,
+               autofocus: true,
+               id: 'username',
+               label: const Row(
+                 crossAxisAlignment: CrossAxisAlignment.center,
+                 children: [
+                   Icon(LucideIcons.map),
+                   Text('Search by Keywords', style: TextStyle(
+                     fontWeight: FontWeight.normal,
+                     fontSize: 20,
+                   ),
+                   ),
+                 ],
+               ),
+               placeholder: const Text('Enter Place name'),
+               description:  Text(
+                   "You searched ${searchedKeywords == "" ? "for nothing" : searchedKeywords}"),
+               onChanged: (value){
+setState(() {
+  searchedKeywords = value;
+  _filteredPlaceNames = _placeNames.where((x)=>x.contains(searchedKeywords)).toList().length > 0 ? _placeNames.where((x)=>x.contains(searchedKeywords)).toList() : [];
+});
+               },
+
+             ),
+           ],
+         ),
+       ),
+        Container(
+          height: 1000,
+          padding: const EdgeInsets.all(20),
+          width: double.infinity,
+            child: _filteredPlaceNames.isNotEmpty ? PlaceList(placeNames: _filteredPlaceNames) : const Text("No places found"),
+        )
+      ],
+    );
   }
 }

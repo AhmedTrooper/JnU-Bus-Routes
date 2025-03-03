@@ -34,14 +34,41 @@ class DatabaseHelper {
     return await openDatabase(path, version: 1);
   }
 
-  Future<List<String>> getBusList() async {
-    final db = await database;
-    final List<Map<String, dynamic>> result = await db.query(
-      'bus',
-      columns: ['bus_name'],
-      orderBy: 'bus_name ASC',
-    );
-    return List.generate(result.length, (index) => result[index]['bus_name'] as String);
+  // Future<List<String>> getBusList() async {
+  //   final db = await database;
+  //   final List<Map<String, dynamic>> result = await db.query(
+  //     'bus',
+  //     columns: ['bus_name'],
+  //     orderBy: 'bus_name ASC',
+  //   );
+  //   return List.generate(result.length, (index) => result[index]['bus_name'] as String);
+  // }
+
+
+  // Function to fetch all bus information (bus_name, bus_type, last_stoppage, up_time, down_time)
+  Future<List<Map<String, dynamic>>> getBusList() async {
+    try {
+      final db = await database;
+
+      // Query to fetch all bus details
+      const query = '''
+      SELECT 
+          bus_name, 
+          bus_type, 
+          last_stoppage, 
+          up_time, 
+          down_time
+      FROM 
+          bus
+      ORDER BY 
+          bus_name ASC;
+    ''';
+
+      final List<Map<String, dynamic>> result = await db.rawQuery(query);
+      return result;
+    } catch (e) {
+      rethrow;
+    }
   }
 
 

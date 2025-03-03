@@ -63,7 +63,7 @@ class _AboutTab extends State<AboutTab> {
                   ],
                 ),
                 child: const Text(
-                    "New Bus app developed for newer android version and IOS devices using flutter using old database....."),
+                    "New Bus app is developed for IOS support and new android version, using flutter & old bus app's database....."),
               ),
               const SizedBox(height: 20),
               ShadCard(
@@ -98,7 +98,7 @@ class _AboutTab extends State<AboutTab> {
                   ],
                 ),
                 child: const Text(
-                    "Old Jnu Bus developer,who is contactless,mainly collector of all bus's data!"),
+                    "Old Jnu Bus developer,yet contactless,mainly collector of all bus-data!"),
               ),
             ],
           ),

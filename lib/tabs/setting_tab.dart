@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingTab extends StatefulWidget {
   const SettingTab({super.key});
@@ -64,7 +65,7 @@ class _SettingTab extends State<SettingTab>{
 
                       ),
                       const SizedBox(height: 16),
-                      ShadButton(
+                      ShadButton.outline(
                         padding: const EdgeInsets.all(5),
                         height: 60,
                         width: 120,
@@ -79,6 +80,8 @@ class _SettingTab extends State<SettingTab>{
                             if (_userNameController.text.isNotEmpty) {
                               SharedPreferencesHelper.setUserNameStatus(
                                   _userNameController.text);
+                                  _userNameController.text = "";
+                                  context.push("/");
                             }
                           } else {
 

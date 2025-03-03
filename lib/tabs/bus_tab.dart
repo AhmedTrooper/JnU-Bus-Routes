@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:jnu_bus_routes/widgets/bus_list.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../database/database_helper.dart';
@@ -14,7 +12,7 @@ class BusTab extends StatefulWidget {
 }
 
 class _BusTabState extends State<BusTab> {
-  List<String> _busNames = [];
+  List<Map<String, dynamic>> _busNames = [];
   bool _isLoading = true;
 
   @override
@@ -42,6 +40,29 @@ class _BusTabState extends State<BusTab> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(child: CircularProgressIndicator())
-        : BusList(busNames: _busNames);
+        : ListView(
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ShadButton.outline(
+             height: 50,
+              width: 120,
+              backgroundColor: Colors.transparent,
+              child: const Text("Bus List",style: TextStyle(
+                fontSize: 20
+              ),),
+              onPressed: () {},
+            ),
+
+          ],
+        ),
+        BusList(busNames: _busNames),
+
+      ],
+    );
   }
 }

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:jnu_bus_routes/widgets/route_list.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../database/database_helper.dart';
 
@@ -49,18 +50,7 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
             return const Center(child: Text('No place names found.'));
           } else {
             final placeNames = snapshot.data!;
-            return ListView.builder(
-              itemCount: placeNames.length,
-              itemBuilder: (context, index) {
-                final placeName = placeNames[index];
-                return ListTile(
-                  title:  ShadCard(
-                    title: Text(placeName),
-                    leading: placeName =="Jagannath University" ? const Icon(Icons.school,color: Colors.redAccent,size: 35,) : const Icon(Icons.arrow_circle_down,color: Colors.redAccent,size: 35,),
-                  ),
-                );
-              },
-            );
+            return RouteList(routeNames: placeNames);
           }
         },
       ),

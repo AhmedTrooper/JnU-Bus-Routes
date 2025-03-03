@@ -1,7 +1,9 @@
 //Updated....
 import 'package:flutter/material.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
+import 'package:jnu_bus_routes/screens/bus_details.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
+import 'package:jnu_bus_routes/widgets/route_list.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomeTab extends StatefulWidget {
@@ -143,29 +145,7 @@ class _HomeTabState extends State<HomeTab> {
                                     "No place's name found...Select bus first"));
                           } else {
                             final placeNames = snapshot.data!;
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: placeNames.length,
-                              itemBuilder: (context, index) {
-                                final placeName = placeNames[index];
-                                return ListTile(
-                                  title: ShadCard(
-                                    title: Text(placeName),
-                                    leading: placeName == "Jagannath University"
-                                        ? const Icon(
-                                            Icons.school,
-                                            color: Colors.redAccent,
-                                            size: 35,
-                                          )
-                                        : const Icon(
-                                            Icons.arrow_circle_down,
-                                            color: Colors.redAccent,
-                                            size: 35,
-                                          ),
-                                  ),
-                                );
-                              },
-                            );
+                            return RouteList(routeNames: placeNames);
                           }
                         },
                       ),

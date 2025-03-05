@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:jnu_bus_routes/widgets/route_list.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 import '../database/database_helper.dart';
 
 class BusDetailsScreen extends StatefulWidget {
@@ -19,7 +18,7 @@ class BusDetailsScreen extends StatefulWidget {
 }
 
 class _BusDetailsScreenState extends State<BusDetailsScreen> {
-  late Future<List<String>> _placeNames;
+ List<Map<String,dynamic>> _placeNames = [];
 
   @override
   void initState() {
@@ -28,8 +27,13 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
   }
 
   Future<void> _loadPlaceNames() async {
-    final dbHelper = DatabaseHelper();
-    _placeNames = dbHelper.getPlaceNamesForBus(widget.busName, widget.upOrDown);
+    try{
+      List<Map<String,dynamic>> placeNames = await DatabaseHelper().getBusInfo(busName: widget.busName,busType: widget.upOrDown);
+      setState(() {
+        _placeNames = placeNames;
+      });
+    } catch(e) {
+    }
   }
 
   @override
@@ -39,21 +43,11 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
         title: Text('${widget.busName} Place Names ${widget.upOrDown == 1 ? '[Up]' : '[Down]'}'),
         backgroundColor: Colors.redAccent,
       ),
-      body: FutureBuilder<List<String>>(
-        future: _placeNames,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No place names found.'));
-          } else {
-            final placeNames = snapshot.data!;
-            return RouteList(routeNames: placeNames);
-          }
-        },
-      ),
+      body: CustomScrollView(
+        slivers: [
+          RouteList(routeNames: _placeNames)
+        ],
+      )
     );
   }
 }

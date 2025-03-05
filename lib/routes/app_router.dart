@@ -1,25 +1,20 @@
 import 'package:go_router/go_router.dart';
 import 'package:jnu_bus_routes/screens/bus_details.dart';
+import 'package:jnu_bus_routes/screens/home_screen.dart';
 import 'package:jnu_bus_routes/screens/place_details.dart';
-import 'package:jnu_bus_routes/screens/splash_screen.dart';
-import '../screens/home_screen.dart';
-import '../screens/welcome_screen.dart';
+import 'package:jnu_bus_routes/screens/welcome_screen.dart';
 
 class AppRouter {
   late final GoRouter router;
 
-  AppRouter() {
+  AppRouter({required String initialLocation}) {
     router = GoRouter(
-      initialLocation: "/splash",
+      initialLocation:initialLocation,
       routerNeglect: false,
       routes: [
         GoRoute(
-          path: '/splash',
-          builder: (context, state) => const SplashScreen(),
-        ),
-        GoRoute(
           path: '/',
-          builder: (context, state) => const HomeScreen(),
+          builder: (context, state) =>  HomeScreen(),
         ),
         GoRoute(
           path: '/welcome',

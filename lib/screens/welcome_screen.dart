@@ -26,12 +26,12 @@ class WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding:const EdgeInsets.all(30),
+            padding:const EdgeInsets.all(30),
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/jnu.jpg'), // Local asset image
-                fit: BoxFit.cover, // Adjusts the image to cover the container
+                image: AssetImage('assets/images/jnu.jpg'),
+                fit: BoxFit.cover,
               ),
             ),
 
@@ -40,12 +40,12 @@ class WelcomeScreenState extends State<WelcomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Welcome to JnU Bus Routes Application",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 40,
-                  fontStyle: FontStyle.italic
-                ),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontStyle: FontStyle.italic
+                  ),
                 ),
                 ShadButton(
                   onPressed: _onAgreePressed,
@@ -56,8 +56,8 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                   child:  const Text(
                     "Agree",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
+                      color: Colors.white,
+                      fontSize: 30,
 
                     ),
 

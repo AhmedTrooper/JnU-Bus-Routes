@@ -1,58 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:go_router/go_router.dart';
 
-class SettingTab extends StatefulWidget {
+class SettingTab extends StatefulWidget{
   const SettingTab({super.key});
   @override
   State<StatefulWidget> createState() {
-    return _SettingTab();
+    return _SettingTabState();
   }
 }
 
-class _SettingTab extends State<SettingTab>{
+class _SettingTabState extends State<SettingTab>{
 
   final formKey = GlobalKey<ShadFormState>();
   final _userNameController = TextEditingController();
+
+
   @override
   void initState()  {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _userNameController.dispose();
+    super.dispose();
+  }
 
 
 
-    @override
-    void dispose() {
-      // Dispose the controller when it's no longer needed
-      _userNameController.dispose();
-      super.dispose();
-    }
-
-    @override
-    Widget build(BuildContext context) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(10),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              ShadForm(
-                key: formKey,
-                child: ConstrainedBox(
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+      SliverToBoxAdapter(
+        child: Padding(
+            padding: const EdgeInsets.all(15.0),
+          child:   ShadForm(
+              key: formKey,
+              child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 350),
                   child: Column(
                     children: [
                       ShadInputFormField(
                         controller: _userNameController,
-                        autofocus: true,
+                        autofocus: false,
                         id: 'username',
                         label: const Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Icon(LucideIcons.user),
-                             Text('Username', style: TextStyle(
+                            Text('Username', style: TextStyle(
                               fontWeight: FontWeight.normal,
                               fontSize: 20,
                             ),
@@ -70,18 +68,17 @@ class _SettingTab extends State<SettingTab>{
                         height: 60,
                         width: 120,
                         child: const Text("Submit",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
                         onPressed: () async {
                           if (formKey.currentState!.saveAndValidate()) {
                             if (_userNameController.text.isNotEmpty) {
-                              SharedPreferencesHelper.setUserNameStatus(
+                              SharedPreferencesHelper.setUserName(
                                   _userNameController.text);
-                                  _userNameController.text = "";
-                                  context.push("/");
+                              _userNameController.text = "";
                             }
                           } else {
 
@@ -89,14 +86,12 @@ class _SettingTab extends State<SettingTab>{
                         },
                       ),
                     ],
-                  ),
-                ),
+                  )
               )
-            ],
           ),
         ),
-      );
-    }
+      )
+        ]
+    );
   }
-
-
+}

@@ -36,7 +36,104 @@ class _SettingTabState extends State<SettingTab>{
       SliverToBoxAdapter(
         child: Padding(
             padding: const EdgeInsets.all(15.0),
-          child:   ShadForm(
+          child:  Card(
+          elevation: 10,
+          shadowColor: Colors.black.withOpacity(1),
+          borderOnForeground: true,
+          shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+          side:  BorderSide(
+          color: Theme.of(context).brightness != Brightness.dark ? Colors.white : Colors.redAccent,                    width: 1
+          )
+          ),
+          child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ShadForm(
+            key: formKey,
+            child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 350),
+                child: Column(
+                  children: [
+                    ShadInputFormField(
+                      cursorColor: Colors.redAccent,
+                      controller: _userNameController,
+                      autofocus: false,
+                      id: 'username',
+                      label: const Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(LucideIcons.user,color: Colors.redAccent,),
+                          Text('Username', style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.redAccent,
+                            fontSize: 20,
+                          ),
+                          ),
+                        ],
+                      ),
+                      placeholder: const Text('Enter your username'),
+                      description: const Text(
+                          "This is your name for homepage",
+                      ),
+
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (formKey.currentState!.saveAndValidate()) {
+                          if (_userNameController.text.isNotEmpty) {
+                            SharedPreferencesHelper.setUserName(
+                                _userNameController.text);
+                            _userNameController.text = "";
+                          }
+                        } else {
+
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        elevation: 2, // Add subtle shadow
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // Rounded corners
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        fixedSize: const Size(120, 60),
+                      ),
+                      child: const Text("Submit",
+                        style:  TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
+                        ),
+                      ),
+
+                    ),
+                  ],
+                )
+            )
+            )
+    ],
+    ),
+    ),
+    ),
+    ),
+    )
+        ]
+    );
+  }
+}
+
+
+
+
+
+/*
+
+
+ShadForm(
               key: formKey,
               child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 350),
@@ -88,10 +185,5 @@ class _SettingTabState extends State<SettingTab>{
                     ],
                   )
               )
-          ),
-        ),
-      )
-        ]
-    );
-  }
-}
+
+ */

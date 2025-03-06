@@ -131,6 +131,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ShadSwitch(
+                    checkedTrackColor: Colors.redAccent,
                     value: busOnUp,
                     label: busOnUp ? const Text("Up") : const Text("Down"),
                     onChanged: (v) => {
@@ -159,7 +160,8 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const SliverFillRemaining(
-                child: Center(child: Text("No Bus Selected")),
+                child: Center(child:Icon(LucideIcons.bus,color: Colors.redAccent,size: 35,)
+                ),
               );
             } else {
               final routeNames = snapshot.data!;

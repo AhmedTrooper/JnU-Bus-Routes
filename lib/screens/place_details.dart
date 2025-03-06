@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:jnu_bus_routes/main.dart';
 import 'package:jnu_bus_routes/widgets/bus_list.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import '../database/database_helper.dart';
+import 'package:go_router/go_router.dart';
 
 class PlaceDetailsScreen extends StatefulWidget {
   final String placeName;
@@ -45,8 +48,24 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.placeName}'s bus list"),
+        title: Text(" ${widget.placeName}",
+          style:  const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+          ),
+        ),
         backgroundColor: Colors.redAccent,
+        leading:IconButton(
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white,size: 25,), // Replace with your desired icon
+          color: Colors.black, // Set the icon color (optional)
+          onPressed: () {
+            Navigator.pop(context); // Pop the current route
+          },
+          splashRadius: 20, // Reduce the splash effect radius
+          splashColor: Colors.transparent, // Make the splash effect transparent
+          highlightColor: Colors.transparent, // Remove highlight effect
+        ),
+        leadingWidth: 100,
       ),
       body: CustomScrollView(
         slivers: [

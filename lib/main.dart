@@ -9,6 +9,10 @@ void main() async {
   bool? hasAgreed = await SharedPreferencesHelper.getAgreementStatus();
   String initialLocation = hasAgreed == true ? '/' : '/welcome';
   runApp(MyApp(initialLocation: initialLocation));
+
+
+  // //For development time...
+  // runApp(const MyApp(initialLocation: "/"));
 }
 
 class MyApp extends StatelessWidget {

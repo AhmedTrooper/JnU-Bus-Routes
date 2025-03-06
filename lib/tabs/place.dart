@@ -63,8 +63,10 @@ class _PlaceTabState extends State<PlaceTab>{
       slivers: [
         SliverAppBar(
           leadingWidth: 100,
+          toolbarHeight: 100,
+          titleSpacing: 5,
           leading: ShadButton.ghost(
-            child: const Icon(LucideIcons.filter),
+            child: const Icon(LucideIcons.filter,color: Colors.redAccent,size: 35,),
             onPressed: (){
               clearFilter();
             },
@@ -76,9 +78,26 @@ class _PlaceTabState extends State<PlaceTab>{
                   itemCount: alphabetList.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index){
-                    return ShadButton.outline(
-                      child: Text(alphabetList[index]),
-                      onPressed: ()=> _filterPlaceName(alphabetList[index]),
+                    return Padding(
+                      padding: const EdgeInsets.all(2),
+                      child:  ElevatedButton(
+                        onPressed: () => _filterPlaceName(alphabetList[index]),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent,
+                            elevation: 2, // Add subtle shadow
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10), // Rounded corners
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            fixedSize: const Size(50, 50)
+                        ),
+                        child: Text(alphabetList[index],
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
                     );
                   }
               )
@@ -90,8 +109,14 @@ class _PlaceTabState extends State<PlaceTab>{
               padding: EdgeInsets.all(16),
               child: ShadCard(
                 description:Text("Sorry! Your searched letter hasn't matched any place !") ,
-            title: Text("No Place found!"),
-          ),)
+            title: Text("No Place found!",
+              style:  TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.bold
+            ),
+            ),
+          ),
+          )
         )
       ],
     );

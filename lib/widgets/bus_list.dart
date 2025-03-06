@@ -49,10 +49,14 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: Card(
-                elevation: 6,
-                shadowColor: Colors.black.withOpacity(0.5),
+                elevation: 10,
+                shadowColor: Colors.black.withOpacity(1),
+                borderOnForeground: true,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
+                  side:  BorderSide(
+                      color: Theme.of(context).brightness != Brightness.dark ? Colors.white : Colors.redAccent,                    width: 1
+                  )
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -62,28 +66,42 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                       Text(
                         busName['bus_name'],
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
-
+                          color: Colors.redAccent
                         ),
                       ),
                       const SizedBox(height: 10),
-                      ShadButton.outline(
-                        onPressed: () {
-                          SharedPreferencesHelper.setBusName(busName['bus_name']);
-                          ShadToaster.of(context).show(
-                            ShadToast(
-                              title: Text('Selected ${busName['bus_name']}'),
-                              description: Text('${busName['bus_name']} has been selected as your bus'),
-                              action: ShadButton.outline(
-                                child: const Text('Undo'),
-                                onPressed: () => ShadToaster.of(context).hide(),
-                              ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () =>{
+                SharedPreferencesHelper.setBusName(busName['bus_name']),
+                ShadToaster.of(context).show(
+                ShadToast(
+                title: const Text('Selected'),
+                description: Text('${busName['bus_name']} has been selected as your bus'),
+                action: ShadButton.outline(
+                child: const Text('Close'),
+                onPressed: () => ShadToaster.of(context).hide(),
+                ),
+                ),
+                )
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.redAccent,
+                                elevation: 2, // Add subtle shadow
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10), // Rounded corners
+                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                fixedSize: const Size(200, 50)
                             ),
-                          );
-                        },
-                        height: 50,
-                        child: const Text('Select as your bus'),
+                            child: const Icon(Icons.add,color: Colors.white,size: 35,)
+                          ),
+
+                        ],
                       ),
                       const SizedBox(height: 20),
                       Row(
@@ -92,13 +110,16 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                           ElevatedButton(
                             onPressed: () => context.push("/bus/${busName['bus_name']}/1"),
                             style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.redAccent,
                               elevation: 2, // Add subtle shadow
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10), // Rounded corners
+                                borderRadius: BorderRadius.circular(10),
+                                // Rounded corners
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              fixedSize: const Size(200, 50)
                             ),
-                            child: const Text("See Up Time Route"),
+                            child: const Icon(Icons.arrow_circle_down,color: Colors.white,size: 35,)
                           ),
 
                         ],
@@ -110,34 +131,78 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                           ElevatedButton(
                             onPressed: () => context.push("/bus/${busName['bus_name']}/0"),
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
                               elevation: 2, // Add subtle shadow
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10), // Rounded corners
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                fixedSize: const Size(200, 50),
                             ),
-                            child: const Text("See Down Time Route"),
+                            child: const Icon(Icons.arrow_circle_up,color: Colors.white,size: 35,),
+
+                          ),
+
+                        ],
+                      ),
+
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: (){},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                              elevation: 2, // Add subtle shadow
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10), // Rounded corners
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              fixedSize: const Size(200, 50),
+                            ),
+                            child:  Text("${busName['up_time']}-${busName['down_time']}",
+                              style:  const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white
+                              ),
+                            ),
+
                           ),
 
                         ],
                       ),
                       const SizedBox(height: 10),
-                      ShadButton.outline(
-                        height: 50,
-                        width: 120,
-                        child: Text(busName['up_time']),
-                      ),
-                      const SizedBox(height: 10),
-                      ShadButton.outline(
-                        height: 50,
-                        width: 120,
-                        child: Text(busName['down_time']),
-                      ),
-                      const SizedBox(height: 10),
-                      ShadButton.outline(
-                        height: 50,
-                        width: 300,
-                        child: Text("Last stop: ${busName['last_stoppage']}"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // const Icon(Icons.location_on,color: Colors.redAccent,size: 35,),
+                          ElevatedButton(
+                            onPressed: (){},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 2, // Add subtle shadow
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10), // Rounded corners
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              // fixedSize: const Size(100, 100),
+                            ),
+                            child:  Column(
+                              children: [
+                                const Icon(Icons.location_on,color: Colors.redAccent,size: 35,),
+                                Text("${busName['last_stoppage']}",
+                                  style:  const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.redAccent,
+                                  ),
+                                ),
+                              ],
+                            )
+
+                          ),
+
+                        ],
                       ),
                     ],
                   ),

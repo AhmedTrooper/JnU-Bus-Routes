@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+
 import '../utils/shared_preferences_helper.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
   @override
-  WelcomeScreenState createState() =>  WelcomeScreenState();
+  WelcomeScreenState createState() => WelcomeScreenState();
 }
 
 class WelcomeScreenState extends State<WelcomeScreen> {
@@ -14,9 +16,10 @@ class WelcomeScreenState extends State<WelcomeScreen> {
   void initState() {
     super.initState();
   }
+
   Future<void> _onAgreePressed() async {
     await SharedPreferencesHelper.setAgreementStatus(true);
-    if(mounted){
+    if (mounted) {
       context.go('/');
     }
   }
@@ -26,7 +29,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-            padding:const EdgeInsets.all(30),
+            padding: const EdgeInsets.all(30),
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -34,46 +37,44 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Welcome to JnU Bus Routes Application",
+                const Text(
+                  "Welcome to JnU Bus Routes Application",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontSize: 40,
-                      fontStyle: FontStyle.italic
-                  ),
+                      fontStyle: FontStyle.italic),
                 ),
                 ShadButton(
                   onPressed: _onAgreePressed,
                   backgroundColor: Colors.redAccent,
-                  icon: const Icon(LucideIcons.handshake,),
+                  icon: const Icon(
+                    LucideIcons.handshake,
+                  ),
                   width: 200,
                   height: 70,
-                  child:  const Text(
+                  child: const Text(
                     "Agree",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-
                     ),
-
                   ),
                 ),
-                const Text("Click 'Agree' to continue",
+                const Text(
+                  "Click 'Agree' to continue",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontSize: 15,
-                      fontStyle: FontStyle.italic
-                  ),
+                      fontStyle: FontStyle.italic),
                 ),
               ],
-            )
-        ),
+            )),
       ),
     );
   }

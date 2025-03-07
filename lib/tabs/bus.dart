@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
 import 'package:jnu_bus_routes/widgets/bus_list.dart';
 
-class BusTab extends StatefulWidget{
+class BusTab extends StatefulWidget {
   const BusTab({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _BusTabState();
   }
 }
 
-class _BusTabState extends State<BusTab>{
+class _BusTabState extends State<BusTab> {
   List<Map<String, dynamic>> _busNames = [];
   bool _isLoading = true;
 
@@ -35,11 +36,15 @@ class _BusTabState extends State<BusTab>{
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 50,
+          ),
+        ),
         BusList(busNames: _busNames)
       ],
     );

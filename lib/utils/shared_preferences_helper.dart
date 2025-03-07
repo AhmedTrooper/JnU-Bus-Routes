@@ -5,6 +5,7 @@ class SharedPreferencesHelper {
   static const String _userName = 'userName';
   static const String _busName = 'busName';
   static const String _stoppageName = 'stoppageName';
+  static const String _isDarkMode = 'isDarkMode';
 
   static Future<bool?> getAgreementStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -35,6 +36,7 @@ class SharedPreferencesHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_busName, busName);
   }
+
   static Future<String?> getStoppageName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_stoppageName);
@@ -43,5 +45,15 @@ class SharedPreferencesHelper {
   static Future<void> setStoppageName(String stoppageName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_stoppageName, stoppageName);
+  }
+
+  static Future<bool?> getThemeStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_isDarkMode);
+  }
+
+  static Future<void> setThemeStatus(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_isDarkMode, value);
   }
 }

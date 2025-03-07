@@ -1,9 +1,10 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:flutter/services.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -34,8 +35,6 @@ class DatabaseHelper {
     return await openDatabase(path, version: 1);
   }
 
-
-
 //get place list....
   Future<List<String>> getPlaceList() async {
     try {
@@ -53,16 +52,17 @@ class DatabaseHelper {
           place.place_name ASC;
     ''';
       final List<Map<String, dynamic>> result = await db.rawQuery(query);
-      return List.generate(result.length, (index) => result[index]['place_name'] as String);
+      return List.generate(
+          result.length, (index) => result[index]['place_name'] as String);
     } catch (e) {
       rethrow;
     }
   }
 
   //get bus list on specific place....
-  Future<List<Map<String,dynamic>>> getPlaceDetails({
+  Future<List<Map<String, dynamic>>> getPlaceDetails({
     required String? placeName,
-}) async {
+  }) async {
     try {
       final db = await database;
       const placeDetailsQuery = '''
@@ -81,16 +81,13 @@ class DatabaseHelper {
       WHERE 
           place.place_name = ? AND relation.up_or_down = 1;
     ''';
-      final List<Map<String, dynamic>> result = await db.rawQuery(placeDetailsQuery);
+      final List<Map<String, dynamic>> result =
+          await db.rawQuery(placeDetailsQuery);
       return result;
-
     } catch (e) {
       rethrow;
     }
   }
-
-
-
 
 //get filtered place list....
   Future<List<String>> getFilteredPlaceList(String filterLetter) async {
@@ -105,25 +102,18 @@ class DatabaseHelper {
       ORDER BY place.place_name ASC;
     ''';
 
-      final List<Map<String, dynamic>> result = await db.rawQuery(query, ['$filterLetter%']);
+      final List<Map<String, dynamic>> result =
+          await db.rawQuery(query, ['$filterLetter%']);
       return result.map((row) => row['place_name'] as String).toList();
     } catch (e) {
       rethrow;
     }
   }
 
-
-
-
-
-  Future<List<Map<String, dynamic>>> getBusInfo({
-    String? placeName,
-    String? busName,
-    int? busType
-}) async {
+  Future<List<Map<String, dynamic>>> getBusInfo(
+      {String? placeName, String? busName, int? busType}) async {
     try {
       final db = await database;
-
 
       const busListQuery = '''
       SELECT 
@@ -154,7 +144,6 @@ class DatabaseHelper {
           place.place_name = ? AND relation.up_or_down = 1;
     ''';
 
-
       const busDetails = '''
         SELECT 
             place.place_name,
@@ -169,28 +158,23 @@ class DatabaseHelper {
             bus.bus_name = ? AND relation.up_or_down = ?;
       ''';
 
-
-      if(placeName != null){
-        final List<Map<String, dynamic>> result = await db.rawQuery(busForASinglePlace, [placeName]);
+      if (placeName != null) {
+        final List<Map<String, dynamic>> result =
+            await db.rawQuery(busForASinglePlace, [placeName]);
         return result;
       } else {
-        if(busName != null){
-          final List<Map<String, dynamic>> result = await db.rawQuery(busDetails, [busName, busType]);
+        if (busName != null) {
+          final List<Map<String, dynamic>> result =
+              await db.rawQuery(busDetails, [busName, busType]);
           return result;
         } else {
-          final List<Map<String, dynamic>> result = await db.rawQuery(busListQuery);
+          final List<Map<String, dynamic>> result =
+              await db.rawQuery(busListQuery);
           return result;
         }
       }
-
     } catch (e) {
       rethrow;
     }
   }
-
-
-
-
-
 }
-

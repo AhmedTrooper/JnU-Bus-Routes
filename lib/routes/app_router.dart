@@ -9,12 +9,12 @@ class AppRouter {
 
   AppRouter({required String initialLocation}) {
     router = GoRouter(
-      initialLocation:initialLocation,
+      initialLocation: initialLocation,
       routerNeglect: false,
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) =>  HomeScreen(),
+          builder: (context, state) => const HomeScreen(),
         ),
         GoRoute(
           path: '/welcome',
@@ -23,17 +23,22 @@ class AppRouter {
         GoRoute(
           path: '/bus/:busName/:upOrDown',
           builder: (context, state) {
-
             final String busName = state.pathParameters['busName']!;
-            final int upOrDown = int.tryParse(state.pathParameters['upOrDown']!) ?? 1;
-            return BusDetailsScreen(busName: busName,upOrDown: upOrDown,);
+            final int upOrDown =
+                int.tryParse(state.pathParameters['upOrDown']!) ?? 1;
+            return BusDetailsScreen(
+              busName: busName,
+              upOrDown: upOrDown,
+            );
           },
         ),
         GoRoute(
           path: '/place/:placeName',
           builder: (context, state) {
             final String placeName = state.pathParameters['placeName']!;
-            return PlaceDetailsScreen(placeName: placeName,);
+            return PlaceDetailsScreen(
+              placeName: placeName,
+            );
           },
         ),
       ],

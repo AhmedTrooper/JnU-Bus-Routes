@@ -1,7 +1,6 @@
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:jnu_bus_routes/widgets/route_list.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
+
 import '../database/database_helper.dart';
 
 class BusDetailsScreen extends StatefulWidget {
@@ -19,7 +18,7 @@ class BusDetailsScreen extends StatefulWidget {
 }
 
 class _BusDetailsScreenState extends State<BusDetailsScreen> {
- List<Map<String,dynamic>> _placeNames = [];
+  List<Map<String, dynamic>> _placeNames = [];
 
   @override
   void initState() {
@@ -28,44 +27,50 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
   }
 
   Future<void> _loadPlaceNames() async {
-    try{
-      List<Map<String,dynamic>> placeNames = await DatabaseHelper().getBusInfo(busName: widget.busName,busType: widget.upOrDown);
+    try {
+      List<Map<String, dynamic>> placeNames = await DatabaseHelper()
+          .getBusInfo(busName: widget.busName, busType: widget.upOrDown);
       setState(() {
         _placeNames = placeNames;
       });
-    } catch(e) {
-    }
+    } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.busName} ${widget.upOrDown == 1 ? '[Up]' : '[Down]'}',
-        style:   const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white
+        appBar: AppBar(
+          title: Text(
+            '${widget.busName} ${widget.upOrDown == 1 ? '[Up]' : '[Down]'}',
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: Colors.redAccent,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 25,
+            ),
+            color: Colors.black,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            splashRadius: 20,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          leadingWidth: 100,
         ),
-        ),
-        backgroundColor: Colors.redAccent,
-        leading:IconButton(
-          icon: const Icon(Icons.arrow_back_ios,color: Colors.white,size: 25,), // Replace with your desired icon
-          color: Colors.black, // Set the icon color (optional)
-          onPressed: () {
-            Navigator.pop(context); // Pop the current route
-          },
-          splashRadius: 20, // Reduce the splash effect radius
-          splashColor: Colors.transparent, // Make the splash effect transparent
-          highlightColor: Colors.transparent, // Remove highlight effect
-        ),
-        leadingWidth: 100,
-
-      ),
-      body: CustomScrollView(
-        slivers: [
-          RouteList(routeNames: _placeNames)
-        ],
-      )
-    );
+        body: CustomScrollView(
+          slivers: [
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 50,
+              ),
+            ),
+            RouteList(routeNames: _placeNames)
+          ],
+        ));
   }
 }

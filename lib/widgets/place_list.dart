@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
-
-class PlaceList extends StatefulWidget{
+class PlaceList extends StatefulWidget {
   List<String> placeNames = [];
+
   PlaceList({super.key, required this.placeNames});
+
   @override
   State<StatefulWidget> createState() {
     return _PlaceListState();
@@ -15,51 +16,80 @@ class PlaceList extends StatefulWidget{
 class _PlaceListState extends State<PlaceList> {
   @override
   Widget build(BuildContext context) {
-    return  SliverList(
+    return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final placeName = widget.placeNames[index];
-              return placeName != "Jagannath University" ?  ListTile(
-                title: ShadCard(
-                  columnCrossAxisAlignment: CrossAxisAlignment.center,
-                  rowMainAxisAlignment: MainAxisAlignment.center,
-                  title: Text(placeName),
-                  leading: const Icon(LucideIcons.map,color: Colors.redAccent,size: 35,),
-                  footer: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      ElevatedButton(
-                          onPressed: () => context.push("/place/$placeName"),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent,
-                              elevation: 2, // Add subtle shadow
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10), // Rounded corners
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                              fixedSize: const Size(200, 50)
-                          ),
-                          child: const Text('See Available Bus',
-                            style:  TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold
-                          ),),
-                      ),
+        (context, index) {
+          final placeName = widget.placeNames[index];
 
-                    ],
+          return placeName != "Jagannath University"
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(
+                        color: Theme.of(context).brightness != Brightness.dark
+                            ? Colors.white
+                            : Colors.grey[800]!,
+                        width: 1,
+                      ),
+                    ),
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            LucideIcons.map,
+                            color: Colors.redAccent,
+                            size: 35,
+                          ),
+                          const SizedBox(width: 8),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              placeName,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              softWrap: false,
+                              overflow: TextOverflow.visible,
+                              maxLines: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => context.push("/place/$placeName"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              fixedSize: const Size(200, 50),
+                            ),
+                            child: const Text(
+                              'Available Bus',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ) :  const SizedBox(
-                height: 0,
-              );
+                )
+              : const SizedBox(height: 0);
         },
         childCount: widget.placeNames.length,
       ),
     );
   }
 }
-
-

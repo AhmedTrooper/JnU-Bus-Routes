@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
@@ -8,6 +6,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomeTab extends StatefulWidget {
   String? userName;
+
   HomeTab({super.key, this.userName});
 
   @override
@@ -23,7 +22,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   bool busOnUp = true;
   late Future<List<Map<String, dynamic>>> _placeNames;
 
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +33,8 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
     if (_busName != null) {
       final dbHelper = DatabaseHelper();
       setState(() {
-        _placeNames = dbHelper.getBusInfo(busName: _busName, busType: busOnUp ? 1 : 0);
+        _placeNames =
+            dbHelper.getBusInfo(busName: _busName, busType: busOnUp ? 1 : 0);
       });
     }
   }
@@ -72,23 +71,28 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
     return busName;
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 50,
+          ),
+        ),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(10),
-            child: _userName != null ? Image.asset(
-              "assets/images/human.png",
-              width: 150,
-              height: 150,
-            ) : const SizedBox(
-              width: 0,
-              height: 0,
-            ),
+            child: _userName != null
+                ? Image.asset(
+                    "assets/images/human.png",
+                    width: 150,
+                    height: 150,
+                  )
+                : const SizedBox(
+                    width: 0,
+                    height: 0,
+                  ),
           ),
         ),
         SliverToBoxAdapter(
@@ -96,55 +100,56 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
             padding: const EdgeInsets.all(10),
             child: _userName != null
                 ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Welcome $_userName 👋", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-              ],
-            )
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Welcome $_userName 👋",
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold))
+                    ],
+                  )
                 : const SizedBox(
                     width: 0,
                     height: 0,
-            ),
+                  ),
           ),
         ),
-
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: _busName != null
                 ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-    Text(" $_busName 🚌", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-    ],
-    ) : const SizedBox(
-              width: 0,
-              height: 0,
-            ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(" $_busName 🚌",
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold))
+                    ],
+                  )
+                : const SizedBox(
+                    width: 0,
+                    height: 0,
+                  ),
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: _busName != null
-                ?  Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ShadSwitch(
-                    checkedTrackColor: Colors.redAccent,
-                    value: busOnUp,
-                    label: busOnUp ? const Text("Up") : const Text("Down"),
-                    onChanged: (v) => {
-                      setState(() => busOnUp = !busOnUp),
-                      _loadPlaceNames()
-                    },
-                  )
-                  ]
-
-            ) : const SizedBox(
-              width: 0,
-              height: 0,
-            ),
+                ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    ShadSwitch(
+                      checkedTrackColor: Colors.redAccent,
+                      value: busOnUp,
+                      label: busOnUp ? const Text("Up") : const Text("Down"),
+                      onChanged: (v) => {
+                        setState(() => busOnUp = !busOnUp),
+                        _loadPlaceNames()
+                      },
+                    )
+                  ])
+                : const SizedBox(
+                    width: 0,
+                    height: 0,
+                  ),
           ),
         ),
         FutureBuilder<List<Map<String, dynamic>>>(
@@ -160,8 +165,12 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const SliverFillRemaining(
-                child: Center(child:Icon(LucideIcons.bus,color: Colors.redAccent,size: 35,)
-                ),
+                child: Center(
+                    child: Icon(
+                  LucideIcons.bus,
+                  color: Colors.redAccent,
+                  size: 35,
+                )),
               );
             } else {
               final routeNames = snapshot.data!;

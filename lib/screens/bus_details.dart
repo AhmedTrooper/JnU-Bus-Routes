@@ -45,7 +45,7 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
             style: const TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.white),
           ),
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.blueAccent,
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back_ios,

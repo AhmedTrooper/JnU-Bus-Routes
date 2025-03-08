@@ -5,9 +5,7 @@ import 'package:jnu_bus_routes/widgets/route_list.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomeTab extends StatefulWidget {
-  String? userName;
-
-  HomeTab({super.key, this.userName});
+  const HomeTab({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -137,7 +135,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
             child: _busName != null
                 ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     ShadSwitch(
-                      checkedTrackColor: Colors.redAccent,
+                      checkedTrackColor: const Color(0xFF2E4053),
                       value: busOnUp,
                       label: busOnUp ? const Text("Up") : const Text("Down"),
                       onChanged: (v) => {
@@ -168,7 +166,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                 child: Center(
                     child: Icon(
                   LucideIcons.bus,
-                  color: Colors.redAccent,
+                  color: Color(0xFF2E4053),
                   size: 35,
                 )),
               );

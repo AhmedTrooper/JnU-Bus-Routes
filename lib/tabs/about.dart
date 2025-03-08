@@ -47,7 +47,7 @@ class _AboutTabState extends State<AboutTab> {
                         children: [
                           Icon(
                             Icons.person,
-                            color: Colors.redAccent,
+                            color: Color(0xFF2E4053),
                             size: 30,
                           ),
                           SizedBox(width: 8),
@@ -76,14 +76,14 @@ class _AboutTabState extends State<AboutTab> {
                             icon: Icon(
                               LucideIcons.github,
                               size: 30,
-                              color: Colors.redAccent,
+                              color: Color(0xFF2E4053),
                             ),
                           ),
                           TextButton(
                             onPressed: () {},
                             style: TextButton.styleFrom(
                               padding: const EdgeInsets.all(8.0),
-                              foregroundColor: Colors.redAccent,
+                              foregroundColor: const Color(0xFF2E4053),
                             ),
                             child: const Text(
                               "AhmedTrooper",
@@ -123,7 +123,7 @@ class _AboutTabState extends State<AboutTab> {
                       children: [
                         Icon(
                           Icons.person,
-                          color: Colors.redAccent,
+                          color: Color(0xFF2E4053),
                           size: 30,
                         ),
                         SizedBox(width: 8),
@@ -150,14 +150,14 @@ class _AboutTabState extends State<AboutTab> {
                         const Icon(
                           LucideIcons.github,
                           size: 30,
-                          color: Colors.redAccent,
+                          color: Color(0xFF2E4053),
                         ),
                         const SizedBox(width: 8),
                         TextButton(
                           onPressed: () {},
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(8.0),
-                            foregroundColor: Colors.redAccent,
+                            foregroundColor: const Color(0xFF2E4053),
                           ),
                           child: const Text(
                             "Not Found",

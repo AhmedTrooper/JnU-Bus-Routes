@@ -93,7 +93,7 @@ class _PlaceTabState extends State<PlaceTab> {
           leading: ShadButton.ghost(
             child: const Icon(
               LucideIcons.filter,
-              color: Colors.redAccent,
+              color: Color(0xFF2E4053),
               size: 35,
             ),
             onPressed: () {
@@ -112,7 +112,7 @@ class _PlaceTabState extends State<PlaceTab> {
                       child: ElevatedButton(
                         onPressed: () => _filterPlaceName(alphabetList[index]),
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
+                            backgroundColor: const Color(0xFF2E4053),
                             elevation: 2,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -141,7 +141,7 @@ class _PlaceTabState extends State<PlaceTab> {
                   title: Text(
                     "No Place found!",
                     style: TextStyle(
-                        color: Colors.redAccent, fontWeight: FontWeight.bold),
+                        color: Color(0xFF2E4053), fontWeight: FontWeight.bold),
                   ),
                 ),
               ))

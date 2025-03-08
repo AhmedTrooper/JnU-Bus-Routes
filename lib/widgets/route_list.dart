@@ -47,12 +47,12 @@ class _RouteListState extends State<RouteList> {
                   leading: routeName.toString() == "Jagannath University"
                       ? const Icon(
                           Icons.school,
-                          color: Colors.redAccent,
+                          color: Color(0xFF2E4053),
                           size: 35,
                         )
                       : const Icon(
                           Icons.arrow_circle_down,
-                          color: Colors.redAccent,
+                          color: Color(0xFF2E4053),
                           size: 35,
                         ),
                 ),

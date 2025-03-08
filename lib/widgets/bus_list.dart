@@ -75,7 +75,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                             fontWeight: FontWeight.bold,
                             color:
                                 Theme.of(context).brightness != Brightness.dark
-                                    ? Colors.redAccent
+                                    ? const Color(0xFF2E4053)
                                     : Colors.white,
                           ),
                         ),
@@ -102,7 +102,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                                     )
                                   },
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent,
+                                  backgroundColor: const Color(0xFF2E4053),
                                   elevation: 2,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -125,7 +125,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                               onPressed: () =>
                                   context.push("/bus/${busName['bus_name']}/1"),
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent,
+                                  backgroundColor: const Color(0xFF2E4053),
                                   elevation: 2,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -148,7 +148,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                             onPressed: () =>
                                 context.push("/bus/${busName['bus_name']}/0"),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent,
+                              backgroundColor: const Color(0xFF2E4053),
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -172,7 +172,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                           ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent,
+                              backgroundColor: const Color(0xFF2E4053),
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -217,7 +217,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                                 children: [
                                   const Icon(
                                     Icons.location_on,
-                                    color: Colors.redAccent,
+                                    color: Color(0xFF2E4053),
                                     size: 35,
                                   ),
                                   Text(
@@ -226,7 +226,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).brightness !=
                                                 Brightness.dark
-                                            ? Colors.redAccent
+                                            ? const Color(0xFF2E4053)
                                             : Colors.white),
                                   ),
                                 ],

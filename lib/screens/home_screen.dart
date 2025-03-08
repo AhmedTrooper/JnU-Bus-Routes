@@ -24,7 +24,7 @@ class HomeScreen extends ConsumerWidget {
             body: CustomScrollView(
               slivers: [
                 const SliverAppBar(
-                    backgroundColor: Color(0xFF2E4053),
+                    backgroundColor: Colors.blueAccent,
                     floating: true,
                     title: HomeScreenTabBar()),
                 SliverFillRemaining(

@@ -42,8 +42,9 @@ class SettingTab extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: IconButton(
-                        onPressed: () {
-                          SharedPreferencesHelper.setThemeStatus(false);
+                        onPressed: () async {
+                          await SharedPreferencesHelper.setThemeStatus(
+                              !isDarkModeStatus);
                           ref.read(isDarkTheme.notifier).state =
                               !isDarkModeStatus;
                         },
@@ -56,7 +57,7 @@ class SettingTab extends ConsumerWidget {
                             : const Icon(
                                 LucideIcons.moon,
                                 size: 35,
-                                color: Color(0xFF2E4053),
+                                color: Colors.blueAccent,
                               ),
                       ),
                     ),
@@ -68,7 +69,7 @@ class SettingTab extends ConsumerWidget {
                         child: Column(
                           children: [
                             ShadInputFormField(
-                              cursorColor: const Color(0xFF2E4053),
+                              cursorColor: Colors.blueAccent,
                               controller: _userNameController,
                               autofocus: false,
                               id: 'username',
@@ -77,13 +78,13 @@ class SettingTab extends ConsumerWidget {
                                 children: [
                                   Icon(
                                     LucideIcons.user,
-                                    color: Color(0xFF2E4053),
+                                    color: Colors.blueAccent,
                                   ),
                                   Text(
                                     'Username',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: Color(0xFF2E4053),
+                                      color: Colors.blueAccent,
                                       fontSize: 20,
                                     ),
                                   ),
@@ -106,7 +107,7 @@ class SettingTab extends ConsumerWidget {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2E4053),
+                                backgroundColor: Colors.blueAccent,
                                 elevation: 2,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),

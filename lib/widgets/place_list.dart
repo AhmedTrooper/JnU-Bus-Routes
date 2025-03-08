@@ -43,7 +43,7 @@ class _PlaceListState extends State<PlaceList> {
                         children: [
                           const Icon(
                             LucideIcons.map,
-                            color: Color(0xFF2E4053),
+                            color: Colors.blueAccent,
                             size: 35,
                           ),
                           const SizedBox(width: 8),
@@ -64,7 +64,7 @@ class _PlaceListState extends State<PlaceList> {
                           ElevatedButton(
                             onPressed: () => context.push("/place/$placeName"),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2E4053),
+                              backgroundColor: Colors.blueAccent,
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),

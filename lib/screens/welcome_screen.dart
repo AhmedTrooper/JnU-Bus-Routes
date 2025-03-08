@@ -51,7 +51,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                 ),
                 ShadButton(
                   onPressed: _onAgreePressed,
-                  backgroundColor: const Color(0xFF2E4053),
+                  backgroundColor: Colors.blue,
                   icon: const Icon(
                     LucideIcons.handshake,
                   ),

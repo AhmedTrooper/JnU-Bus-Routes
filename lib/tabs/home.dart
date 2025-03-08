@@ -135,7 +135,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
             child: _busName != null
                 ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     ShadSwitch(
-                      checkedTrackColor: const Color(0xFF2E4053),
+                      checkedTrackColor: Colors.blue,
                       value: busOnUp,
                       label: busOnUp ? const Text("Up") : const Text("Down"),
                       onChanged: (v) => {
@@ -166,7 +166,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                 child: Center(
                     child: Icon(
                   LucideIcons.bus,
-                  color: Color(0xFF2E4053),
+                  color: Colors.blue,
                   size: 35,
                 )),
               );

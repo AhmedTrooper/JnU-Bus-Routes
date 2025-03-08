@@ -50,7 +50,7 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
           style:
               const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,

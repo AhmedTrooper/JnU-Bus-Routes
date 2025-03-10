@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:jnu_bus_routes/widgets/place_list.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class PlaceTab extends StatefulWidget {
+class PlaceTab extends ConsumerStatefulWidget {
   const PlaceTab({super.key});
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _PlaceTabState();
   }
 }
 
-class _PlaceTabState extends State<PlaceTab> {
+class _PlaceTabState extends ConsumerState<PlaceTab> {
   List<String> _placeNames = [];
   List<String> _filteredPlaceNames = [];
   bool _isLoading = true;
@@ -84,6 +86,8 @@ class _PlaceTabState extends State<PlaceTab> {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return CustomScrollView(
       slivers: [
         SliverAppBar(
@@ -91,9 +95,9 @@ class _PlaceTabState extends State<PlaceTab> {
           toolbarHeight: 100,
           titleSpacing: 5,
           leading: ShadButton.ghost(
-            child: const Icon(
+            child: Icon(
               LucideIcons.filter,
-              color: Colors.blueAccent,
+              color: Color(stColor),
               size: 35,
             ),
             onPressed: () {
@@ -112,7 +116,7 @@ class _PlaceTabState extends State<PlaceTab> {
                       child: ElevatedButton(
                         onPressed: () => _filterPlaceName(alphabetList[index]),
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: Color(stColor),
                             elevation: 2,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -132,19 +136,25 @@ class _PlaceTabState extends State<PlaceTab> {
         ),
         _filteredPlaceNames.isNotEmpty
             ? PlaceList(placeNames: _filteredPlaceNames)
-            : const SliverToBoxAdapter(
+            : SliverToBoxAdapter(
                 child: Padding(
-                padding: EdgeInsets.all(16),
-                child: ShadCard(
-                  description: Text(
-                      "Sorry! Your searched letter hasn't matched any place !"),
-                  title: Text(
-                    "No Place found!",
-                    style: TextStyle(
-                        color: Colors.blueAccent, fontWeight: FontWeight.bold),
+                  padding: const EdgeInsets.all(16),
+                  child: ShadCard(
+                    description: const Text(
+                        "Sorry! Your searched letter hasn't matched any place !"),
+                    title: Text(
+                      "No Place found!",
+                      style: TextStyle(
+                          color: Color(stColor), fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              ))
+              ),
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 50,
+          ),
+        )
       ],
     );
   }

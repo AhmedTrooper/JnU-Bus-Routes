@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:jnu_bus_routes/widgets/bus_list.dart';
 
 import '../database/database_helper.dart';
 
-class PlaceDetailsScreen extends StatefulWidget {
+class PlaceDetailsScreen extends ConsumerStatefulWidget {
   final String placeName;
   final int upOrDown = 1;
 
@@ -13,10 +15,11 @@ class PlaceDetailsScreen extends StatefulWidget {
   });
 
   @override
-  _PlaceDetailsScreenState createState() => _PlaceDetailsScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PlaceDetailsScreenState();
 }
 
-class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
+class _PlaceDetailsScreenState extends ConsumerState<PlaceDetailsScreen> {
   List<Map<String, dynamic>> _busNames = [];
   bool _isLoading = true;
 
@@ -43,6 +46,8 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -50,7 +55,7 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
           style:
               const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Color(stColor),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 
-class RouteList extends StatefulWidget {
+class RouteList extends ConsumerStatefulWidget {
   List<Map<String, dynamic>> routeNames = [];
 
   RouteList({super.key, required this.routeNames});
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _RouteListState();
   }
 }
 
-class _RouteListState extends State<RouteList> {
+class _RouteListState extends ConsumerState<RouteList> {
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -45,14 +49,14 @@ class _RouteListState extends State<RouteList> {
                     ),
                   ),
                   leading: routeName.toString() == "Jagannath University"
-                      ? const Icon(
+                      ? Icon(
                           Icons.school,
-                          color: Colors.blueAccent,
+                          color: Color(stColor),
                           size: 35,
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.arrow_circle_down,
-                          color: Colors.blueAccent,
+                          color: Color(stColor),
                           size: 35,
                         ),
                 ),

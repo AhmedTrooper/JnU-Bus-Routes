@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:jnu_bus_routes/widgets/route_list.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
-
+class HomeTab extends ConsumerStatefulWidget {
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _HomeTabState();
   }
 }
 
-class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
+class _HomeTabState extends ConsumerState<HomeTab>
+    with SingleTickerProviderStateMixin {
   bool _isLoading = true;
   String? _userName;
   String? _busName;
@@ -71,8 +72,15 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return CustomScrollView(
       slivers: [
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 20,
+          ),
+        ),
         const SliverToBoxAdapter(
           child: SizedBox(
             height: 50,
@@ -133,17 +141,20 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: _busName != null
-                ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    ShadSwitch(
-                      checkedTrackColor: Colors.blueAccent,
-                      value: busOnUp,
-                      label: busOnUp ? const Text("Up") : const Text("Down"),
-                      onChanged: (v) => {
-                        setState(() => busOnUp = !busOnUp),
-                        _loadPlaceNames()
-                      },
-                    )
-                  ])
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ShadSwitch(
+                        checkedTrackColor: Color(stColor),
+                        value: busOnUp,
+                        label: busOnUp ? const Text("Up") : const Text("Down"),
+                        onChanged: (v) => {
+                          setState(() => busOnUp = !busOnUp),
+                          _loadPlaceNames()
+                        },
+                      )
+                    ],
+                  )
                 : const SizedBox(
                     width: 0,
                     height: 0,
@@ -162,13 +173,14 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                 child: Center(child: Text('Error: ${snapshot.error}')),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const SliverFillRemaining(
+              return SliverFillRemaining(
                 child: Center(
-                    child: Icon(
-                  LucideIcons.bus,
-                  color: Colors.blueAccent,
-                  size: 35,
-                )),
+                  child: Icon(
+                    LucideIcons.bus,
+                    color: Color(stColor),
+                    size: 35,
+                  ),
+                ),
               );
             } else {
               final routeNames = snapshot.data!;
@@ -176,6 +188,11 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
             }
           },
         ),
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 50,
+          ),
+        )
       ],
     );
   }

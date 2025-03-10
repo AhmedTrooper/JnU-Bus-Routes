@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final Uri _urlDeveloperOne = Uri.parse('https://github.com/AhmedTrooper');
 
-class AboutTab extends StatefulWidget {
+class AboutTab extends ConsumerStatefulWidget {
   const AboutTab({super.key});
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _AboutTabState();
   }
 }
 
-class _AboutTabState extends State<AboutTab> {
+class _AboutTabState extends ConsumerState<AboutTab> {
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return CustomScrollView(
       slivers: [
         const SliverToBoxAdapter(
@@ -43,15 +47,15 @@ class _AboutTabState extends State<AboutTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           Icon(
                             Icons.person,
-                            color: Colors.blueAccent,
+                            color: Color(stColor),
                             size: 30,
                           ),
-                          SizedBox(width: 8),
-                          Text(
+                          const SizedBox(width: 8),
+                          const Text(
                             "Md. Ramjan Miah",
                             style: TextStyle(
                               fontSize: 20,
@@ -71,19 +75,19 @@ class _AboutTabState extends State<AboutTab> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          const IconButton(
+                          IconButton(
                             onPressed: _launchUrlOne,
                             icon: Icon(
                               LucideIcons.github,
                               size: 30,
-                              color: Colors.blueAccent,
+                              color: Color(stColor),
                             ),
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: _launchUrlOne,
                             style: TextButton.styleFrom(
                               padding: const EdgeInsets.all(8.0),
-                              foregroundColor: Colors.blueAccent,
+                              foregroundColor: Color(stColor),
                             ),
                             child: const Text(
                               "AhmedTrooper",
@@ -119,15 +123,15 @@ class _AboutTabState extends State<AboutTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Icon(
                           Icons.person,
-                          color: Colors.blueAccent,
+                          color: Color(stColor),
                           size: 30,
                         ),
-                        SizedBox(width: 8),
-                        Text(
+                        const SizedBox(width: 8),
+                        const Text(
                           "Old JnU Bus Developer",
                           style: TextStyle(
                             fontSize: 20,
@@ -147,17 +151,17 @@ class _AboutTabState extends State<AboutTab> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           LucideIcons.github,
                           size: 30,
-                          color: Colors.blueAccent,
+                          color: Color(stColor),
                         ),
                         const SizedBox(width: 8),
                         TextButton(
                           onPressed: () {},
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(8.0),
-                            foregroundColor: Colors.blueAccent,
+                            foregroundColor: Color(stColor),
                           ),
                           child: const Text(
                             "Not Found",

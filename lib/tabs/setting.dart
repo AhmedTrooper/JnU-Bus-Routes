@@ -1,20 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jnu_bus_routes/constants/color_list.dart';
 import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class SettingTab extends ConsumerWidget {
-  SettingTab({super.key});
-
-  final formKey = GlobalKey<ShadFormState>();
-  final _userNameController = TextEditingController();
+class SettingTab extends ConsumerStatefulWidget {
+  const SettingTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _SettingTabState();
+  }
+}
+
+class _SettingTabState extends ConsumerState<SettingTab> {
+  final formKey = GlobalKey<ShadFormState>();
+  final _userNameController = TextEditingController();
+  Color _selectedColor = Colors.blueAccent;
+
+  @override
+  Widget build(BuildContext context) {
     final isDarkModeStatus = ref.watch(isDarkTheme);
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
+    _selectedColor = Color(stColor);
     return CustomScrollView(
       slivers: [
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 20),
+        ),
+        SliverToBoxAdapter(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: DropdownButton<Color>(
+                value: _selectedColor,
+                items: backgroundColorList.map(
+                  (color) {
+                    return DropdownMenuItem<Color>(
+                      value: color,
+                      child: Container(
+                        width: 200,
+                        height: 40,
+                        color: color,
+                      ),
+                    );
+                  },
+                ).toList(),
+                onChanged: (Color? newValue) {
+                  setState(
+                    () async {
+                      _selectedColor = newValue!;
+                      await SharedPreferencesHelper.setBgColor(newValue);
+                      ref.read(backgroundColor.notifier).state = newValue;
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 20),
+        ),
         const SliverToBoxAdapter(
           child: SizedBox(
             height: 50,
@@ -28,17 +77,31 @@ class SettingTab extends ConsumerWidget {
               shadowColor: Colors.black.withOpacity(1),
               borderOnForeground: true,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  side: BorderSide(
-                      color: Theme.of(context).brightness != Brightness.dark
-                          ? Colors.white
-                          : Colors.grey[800]!,
-                      width: 1)),
+                borderRadius: BorderRadius.circular(15),
+                side: BorderSide(
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.white
+                        : Colors.grey[800]!,
+                    width: 1),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    IconButton(
+                      onPressed: () async {
+                        ref.read(backgroundColor.notifier).state =
+                            Colors.blueAccent;
+                        await SharedPreferencesHelper.setBgColor(
+                            Colors.blueAccent);
+                      },
+                      icon: Icon(
+                        LucideIcons.redo,
+                        color: isDarkModeStatus ? Colors.white : Color(stColor),
+                        size: 35,
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: IconButton(
@@ -54,10 +117,10 @@ class SettingTab extends ConsumerWidget {
                                 size: 35,
                                 color: Colors.white,
                               )
-                            : const Icon(
+                            : Icon(
                                 LucideIcons.moon,
                                 size: 35,
-                                color: Colors.blueAccent,
+                                color: Color(stColor),
                               ),
                       ),
                     ),
@@ -69,22 +132,22 @@ class SettingTab extends ConsumerWidget {
                         child: Column(
                           children: [
                             ShadInputFormField(
-                              cursorColor: Colors.blueAccent,
+                              cursorColor: Color(stColor),
                               controller: _userNameController,
                               autofocus: false,
                               id: 'username',
-                              label: const Row(
+                              label: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(
                                     LucideIcons.user,
-                                    color: Colors.blueAccent,
+                                    color: Color(stColor),
                                   ),
                                   Text(
                                     'Username',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.blueAccent,
+                                      color: Color(stColor),
                                       fontSize: 20,
                                     ),
                                   ),
@@ -107,7 +170,7 @@ class SettingTab extends ConsumerWidget {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueAccent,
+                                backgroundColor: Color(stColor),
                                 elevation: 2,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class HomeScreenTabBar extends StatelessWidget {
+class HomeScreenTabBar extends ConsumerWidget {
   const HomeScreenTabBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return const TabBar(
       tabs: [
         Tab(

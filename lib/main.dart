@@ -11,6 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   bool? hasAgreed = await SharedPreferencesHelper.getAgreementStatus();
   bool? isDarkMode = await SharedPreferencesHelper.getThemeStatus();
+  Color bgColor = await SharedPreferencesHelper.getBgColor();
   if (isDarkMode == null) {
     isDarkMode = false;
     await SharedPreferencesHelper.setThemeStatus(false);
@@ -18,7 +19,10 @@ void main() async {
   String initialLocation = hasAgreed == true ? '/' : '/welcome';
   runApp(
     ProviderScope(
-      overrides: [isDarkTheme.overrideWith((ref) => isDarkMode!)],
+      overrides: [
+        isDarkTheme.overrideWith((ref) => isDarkMode!),
+        backgroundColor.overrideWith((ref) => bgColor),
+      ],
       child: MyApp(
         initialLocation: initialLocation,
       ),

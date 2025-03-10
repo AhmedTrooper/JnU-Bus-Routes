@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class BusList extends StatefulWidget {
+class BusList extends ConsumerStatefulWidget {
   List<Map<String, dynamic>> busNames = [];
 
   BusList({super.key, required this.busNames});
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _BusListState();
   }
 }
 
-class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
+class _BusListState extends ConsumerState<BusList>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -40,6 +43,8 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         childCount: widget.busNames.length,
@@ -75,7 +80,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                             fontWeight: FontWeight.bold,
                             color:
                                 Theme.of(context).brightness != Brightness.dark
-                                    ? Colors.blueAccent
+                                    ? Color(stColor)
                                     : Colors.white,
                           ),
                         ),
@@ -102,7 +107,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                                     )
                                   },
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blueAccent,
+                                  backgroundColor: Color(stColor),
                                   elevation: 2,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -122,22 +127,23 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
-                              onPressed: () =>
-                                  context.push("/bus/${busName['bus_name']}/1"),
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blueAccent,
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 12),
-                                  fixedSize: const Size(200, 50)),
-                              child: const Icon(
-                                Icons.arrow_circle_down,
-                                color: Colors.white,
-                                size: 35,
-                              )),
+                            onPressed: () =>
+                                context.push("/bus/${busName['bus_name']}/1"),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(stColor),
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                                fixedSize: const Size(200, 50)),
+                            child: const Icon(
+                              Icons.arrow_circle_down,
+                              color: Colors.white,
+                              size: 35,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 10),
@@ -148,7 +154,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                             onPressed: () =>
                                 context.push("/bus/${busName['bus_name']}/0"),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
+                              backgroundColor: Color(stColor),
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -172,7 +178,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                           ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
+                              backgroundColor: Color(stColor),
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -215,9 +221,9 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                               ),
                               child: Column(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.location_on,
-                                    color: Colors.blueAccent,
+                                    color: Color(stColor),
                                     size: 35,
                                   ),
                                   Text(
@@ -226,7 +232,7 @@ class _BusListState extends State<BusList> with SingleTickerProviderStateMixin {
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).brightness !=
                                                 Brightness.dark
-                                            ? Colors.blueAccent
+                                            ? Color(stColor)
                                             : Colors.white),
                                   ),
                                 ],

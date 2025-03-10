@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
 import 'package:jnu_bus_routes/widgets/bus_list.dart';
 
-class BusTab extends StatefulWidget {
+class BusTab extends ConsumerStatefulWidget {
   const BusTab({super.key});
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _BusTabState();
   }
 }
 
-class _BusTabState extends State<BusTab> {
+class _BusTabState extends ConsumerState<BusTab> {
   List<Map<String, dynamic>> _busNames = [];
   bool _isLoading = true;
 
@@ -45,7 +46,12 @@ class _BusTabState extends State<BusTab> {
             height: 50,
           ),
         ),
-        BusList(busNames: _busNames)
+        BusList(busNames: _busNames),
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 50,
+          ),
+        )
       ],
     );
   }

@@ -15,6 +15,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkModeStatus = ref.watch(isDarkTheme);
+    final bgColor = ref.watch(backgroundColor);
     return ShadApp.material(
         debugShowCheckedModeBanner: false,
         themeMode: isDarkModeStatus ? ThemeMode.dark : ThemeMode.light,
@@ -23,13 +24,14 @@ class HomeScreen extends ConsumerWidget {
           child: Scaffold(
             body: CustomScrollView(
               slivers: [
-                const SliverAppBar(
-                    backgroundColor: Colors.blueAccent,
-                    floating: true,
-                    title: HomeScreenTabBar()),
+                SliverAppBar(
+                  backgroundColor: bgColor,
+                  floating: true,
+                  title: const HomeScreenTabBar(),
+                ),
                 SliverFillRemaining(
                   child: TabBarView(children: [
-                    const HomeTab(),
+                    HomeTab(),
                     const PlaceTab(),
                     const BusTab(),
                     SettingTab(),

@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class PlaceList extends StatefulWidget {
+class PlaceList extends ConsumerStatefulWidget {
   List<String> placeNames = [];
 
   PlaceList({super.key, required this.placeNames});
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _PlaceListState();
   }
 }
 
-class _PlaceListState extends State<PlaceList> {
+class _PlaceListState extends ConsumerState<PlaceList> {
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -41,9 +45,9 @@ class _PlaceListState extends State<PlaceList> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
+                          Icon(
                             LucideIcons.map,
-                            color: Colors.blueAccent,
+                            color: Color(stColor),
                             size: 35,
                           ),
                           const SizedBox(width: 8),
@@ -64,7 +68,7 @@ class _PlaceListState extends State<PlaceList> {
                           ElevatedButton(
                             onPressed: () => context.push("/place/$placeName"),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
+                              backgroundColor: Color(stColor),
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),

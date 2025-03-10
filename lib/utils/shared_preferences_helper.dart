@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesHelper {
@@ -6,6 +7,7 @@ class SharedPreferencesHelper {
   static const String _busName = 'busName';
   static const String _stoppageName = 'stoppageName';
   static const String _isDarkMode = 'isDarkMode';
+  static const String _bgColor = 'bgColor';
 
   static Future<bool?> getAgreementStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -55,5 +57,15 @@ class SharedPreferencesHelper {
   static Future<void> setThemeStatus(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_isDarkMode, value);
+  }
+
+  static Future<Color> getBgColor() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Color(prefs.getInt(_bgColor) ?? Colors.blueAccent.value);
+  }
+
+  static Future<void> setBgColor(Color color) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_bgColor, color.value);
   }
 }

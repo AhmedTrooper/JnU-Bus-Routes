@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../utils/shared_preferences_helper.dart';
 
-class WelcomeScreen extends StatefulWidget {
+class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
 
   @override
-  WelcomeScreenState createState() => WelcomeScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => WelcomeScreenState();
 }
 
-class WelcomeScreenState extends State<WelcomeScreen> {
+class WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
@@ -26,6 +28,8 @@ class WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -51,9 +55,10 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                 ),
                 ShadButton(
                   onPressed: _onAgreePressed,
-                  backgroundColor: Colors.blue,
-                  icon: const Icon(
+                  backgroundColor: Color(stColor),
+                  icon: Icon(
                     LucideIcons.handshake,
+                    color: Color(stColor),
                   ),
                   width: 200,
                   height: 70,

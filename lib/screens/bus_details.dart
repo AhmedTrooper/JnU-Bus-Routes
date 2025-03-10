@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:jnu_bus_routes/widgets/route_list.dart';
 
 import '../database/database_helper.dart';
 
-class BusDetailsScreen extends StatefulWidget {
+class BusDetailsScreen extends ConsumerStatefulWidget {
   final String busName;
   final int upOrDown;
 
@@ -14,10 +16,12 @@ class BusDetailsScreen extends StatefulWidget {
   });
 
   @override
-  _BusDetailsScreenState createState() => _BusDetailsScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _BusDetailsScreenState();
+  }
 }
 
-class _BusDetailsScreenState extends State<BusDetailsScreen> {
+class _BusDetailsScreenState extends ConsumerState<BusDetailsScreen> {
   List<Map<String, dynamic>> _placeNames = [];
 
   @override
@@ -30,47 +34,56 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
     try {
       List<Map<String, dynamic>> placeNames = await DatabaseHelper()
           .getBusInfo(busName: widget.busName, busType: widget.upOrDown);
+      setState(
+        () {
+          _placeNames = placeNames;
+        },
+      );
+    } catch (e) {
       setState(() {
-        _placeNames = placeNames;
+        _placeNames = [];
       });
-    } catch (e) {}
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = ref.watch(backgroundColor);
+    int stColor = bgColor.value;
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '${widget.busName} ${widget.upOrDown == 1 ? '[Up]' : '[Down]'}',
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          backgroundColor: Colors.blueAccent,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-              size: 25,
-            ),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            splashRadius: 20,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          leadingWidth: 100,
+      appBar: AppBar(
+        title: Text(
+          '${widget.busName} ${widget.upOrDown == 1 ? '[Up]' : '[Down]'}',
+          style:
+              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        body: CustomScrollView(
-          slivers: [
-            const SliverToBoxAdapter(
-              child: SizedBox(
-                height: 50,
-              ),
+        backgroundColor: Color(stColor),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+            size: 25,
+          ),
+          color: Colors.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          splashRadius: 20,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        leadingWidth: 100,
+      ),
+      body: CustomScrollView(
+        slivers: [
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 50,
             ),
-            RouteList(routeNames: _placeNames)
-          ],
-        ));
+          ),
+          RouteList(routeNames: _placeNames)
+        ],
+      ),
+    );
   }
 }

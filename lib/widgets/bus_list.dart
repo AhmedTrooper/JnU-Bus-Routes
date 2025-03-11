@@ -96,6 +96,37 @@ class _BusListState extends ConsumerState<BusList>
                                     ShadToaster.of(context).show(
                                       ShadToast(
                                         title: const Text('Selected'),
+                                        border: Border(
+                                          bottom: BorderSide(
+                                              width: 2,
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              style: BorderStyle.solid),
+                                          top: BorderSide(
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              style: BorderStyle.solid),
+                                          right: BorderSide(
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              style: BorderStyle.solid),
+                                          left: BorderSide(
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              style: BorderStyle.solid),
+                                        ),
                                         description: Text(
                                             '${busName['bus_name']} has been selected as your bus'),
                                         action: ShadButton.outline(
@@ -201,42 +232,43 @@ class _BusListState extends ConsumerState<BusList>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).brightness !=
-                                        Brightness.dark
-                                    ? Colors.white
-                                    : Theme.of(context).primaryColor,
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: BorderSide(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).brightness !=
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Theme.of(context).primaryColor,
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                    color: Theme.of(context).brightness !=
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.grey[800]!,
+                                  )),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Color(stColor),
+                                  size: 35,
+                                ),
+                                Text(
+                                  "${busName['last_stoppage']}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
                                       color: Theme.of(context).brightness !=
                                               Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey[800]!,
-                                    )),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 12),
-                              ),
-                              child: Column(
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: Color(stColor),
-                                    size: 35,
-                                  ),
-                                  Text(
-                                    "${busName['last_stoppage']}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).brightness !=
-                                                Brightness.dark
-                                            ? Color(stColor)
-                                            : Colors.white),
-                                  ),
-                                ],
-                              )),
+                                          ? Color(stColor)
+                                          : Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ],

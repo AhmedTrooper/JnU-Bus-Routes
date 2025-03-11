@@ -29,13 +29,13 @@ class HomeScreen extends ConsumerWidget {
                   floating: true,
                   title: const HomeScreenTabBar(),
                 ),
-                SliverFillRemaining(
+                const SliverFillRemaining(
                   child: TabBarView(children: [
                     HomeTab(),
-                    const PlaceTab(),
-                    const BusTab(),
+                    PlaceTab(),
+                    BusTab(),
                     SettingTab(),
-                    const AboutTab()
+                    AboutTab()
                   ]),
                 ),
               ],

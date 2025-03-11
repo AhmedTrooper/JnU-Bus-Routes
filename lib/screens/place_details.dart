@@ -73,7 +73,19 @@ class _PlaceDetailsScreenState extends ConsumerState<PlaceDetailsScreen> {
         leadingWidth: 100,
       ),
       body: CustomScrollView(
-        slivers: [BusList(busNames: _busNames)],
+        slivers: [
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 50,
+            ),
+          ),
+          BusList(busNames: _busNames),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 50,
+            ),
+          ),
+        ],
       ),
     );
   }

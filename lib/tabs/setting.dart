@@ -28,46 +28,7 @@ class _SettingTabState extends ConsumerState<SettingTab> {
     return CustomScrollView(
       slivers: [
         const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
-        ),
-        SliverToBoxAdapter(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: DropdownButton<Color>(
-                value: _selectedColor,
-                items: backgroundColorList.map(
-                  (color) {
-                    return DropdownMenuItem<Color>(
-                      value: color,
-                      child: Container(
-                        width: 200,
-                        height: 40,
-                        color: color,
-                      ),
-                    );
-                  },
-                ).toList(),
-                onChanged: (Color? newValue) {
-                  setState(
-                    () async {
-                      _selectedColor = newValue!;
-                      await SharedPreferencesHelper.setBgColor(newValue);
-                      ref.read(backgroundColor.notifier).state = newValue;
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(
-            height: 50,
-          ),
+          child: SizedBox(height: 100),
         ),
         SliverToBoxAdapter(
           child: Padding(
@@ -89,17 +50,62 @@ class _SettingTabState extends ConsumerState<SettingTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: DropdownButton<Color>(
+                          icon: const Icon(LucideIcons.arrowDown),
+                          borderRadius: BorderRadius.circular(10),
+                          enableFeedback: true,
+                          underline: const SizedBox(
+                            height: 0,
+                          ),
+                          isExpanded: false,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(5),
+                          value: _selectedColor,
+                          autofocus: false,
+                          dropdownColor: Colors.transparent,
+                          focusColor: Colors.greenAccent,
+                          elevation: 0,
+                          iconEnabledColor: Color(stColor),
+                          items: backgroundColorList.map(
+                            (color) {
+                              return DropdownMenuItem<Color>(
+                                value: color,
+                                child: Container(
+                                  width: 200,
+                                  height: 40,
+                                  color: color,
+                                ),
+                              );
+                            },
+                          ).toList(),
+                          onChanged: (Color? newValue) {
+                            setState(
+                              () async {
+                                _selectedColor = newValue!;
+                                await SharedPreferencesHelper.setBgColor(
+                                    newValue);
+                                ref.read(backgroundColor.notifier).state =
+                                    newValue;
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                     IconButton(
                       onPressed: () async {
                         ref.read(backgroundColor.notifier).state =
-                            Colors.blueAccent;
+                            const Color(0xfff50057);
                         await SharedPreferencesHelper.setBgColor(
-                            Colors.blueAccent);
+                            const Color(0xfff50057));
                       },
                       icon: Icon(
-                        LucideIcons.redo,
-                        color: isDarkModeStatus ? Colors.white : Color(stColor),
-                        size: 35,
+                        LucideIcons.undo2,
+                        color: Color(stColor),
+                        size: 30,
                       ),
                     ),
                     Padding(
@@ -112,14 +118,14 @@ class _SettingTabState extends ConsumerState<SettingTab> {
                               !isDarkModeStatus;
                         },
                         icon: isDarkModeStatus
-                            ? const Icon(
+                            ? Icon(
                                 LucideIcons.sun,
-                                size: 35,
-                                color: Colors.white,
+                                size: 30,
+                                color: Color(stColor),
                               )
                             : Icon(
                                 LucideIcons.moon,
-                                size: 35,
+                                size: 30,
                                 color: Color(stColor),
                               ),
                       ),
@@ -144,7 +150,7 @@ class _SettingTabState extends ConsumerState<SettingTab> {
                                     color: Color(stColor),
                                   ),
                                   Text(
-                                    'Username',
+                                    'Profile Name',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Color(stColor),
@@ -153,9 +159,10 @@ class _SettingTabState extends ConsumerState<SettingTab> {
                                   ),
                                 ],
                               ),
-                              placeholder: const Text('Enter your username'),
+                              placeholder:
+                                  const Text('Enter your profile name'),
                               description: const Text(
-                                "Set up you homepage profile",
+                                "Set up your homepage profile name!",
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -177,7 +184,7 @@ class _SettingTabState extends ConsumerState<SettingTab> {
                                 ),
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 12),
-                                fixedSize: const Size(120, 60),
+                                fixedSize: const Size(110, 55),
                               ),
                               child: const Text(
                                 "Submit",
@@ -196,7 +203,10 @@ class _SettingTabState extends ConsumerState<SettingTab> {
               ),
             ),
           ),
-        )
+        ),
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 100),
+        ),
       ],
     );
   }

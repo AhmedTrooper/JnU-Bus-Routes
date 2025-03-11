@@ -7,6 +7,8 @@ import 'package:jnu_bus_routes/widgets/route_list.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
+  const HomeTab({super.key});
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
     return _HomeTabState();
@@ -105,13 +107,13 @@ class _HomeTabState extends ConsumerState<HomeTab>
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: _userName != null
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Welcome $_userName 👋",
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold))
-                    ],
+                ? FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "🎗️$_userName🎗️",
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
                   )
                 : const SizedBox(
                     width: 0,
@@ -147,7 +149,17 @@ class _HomeTabState extends ConsumerState<HomeTab>
                       ShadSwitch(
                         checkedTrackColor: Color(stColor),
                         value: busOnUp,
-                        label: busOnUp ? const Text("Up") : const Text("Down"),
+                        label: busOnUp
+                            ? Icon(
+                                LucideIcons.university,
+                                color: Color(stColor),
+                                size: 30,
+                              )
+                            : Icon(
+                                LucideIcons.house,
+                                color: Color(stColor),
+                                size: 30,
+                              ),
                         onChanged: (v) => {
                           setState(() => busOnUp = !busOnUp),
                           _loadPlaceNames()

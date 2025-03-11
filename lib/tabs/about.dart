@@ -5,6 +5,10 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final Uri _urlDeveloperOne = Uri.parse('https://github.com/AhmedTrooper');
+final Uri _urlDeveloperTwo =
+    Uri.parse('https://www.facebook.com/mehrabhosen.mahi');
+final Uri _urlDeveloperThree =
+    Uri.parse("https://www.facebook.com/asfi.sultan");
 
 class AboutTab extends ConsumerStatefulWidget {
   const AboutTab({super.key});
@@ -132,7 +136,7 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                         ),
                         const SizedBox(width: 8),
                         const Text(
-                          "Old JnU Bus Developer",
+                          "Mehrab Hosen Mahi",
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -142,7 +146,7 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      "Bus data collector, contactless....",
+                      "Bus data collector......",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
@@ -151,20 +155,23 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        Icon(
-                          LucideIcons.github,
-                          size: 30,
-                          color: Color(stColor),
+                        IconButton(
+                          onPressed: _launchUrlTwo,
+                          icon: Icon(
+                            LucideIcons.facebook,
+                            size: 30,
+                            color: Color(stColor),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: _launchUrlTwo,
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(8.0),
                             foregroundColor: Color(stColor),
                           ),
                           child: const Text(
-                            "Not Found",
+                            "Mehrab Hosen Mahi",
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -178,7 +185,90 @@ class _AboutTabState extends ConsumerState<AboutTab> {
               ),
             ),
           ),
-        )
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+                side: BorderSide(
+                  color: Theme.of(context).brightness != Brightness.dark
+                      ? Colors.white
+                      : Colors.grey[800]!,
+                  width: 1,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.person,
+                          color: Color(stColor),
+                          size: 30,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          "MT Asfi",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      "App collaborator, App's console/version manager......",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: _launchUrlThree,
+                          icon: Icon(
+                            LucideIcons.facebook,
+                            size: 30,
+                            color: Color(stColor),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        TextButton(
+                          onPressed: _launchUrlThree,
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.all(8.0),
+                            foregroundColor: Color(stColor),
+                          ),
+                          child: const Text(
+                            "MT Asfi",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 80,
+          ),
+        ),
       ],
     );
   }
@@ -187,5 +277,17 @@ class _AboutTabState extends ConsumerState<AboutTab> {
 Future<void> _launchUrlOne() async {
   if (!await launchUrl(_urlDeveloperOne)) {
     throw Exception('Could not launch $_urlDeveloperOne');
+  }
+}
+
+Future<void> _launchUrlTwo() async {
+  if (!await launchUrl(_urlDeveloperTwo)) {
+    throw Exception('Could not launch $_urlDeveloperTwo');
+  }
+}
+
+Future<void> _launchUrlThree() async {
+  if (!await launchUrl(_urlDeveloperThree)) {
+    throw Exception('Could not launch $_urlDeveloperThree');
   }
 }

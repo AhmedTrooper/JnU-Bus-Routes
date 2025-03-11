@@ -13,8 +13,8 @@ void main() async {
   bool? isDarkMode = await SharedPreferencesHelper.getThemeStatus();
   Color bgColor = await SharedPreferencesHelper.getBgColor();
   if (isDarkMode == null) {
-    isDarkMode = false;
-    await SharedPreferencesHelper.setThemeStatus(false);
+    isDarkMode = true;
+    await SharedPreferencesHelper.setThemeStatus(true);
   }
   String initialLocation = hasAgreed == true ? '/' : '/welcome';
   runApp(
@@ -29,8 +29,18 @@ void main() async {
     ),
   );
 
-  // //For development time...
-  // runApp(const MyApp(initialLocation: "/"));
+  // // //For development time...
+  // runApp(
+  //   ProviderScope(
+  //     overrides: [
+  //       isDarkTheme.overrideWith((ref) => isDarkMode!),
+  //       backgroundColor.overrideWith((ref) => bgColor),
+  //     ],
+  //     child: const MyApp(
+  //       initialLocation: "/",
+  //     ),
+  //   ),
+  // );
 }
 
 class MyApp extends ConsumerWidget {

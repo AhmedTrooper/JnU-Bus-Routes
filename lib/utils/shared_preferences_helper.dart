@@ -61,7 +61,7 @@ class SharedPreferencesHelper {
 
   static Future<Color> getBgColor() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return Color(prefs.getInt(_bgColor) ?? Colors.blueAccent.value);
+    return Color(prefs.getInt(_bgColor) ?? const Color(0xfff50057).value);
   }
 
   static Future<void> setBgColor(Color color) async {

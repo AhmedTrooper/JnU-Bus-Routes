@@ -81,7 +81,12 @@ class _BusDetailsScreenState extends ConsumerState<BusDetailsScreen> {
               height: 50,
             ),
           ),
-          RouteList(routeNames: _placeNames)
+          RouteList(routeNames: _placeNames),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 50,
+            ),
+          ),
         ],
       ),
     );

@@ -56,9 +56,9 @@ class WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                 ShadButton(
                   onPressed: _onAgreePressed,
                   backgroundColor: Color(stColor),
-                  icon: Icon(
+                  icon: const Icon(
                     LucideIcons.handshake,
-                    color: Color(stColor),
+                    color: Colors.white,
                   ),
                   width: 200,
                   height: 70,

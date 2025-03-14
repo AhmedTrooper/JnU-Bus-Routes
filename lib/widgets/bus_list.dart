@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jnu_bus_routes/database/database_helper.dart';
+import 'package:jnu_bus_routes/providers/bus_provider.dart';
+import 'package:jnu_bus_routes/providers/route_provider.dart';
 import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -45,6 +48,7 @@ class _BusListState extends ConsumerState<BusList>
   Widget build(BuildContext context) {
     final bgColor = ref.watch(backgroundColor);
     int stColor = bgColor.value;
+    // final busNameFromProvider = ref.watch(busNameProvider);
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         childCount: widget.busNames.length,
@@ -53,152 +57,163 @@ class _BusListState extends ConsumerState<BusList>
           return FadeTransition(
             opacity: _animation,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              padding: const EdgeInsets.all(10),
               child: Card(
-                elevation: 10,
+                color: Color(stColor),
+                elevation: 20,
                 shadowColor: Colors.black.withOpacity(1),
                 borderOnForeground: true,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    side: BorderSide(
-                        color: Theme.of(context).brightness != Brightness.dark
-                            ? Colors.white
-                            : Colors.grey[800]!,
-                        width: 1)),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              const Icon(
+                                Icons.location_on,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                              Text(
+                                "${busName['last_stoppage']}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                    color: Theme.of(context).brightness !=
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.white),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              LucideIcons.bookmarkPlus,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                            onPressed: () async => {
+                              SharedPreferencesHelper.setBusName(
+                                  busName['bus_name']),
+                              ref.read(busNameProvider.notifier).state =
+                                  busName['bus_name'],
+                              ref.read(routeListProvider.notifier).state =
+                                  await DatabaseHelper().getBusInfo(
+                                      busName: busName['bus_name'], busType: 1),
+                              if (context.mounted)
+                                {
+                                  ShadToaster.of(context).show(
+                                    ShadToast(
+                                      title: const Text('Selected'),
+                                      border: Border(
+                                        bottom: BorderSide(
+                                            width: 2,
+                                            color:
+                                                Theme.of(context).brightness !=
+                                                        Brightness.dark
+                                                    ? Colors.transparent
+                                                    : Colors.grey[800]!,
+                                            style: BorderStyle.solid),
+                                        top: BorderSide(
+                                            color:
+                                                Theme.of(context).brightness !=
+                                                        Brightness.dark
+                                                    ? Colors.transparent
+                                                    : Colors.grey[800]!,
+                                            style: BorderStyle.solid),
+                                        right: BorderSide(
+                                            color:
+                                                Theme.of(context).brightness !=
+                                                        Brightness.dark
+                                                    ? Colors.transparent
+                                                    : Colors.grey[800]!,
+                                            style: BorderStyle.solid),
+                                        left: BorderSide(
+                                            color:
+                                                Theme.of(context).brightness !=
+                                                        Brightness.dark
+                                                    ? Colors.transparent
+                                                    : Colors.grey[800]!,
+                                            style: BorderStyle.solid),
+                                      ),
+                                      description: Text(
+                                          '${busName['bus_name']} has been selected as your bus'),
+                                      action: ShadButton.outline(
+                                        child: const Text('Close'),
+                                        onPressed: () =>
+                                            ShadToaster.of(context).hide(),
+                                      ),
+                                    ),
+                                  )
+                                }
+                            },
+                            color: Color(stColor),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(stColor),
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              fixedSize: const Size(50, 50),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      //Bus name section....
+
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          busName['bus_name'],
+                          "🚎 ${busName['bus_name']}",
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
                             color:
                                 Theme.of(context).brightness != Brightness.dark
-                                    ? Color(stColor)
+                                    ? Colors.white
                                     : Colors.white,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                              onPressed: () => {
-                                    SharedPreferencesHelper.setBusName(
-                                        busName['bus_name']),
-                                    ShadToaster.of(context).show(
-                                      ShadToast(
-                                        title: const Text('Selected'),
-                                        border: Border(
-                                          bottom: BorderSide(
-                                              width: 2,
-                                              color: Theme.of(context)
-                                                          .brightness !=
-                                                      Brightness.dark
-                                                  ? Colors.transparent
-                                                  : Colors.grey[800]!,
-                                              style: BorderStyle.solid),
-                                          top: BorderSide(
-                                              color: Theme.of(context)
-                                                          .brightness !=
-                                                      Brightness.dark
-                                                  ? Colors.transparent
-                                                  : Colors.grey[800]!,
-                                              style: BorderStyle.solid),
-                                          right: BorderSide(
-                                              color: Theme.of(context)
-                                                          .brightness !=
-                                                      Brightness.dark
-                                                  ? Colors.transparent
-                                                  : Colors.grey[800]!,
-                                              style: BorderStyle.solid),
-                                          left: BorderSide(
-                                              color: Theme.of(context)
-                                                          .brightness !=
-                                                      Brightness.dark
-                                                  ? Colors.transparent
-                                                  : Colors.grey[800]!,
-                                              style: BorderStyle.solid),
-                                        ),
-                                        description: Text(
-                                            '${busName['bus_name']} has been selected as your bus'),
-                                        action: ShadButton.outline(
-                                          child: const Text('Close'),
-                                          onPressed: () =>
-                                              ShadToaster.of(context).hide(),
-                                        ),
-                                      ),
-                                    )
-                                  },
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(stColor),
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 12),
-                                  fixedSize: const Size(200, 50)),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 35,
-                              )),
-                        ],
                       ),
                       const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            onPressed: () =>
-                                context.push("/bus/${busName['bus_name']}/1"),
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(stColor),
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 12),
-                                fixedSize: const Size(200, 50)),
-                            child: const Icon(
-                              Icons.arrow_circle_down,
-                              color: Colors.white,
-                              size: 35,
-                            ),
+                          const SizedBox(
+                            height: 20,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () =>
-                                context.push("/bus/${busName['bus_name']}/0"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(stColor),
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              IconButton(
+                                onPressed: () => context
+                                    .push("/bus/${busName['bus_name']}/1"),
+                                icon: const Icon(
+                                  Icons.arrow_upward_outlined,
+                                  color: Colors.white,
+                                  size: 40,
+                                ),
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
-                              fixedSize: const Size(200, 50),
-                            ),
-                            child: const Icon(
-                              Icons.arrow_circle_up,
-                              color: Colors.white,
-                              size: 35,
-                            ),
+                              IconButton(
+                                onPressed: () => context
+                                    .push("/bus/${busName['bus_name']}/0"),
+                                icon: const Icon(
+                                  Icons.arrow_downward_outlined,
+                                  color: Colors.white,
+                                  size: 40,
+                                ),
+                              )
+                            ],
                           ),
                         ],
                       ),
@@ -206,71 +221,18 @@ class _BusListState extends ConsumerState<BusList>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(stColor),
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
-                              fixedSize: const Size(200, 50),
-                            ),
-                            child: Text(
-                              "${busName['up_time']}-${busName['down_time']}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
+                          Text(
+                            "${busName['up_time']}-${busName['down_time']}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 20),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).brightness !=
-                                      Brightness.dark
-                                  ? Colors.white
-                                  : Theme.of(context).primaryColor,
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: BorderSide(
-                                    color: Theme.of(context).brightness !=
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.grey[800]!,
-                                  )),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
-                            ),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Color(stColor),
-                                  size: 35,
-                                ),
-                                Text(
-                                  "${busName['last_stoppage']}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).brightness !=
-                                              Brightness.dark
-                                          ? Color(stColor)
-                                          : Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      const SizedBox(
+                        height: 10,
+                      )
                     ],
                   ),
                 ),

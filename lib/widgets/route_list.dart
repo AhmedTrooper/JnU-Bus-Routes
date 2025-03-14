@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jnu_bus_routes/providers/place_provider.dart';
 import 'package:jnu_bus_routes/providers/theme_provider.dart';
+import 'package:jnu_bus_routes/widgets/route_tile.dart';
 
 class RouteList extends ConsumerStatefulWidget {
   List<Map<String, dynamic>> routeNames = [];
@@ -18,6 +20,7 @@ class _RouteListState extends ConsumerState<RouteList> {
   Widget build(BuildContext context) {
     final bgColor = ref.watch(backgroundColor);
     int stColor = bgColor.value;
+    final destination = ref.watch(destinationProvider);
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -36,30 +39,8 @@ class _RouteListState extends ConsumerState<RouteList> {
               ),
               elevation: 4,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListTile(
-                  title: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      routeName.toString(),
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  leading: routeName.toString() == "Jagannath University"
-                      ? Icon(
-                          Icons.school,
-                          color: Color(stColor),
-                          size: 35,
-                        )
-                      : Icon(
-                          Icons.arrow_circle_down,
-                          color: Color(stColor),
-                          size: 35,
-                        ),
-                ),
+                padding: const EdgeInsets.all(3.0),
+                child: BusTile(routeName: routeName),
               ),
             ),
           );

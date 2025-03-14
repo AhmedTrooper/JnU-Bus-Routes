@@ -5,7 +5,7 @@ class SharedPreferencesHelper {
   static const String _keyHasAgreed = 'hasAgreed';
   static const String _userName = 'userName';
   static const String _busName = 'busName';
-  static const String _stoppageName = 'stoppageName';
+  static const String _destOrSource = '_destOrSource';
   static const String _isDarkMode = 'isDarkMode';
   static const String _bgColor = 'bgColor';
 
@@ -39,14 +39,14 @@ class SharedPreferencesHelper {
     await prefs.setString(_busName, busName);
   }
 
-  static Future<String?> getStoppageName() async {
+  static Future<String?> getDestOrSource() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_stoppageName);
+    return prefs.getString(_destOrSource);
   }
 
-  static Future<void> setStoppageName(String stoppageName) async {
+  static Future<void> setDestOrSource(String stoppageName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_stoppageName, stoppageName);
+    await prefs.setString(_destOrSource, stoppageName);
   }
 
   static Future<bool?> getThemeStatus() async {

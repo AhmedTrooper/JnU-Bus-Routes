@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jnu_bus_routes/database/database_helper.dart';
+import 'package:jnu_bus_routes/providers/bus_provider.dart';
+import 'package:jnu_bus_routes/providers/place_provider.dart';
+import 'package:jnu_bus_routes/providers/route_provider.dart';
 import 'package:jnu_bus_routes/providers/theme_provider.dart';
+import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class PlaceList extends ConsumerStatefulWidget {
@@ -20,6 +25,7 @@ class _PlaceListState extends ConsumerState<PlaceList> {
   Widget build(BuildContext context) {
     final bgColor = ref.watch(backgroundColor);
     int stColor = bgColor.value;
+    final destination = ref.watch(destinationProvider);
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -45,10 +51,95 @@ class _PlaceListState extends ConsumerState<PlaceList> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            LucideIcons.map,
-                            color: Color(stColor),
-                            size: 35,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                LucideIcons.map,
+                                color: Color(stColor),
+                                size: 35,
+                              ),
+                              IconButton(
+                                onPressed: () async {
+                                  SharedPreferencesHelper.setDestOrSource(
+                                      placeName);
+                                  ref.read(destinationProvider.notifier).state =
+                                      placeName;
+                                  ref
+                                          .read(busListForDestinationProvider
+                                              .notifier)
+                                          .state =
+                                      await DatabaseHelper()
+                                          .getBusInfo(placeName: placeName);
+                                  SharedPreferencesHelper.setDestOrSource(
+                                      placeName);
+                                  ref.read(destinationProvider.notifier).state =
+                                      placeName;
+                                  ref
+                                          .read(busListForDestinationProvider
+                                              .notifier)
+                                          .state =
+                                      await DatabaseHelper()
+                                          .getBusInfo(placeName: placeName);
+                                  ref.read(busNameProvider.notifier).state =
+                                      null;
+                                  ref.read(routeListProvider.notifier).state =
+                                      [];
+                                  await SharedPreferencesHelper.setBusName("");
+                                  if (mounted) {
+                                    ShadToaster.of(context).show(
+                                      ShadToast(
+                                        title: const Text('Selected'),
+                                        border: Border(
+                                          bottom: BorderSide(
+                                              width: 2,
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              style: BorderStyle.solid),
+                                          top: BorderSide(
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              style: BorderStyle.solid),
+                                          right: BorderSide(
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              style: BorderStyle.solid),
+                                          left: BorderSide(
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        description:
+                                            Text('$placeName is selected'),
+                                        action: ShadButton.outline(
+                                          child: const Text('Close'),
+                                          onPressed: () =>
+                                              ShadToaster.of(context).hide(),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                icon: Icon(
+                                  LucideIcons.bookmarkPlus,
+                                  size: 35,
+                                  color: Color(stColor),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(width: 8),
                           FittedBox(

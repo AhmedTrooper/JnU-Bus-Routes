@@ -105,33 +105,35 @@ class _PlaceTabState extends ConsumerState<PlaceTab> {
             },
           ),
           title: Container(
-              height: 100,
-              padding: const EdgeInsets.all(10),
-              child: ListView.builder(
-                  itemCount: alphabetList.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: ElevatedButton(
-                        onPressed: () => _filterPlaceName(alphabetList[index]),
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(stColor),
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            fixedSize: const Size(50, 50)),
-                        child: Text(
-                          alphabetList[index],
-                          style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+            height: 100,
+            padding: const EdgeInsets.all(10),
+            child: ListView.builder(
+              itemCount: alphabetList.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: ElevatedButton(
+                    onPressed: () => _filterPlaceName(alphabetList[index]),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(stColor),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ),
-                    );
-                  })),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        fixedSize: const Size(50, 50)),
+                    child: Text(
+                      alphabetList[index],
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
           pinned: true,
         ),
         _filteredPlaceNames.isNotEmpty

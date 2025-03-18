@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
 import 'package:jnu_bus_routes/providers/bus_provider.dart';
 import 'package:jnu_bus_routes/providers/place_provider.dart';
@@ -25,20 +26,14 @@ class _HomeTabState extends ConsumerState<HomeTab>
   String? _busName;
   String? destination;
   bool busOnUp = true;
-  late Future<List<Map<String, dynamic>>> _routeNames;
 
-  // List<String> placeNames = [
-  //   "Azimpur",
-  //   "Dhupkhola",
-  //   "Iraqi Math",
-  //   "Police fari"
-  // ];
-  List<Map<String, dynamic>> _busList = [];
+  // late Future<List<Map<String, dynamic>>> _routeNames;
+  // List<Map<String, dynamic>> _busList = [];
 
   @override
   void initState() {
     super.initState();
-    _routeNames = Future.value([]);
+    // _routeNames = Future.value([]);
     loadData();
   }
 
@@ -62,8 +57,8 @@ class _HomeTabState extends ConsumerState<HomeTab>
     if (_busName != null) {
       final dbHelper = DatabaseHelper();
       setState(() {
-        _routeNames =
-            dbHelper.getBusInfo(busName: _busName, busType: busOnUp ? 1 : 0);
+        // _routeNames =
+        dbHelper.getBusInfo(busName: _busName, busType: busOnUp ? 1 : 0);
       });
     }
   }
@@ -98,146 +93,200 @@ class _HomeTabState extends ConsumerState<HomeTab>
     final bgColor = ref.watch(backgroundColor);
     int stColor = bgColor.value;
     final placeListArr = ref.watch(placeListProvider);
+    final filteredPlaceListArr = ref.watch(filteredPlaceListProvider);
     final busName = ref.watch(busNameProvider);
     final busListForDestination = ref.watch(busListForDestinationProvider);
     final destination = ref.watch(destinationProvider);
     final routeList = ref.watch(routeListProvider);
     return CustomScrollView(
       slivers: [
-        const SliverToBoxAdapter(
-          child: SizedBox(
-            height: 50,
-          ),
-        ),
-        const SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.all(5),
+        SliverAppBar(
+          surfaceTintColor: Theme.of(context).brightness != Brightness.dark
+              ? Colors.transparent
+              : Colors.transparent,
+          scrolledUnderElevation: 0.0,
+          toolbarHeight: 50,
+          title: Padding(
+            padding: const EdgeInsets.all(0.0),
             child: Text(
-              "Place suggestions",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              "Places",
+              style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  color: Theme.of(context).brightness != Brightness.dark
+                      ? Colors.black
+                      : Colors.white),
+            ),
+          ),
+          backgroundColor: Theme.of(context).brightness != Brightness.dark
+              ? Colors.white
+              : Colors.black12,
+        ),
+        SliverToBoxAdapter(
+          child: Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(5.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border(
+                top: BorderSide(
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.black12
+                        : Color(Colors.grey[800]!.value),
+                    width: 1),
+                bottom: BorderSide(
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.black12
+                        : Color(Colors.grey[800]!.value),
+                    width: 1),
+                right: BorderSide(
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.black12
+                        : Color(Colors.grey[800]!.value),
+                    width: 1),
+                left: BorderSide(
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.black12
+                        : Color(Colors.grey[800]!.value),
+                    width: 1),
+              ),
+            ),
+            child: TextFormField(
+              onChanged: (value) {
+                final filteredList = placeListArr
+                    .where((place) => place
+                        .trim()
+                        .toLowerCase()
+                        .contains(value.trim().toLowerCase()))
+                    .toList();
+                ref.read(filteredPlaceListProvider.notifier).state =
+                    filteredList;
+              },
+              showCursor: true,
+              style: TextStyle(
+                color: Theme.of(context).brightness != Brightness.dark
+                    ? Colors.black
+                    : Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+              ),
+              decoration: InputDecoration(
+                  icon: Icon(
+                    LucideIcons.search,
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.black54
+                        : Colors.white,
+                  ),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide(
+                      width: 0.0,
+                      style: BorderStyle.none,
+                    ),
+                  ),
+                  hintText: "Search for destination"),
+              textAlign: TextAlign.center,
+              cursorColor: Theme.of(context).brightness != Brightness.dark
+                  ? Colors.black
+                  : Colors.white,
             ),
           ),
         ),
         SliverToBoxAdapter(
           child: SizedBox(
-            height: 230,
+            height: 95,
             child: CustomScrollView(
               scrollDirection: Axis.horizontal,
               slivers: [
                 SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    final placeName = placeListArr[index];
+                    final placeName = filteredPlaceListArr[index];
                     return placeName != "Jagannath University"
                         ? Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(0.0),
                             child: Card(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 side: BorderSide(
                                   color: Theme.of(context).brightness !=
                                           Brightness.dark
-                                      ? Colors.white
+                                      ? Colors.white12
                                       : Colors.grey[800]!,
                                   width: 1,
                                 ),
                               ),
-                              elevation: 4,
+                              color: Colors.black12,
+                              elevation: 0.0,
                               child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      LucideIcons.map,
-                                      color: Color(stColor),
-                                      size: 35,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        placeName,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
+                                padding: const EdgeInsets.all(10.0),
+                                child: IconButton(
+                                  onPressed: () async {
+                                    SharedPreferencesHelper.setDestOrSource(
+                                        placeName);
+                                    ref
+                                        .read(destinationProvider.notifier)
+                                        .state = placeName;
+                                    ref
+                                            .read(busListForDestinationProvider
+                                                .notifier)
+                                            .state =
+                                        await DatabaseHelper()
+                                            .getBusInfo(placeName: placeName);
+                                    ref.read(busNameProvider.notifier).state =
+                                        null;
+                                    ref.read(routeListProvider.notifier).state =
+                                        [];
+                                    await SharedPreferencesHelper.setBusName(
+                                        "");
+                                  },
+                                  icon: Column(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/station.png",
+                                        width: 30,
+                                      ),
+                                      FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          placeName,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: GoogleFonts.poppins()
+                                                .fontFamily,
+                                          ),
+                                          softWrap: false,
+                                          overflow: TextOverflow.visible,
+                                          maxLines: 1,
                                         ),
-                                        softWrap: false,
-                                        overflow: TextOverflow.visible,
-                                        maxLines: 1,
                                       ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    SizedBox(
-                                      child: Column(
-                                        children: [
-                                          const Text(
-                                            "Mark as your Source/ Destinition",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          IconButton(
-                                            onPressed: () async {
-                                              SharedPreferencesHelper
-                                                  .setDestOrSource(placeName);
-                                              ref
-                                                  .read(destinationProvider
-                                                      .notifier)
-                                                  .state = placeName;
-                                              ref
-                                                      .read(
-                                                          busListForDestinationProvider
-                                                              .notifier)
-                                                      .state =
-                                                  await DatabaseHelper()
-                                                      .getBusInfo(
-                                                          placeName: placeName);
-                                              ref
-                                                  .read(
-                                                      busNameProvider.notifier)
-                                                  .state = null;
-                                              ref
-                                                  .read(routeListProvider
-                                                      .notifier)
-                                                  .state = [];
-                                              await SharedPreferencesHelper
-                                                  .setBusName("");
-                                            },
-                                            icon: Icon(
-                                              LucideIcons.bookmarkPlus,
-                                              size: 35,
-                                              color: Color(stColor),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           )
                         : const SizedBox(height: 0);
-                  }, childCount: placeListArr.length),
+                  }, childCount: filteredPlaceListArr.length),
                 )
               ],
             ),
           ),
         ),
         destination != null
-            ? const SliverToBoxAdapter(
+            ? SliverToBoxAdapter(
                 child: Padding(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     child: Padding(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       child: Text(
                         "Bus suggestions",
                         style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: GoogleFonts.poppins().fontFamily),
                       ),
                     )),
               )
@@ -258,7 +307,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: SizedBox(
-                    height: 300,
+                    height: 275,
                     child: CustomScrollView(
                       scrollDirection: Axis.horizontal,
                       slivers: [BusList(busNames: busListForDestination)],
@@ -268,17 +317,107 @@ class _HomeTabState extends ConsumerState<HomeTab>
               ),
         ((destination != null && destination != "") &&
                 (busName != null && busName != ""))
-            ? SliverToBoxAdapter(
-                child: Padding(
+            ? SliverAppBar(
+                toolbarHeight: 150,
+                pinned: true,
+                title: Container(
                   padding: const EdgeInsets.all(15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  margin: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black12,
+                    border: Border.all(
+                        color: Theme.of(context).brightness != Brightness.dark
+                            ? Colors.transparent
+                            : Color(Colors.grey[800]!.value),
+                        width: 1),
+                  ),
+                  child: Column(
                     children: [
-                      Text(
-                        "🚩 $destination",
-                        style: const TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
-                      )
+                      SizedBox(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            "Destination : $destination",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        // padding: const EdgeInsets.all(10),
+                        child: (busName != null && busName != "")
+                            ? FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  "Bus : $busName",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(
+                                width: 0,
+                                height: 0,
+                              ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: (busName != null && busName != "")
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ShadSwitch(
+                                    checkedTrackColor:
+                                        Theme.of(context).brightness !=
+                                                Brightness.dark
+                                            ? Colors.black54
+                                            : Colors.white70,
+                                    value: busOnUp,
+                                    label: busOnUp
+                                        ? Icon(
+                                            LucideIcons.university,
+                                            color:
+                                                Theme.of(context).brightness !=
+                                                        Brightness.dark
+                                                    ? Colors.black54
+                                                    : Colors.white70,
+                                            size: 30,
+                                          )
+                                        : Icon(
+                                            LucideIcons.house,
+                                            color:
+                                                Theme.of(context).brightness !=
+                                                        Brightness.dark
+                                                    ? Colors.black54
+                                                    : Colors.white70,
+                                            size: 30,
+                                          ),
+                                    onChanged: (v) => {
+                                      setState(() => busOnUp = !busOnUp),
+                                      ref
+                                              .read(routeListProvider.notifier)
+                                              .state =
+                                          ref
+                                              .read(routeListProvider.notifier)
+                                              .state
+                                              .reversed
+                                              .toList()
+                                    },
+                                  )
+                                ],
+                              )
+                            : const SizedBox(
+                                width: 0,
+                                height: 0,
+                              ),
+                      ),
                     ],
                   ),
                 ),
@@ -289,62 +428,6 @@ class _HomeTabState extends ConsumerState<HomeTab>
                   width: 0,
                 ),
               ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: (busName != null && busName != "")
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("🚌 $busName",
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold))
-                    ],
-                  )
-                : const SizedBox(
-                    width: 0,
-                    height: 0,
-                  ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: (busName != null && busName != "")
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ShadSwitch(
-                        checkedTrackColor: Color(stColor),
-                        value: busOnUp,
-                        label: busOnUp
-                            ? Icon(
-                                LucideIcons.university,
-                                color: Color(stColor),
-                                size: 30,
-                              )
-                            : Icon(
-                                LucideIcons.house,
-                                color: Color(stColor),
-                                size: 30,
-                              ),
-                        onChanged: (v) => {
-                          setState(() => busOnUp = !busOnUp),
-                          ref.read(routeListProvider.notifier).state = ref
-                              .read(routeListProvider.notifier)
-                              .state
-                              .reversed
-                              .toList()
-                        },
-                      )
-                    ],
-                  )
-                : const SizedBox(
-                    width: 0,
-                    height: 0,
-                  ),
-          ),
-        ),
         routeList.isEmpty
             ? const SliverToBoxAdapter(
                 child: SizedBox(
@@ -355,7 +438,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
             : RouteList(routeNames: routeList),
         const SliverToBoxAdapter(
           child: SizedBox(
-            height: 50,
+            height: 20,
           ),
         )
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jnu_bus_routes/providers/place_provider.dart';
 import 'package:jnu_bus_routes/providers/theme_provider.dart';
 
@@ -21,10 +22,10 @@ class BusTile extends ConsumerWidget {
             ? (routeName.toString() == "Jagannath University" ||
                     routeName.toString() == destination)
                 ? Color(stColor)
-                : Colors.transparent
+                : Colors.black12
             : routeName.toString() == "Jagannath University"
                 ? Color(stColor)
-                : Colors.transparent,
+                : Colors.black12,
       ),
       child: ListTile(
         hoverColor: Colors.greenAccent,
@@ -33,15 +34,15 @@ class BusTile extends ConsumerWidget {
           child: Text(
             routeName.toString(),
             style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: routeName.toString() == "Jagannath University" ||
-                      routeName.toString() == destination
-                  ? Colors.white
-                  : Theme.of(context).brightness != Brightness.dark
-                      ? Colors.black
-                      : Colors.white,
-            ),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: routeName.toString() == "Jagannath University" ||
+                        routeName.toString() == destination
+                    ? Colors.white
+                    : Theme.of(context).brightness != Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
+                fontFamily: GoogleFonts.poppins().fontFamily),
           ),
         ),
         leading: destination != null
@@ -58,7 +59,9 @@ class BusTile extends ConsumerWidget {
                   )
                 : Icon(
                     Icons.arrow_circle_down,
-                    color: Color(stColor),
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.black54
+                        : Colors.white70,
                     size: 35,
                   )
             : routeName.toString() == "Jagannath University"
@@ -69,7 +72,9 @@ class BusTile extends ConsumerWidget {
                   )
                 : Icon(
                     Icons.arrow_circle_down,
-                    color: Color(stColor),
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.black54
+                        : Colors.white70,
                     size: 35,
                   ),
       ),

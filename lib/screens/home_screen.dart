@@ -17,30 +17,41 @@ class HomeScreen extends ConsumerWidget {
     final isDarkModeStatus = ref.watch(isDarkTheme);
     final bgColor = ref.watch(backgroundColor);
     return ShadApp.material(
-        debugShowCheckedModeBanner: false,
-        themeMode: isDarkModeStatus ? ThemeMode.dark : ThemeMode.light,
-        home: DefaultTabController(
-          length: 5,
-          child: Scaffold(
-            body: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: bgColor,
-                  floating: true,
-                  title: const HomeScreenTabBar(),
-                ),
-                const SliverFillRemaining(
-                  child: TabBarView(children: [
+      debugShowCheckedModeBanner: false,
+      themeMode: isDarkModeStatus ? ThemeMode.dark : ThemeMode.light,
+      home: DefaultTabController(
+        length: 5,
+        child: Scaffold(
+          body: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                toolbarHeight: 10,
+                backgroundColor: Theme.of(context).brightness != Brightness.dark
+                    ? Colors.white
+                    : Colors.black12,
+              ),
+              const SliverFillRemaining(
+                child: TabBarView(
+                  children: [
                     HomeTab(),
                     PlaceTab(),
                     BusTab(),
                     SettingTab(),
                     AboutTab()
-                  ]),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ));
+          bottomNavigationBar: Container(
+            color: Theme.of(context).brightness != Brightness.dark
+                ? Colors.white
+                : Colors.black12,
+            padding: const EdgeInsets.all(0.0),
+            child: const HomeScreenTabBar(),
+          ),
+        ),
+      ),
+    );
   }
 }

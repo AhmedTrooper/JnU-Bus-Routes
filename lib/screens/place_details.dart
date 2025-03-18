@@ -52,14 +52,21 @@ class _PlaceDetailsScreenState extends ConsumerState<PlaceDetailsScreen> {
       appBar: AppBar(
         title: Text(
           " ${widget.placeName}",
-          style:
-              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).brightness != Brightness.dark
+                  ? Colors.black
+                  : Colors.white),
         ),
-        backgroundColor: Color(stColor),
+        backgroundColor: Theme.of(context).brightness != Brightness.dark
+            ? Colors.white
+            : Colors.black12,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
-            color: Colors.white,
+            color: Theme.of(context).brightness != Brightness.dark
+                ? Colors.black
+                : Colors.white,
             size: 25,
           ),
           color: Colors.black,
@@ -76,7 +83,7 @@ class _PlaceDetailsScreenState extends ConsumerState<PlaceDetailsScreen> {
         slivers: [
           const SliverToBoxAdapter(
             child: SizedBox(
-              height: 50,
+              height: 20,
             ),
           ),
           BusList(busNames: _busNames),

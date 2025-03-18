@@ -33,6 +33,7 @@ void main() async {
     await SharedPreferencesHelper.setThemeStatus(true);
   }
   List<String> _placeList = await DatabaseHelper().getPlaceList();
+  List<String> _filteredPlaceList = _placeList;
   String initialLocation = hasAgreed == true ? '/' : '/welcome';
   runApp(
     ProviderScope(
@@ -40,6 +41,7 @@ void main() async {
         isDarkTheme.overrideWith((ref) => isDarkMode!),
         backgroundColor.overrideWith((ref) => bgColor),
         placeListProvider.overrideWith((ref) => _placeList),
+        filteredPlaceListProvider.overrideWith((ref) => _filteredPlaceList),
         busNameProvider.overrideWith((ref) => busName),
         destinationProvider.overrideWith((ref) => destinationOrSourceName),
         busListForDestinationProvider
@@ -54,23 +56,24 @@ void main() async {
 
   //For development time...
 
-//   runApp(
-//     ProviderScope(
-//       overrides: [
-//         isDarkTheme.overrideWith((ref) => isDarkMode!),
-//         backgroundColor.overrideWith((ref) => bgColor),
-//         placeListProvider.overrideWith((ref) => _placeList),
-//         busNameProvider.overrideWith((ref) => busName),
-//         destinationProvider.overrideWith((ref) => destinationOrSourceName),
-//         busListForDestinationProvider
-//             .overrideWith((ref) => busListForDestination),
-//         routeListProvider.overrideWith((ref) => routeList),
-//       ],
-//       child: const MyApp(
-//         initialLocation: "/",
-//       ),
-//     ),
-//   );
+  // runApp(
+  //   ProviderScope(
+  //     overrides: [
+  //       isDarkTheme.overrideWith((ref) => isDarkMode!),
+  //       backgroundColor.overrideWith((ref) => bgColor),
+  //       placeListProvider.overrideWith((ref) => _placeList),
+  //       filteredPlaceListProvider.overrideWith((ref) => _filteredPlaceList),
+  //       busNameProvider.overrideWith((ref) => busName),
+  //       destinationProvider.overrideWith((ref) => destinationOrSourceName),
+  //       busListForDestinationProvider
+  //           .overrideWith((ref) => busListForDestination),
+  //       routeListProvider.overrideWith((ref) => routeList),
+  //     ],
+  //     child: const MyApp(
+  //       initialLocation: "/",
+  //     ),
+  //   ),
+  // );
 }
 
 class MyApp extends ConsumerWidget {

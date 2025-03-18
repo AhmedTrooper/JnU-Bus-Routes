@@ -54,10 +54,15 @@ class _BusDetailsScreenState extends ConsumerState<BusDetailsScreen> {
       appBar: AppBar(
         title: Text(
           '${widget.busName} ${widget.upOrDown == 1 ? '[Up]' : '[Down]'}',
-          style:
-              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).brightness != Brightness.dark
+                  ? Colors.black
+                  : Colors.white),
         ),
-        backgroundColor: Color(stColor),
+        backgroundColor: Theme.of(context).brightness != Brightness.dark
+            ? Colors.white
+            : Colors.black12,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,
@@ -76,11 +81,6 @@ class _BusDetailsScreenState extends ConsumerState<BusDetailsScreen> {
       ),
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 50,
-            ),
-          ),
           RouteList(routeNames: _placeNames),
           const SliverToBoxAdapter(
             child: SizedBox(

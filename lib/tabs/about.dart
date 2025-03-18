@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,9 +27,17 @@ class _AboutTabState extends ConsumerState<AboutTab> {
     int stColor = bgColor.value;
     return CustomScrollView(
       slivers: [
-        const SliverToBoxAdapter(
-          child: SizedBox(
-            height: 80,
+        SliverAppBar(
+          pinned: true,
+          title: Text(
+            "Developers",
+            style: TextStyle(
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                color: Theme.of(context).brightness != Brightness.dark
+                    ? Colors.black
+                    : Colors.white),
           ),
         ),
         SliverToBoxAdapter(
@@ -55,7 +64,10 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                         children: [
                           Icon(
                             Icons.person,
-                            color: Color(stColor),
+                            color:
+                                Theme.of(context).brightness != Brightness.dark
+                                    ? Colors.black54
+                                    : Colors.white70,
                             size: 30,
                           ),
                           const SizedBox(width: 8),
@@ -84,7 +96,10 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                             icon: Icon(
                               LucideIcons.github,
                               size: 30,
-                              color: Color(stColor),
+                              color: Theme.of(context).brightness !=
+                                      Brightness.dark
+                                  ? Colors.black54
+                                  : Colors.white70,
                             ),
                           ),
                           TextButton(
@@ -131,7 +146,9 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                       children: [
                         Icon(
                           Icons.person,
-                          color: Color(stColor),
+                          color: Theme.of(context).brightness != Brightness.dark
+                              ? Colors.black54
+                              : Colors.white70,
                           size: 30,
                         ),
                         const SizedBox(width: 8),
@@ -160,7 +177,10 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                           icon: Icon(
                             LucideIcons.facebook,
                             size: 30,
-                            color: Color(stColor),
+                            color:
+                                Theme.of(context).brightness != Brightness.dark
+                                    ? Colors.black54
+                                    : Colors.white70,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -209,7 +229,9 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                       children: [
                         Icon(
                           Icons.person,
-                          color: Color(stColor),
+                          color: Theme.of(context).brightness != Brightness.dark
+                              ? Colors.black54
+                              : Colors.white70,
                           size: 30,
                         ),
                         const SizedBox(width: 8),
@@ -238,7 +260,10 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                           icon: Icon(
                             LucideIcons.facebook,
                             size: 30,
-                            color: Color(stColor),
+                            color:
+                                Theme.of(context).brightness != Brightness.dark
+                                    ? Colors.black54
+                                    : Colors.white70,
                           ),
                         ),
                         const SizedBox(width: 8),

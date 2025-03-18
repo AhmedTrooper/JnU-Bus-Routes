@@ -26,7 +26,7 @@ class _RouteListState extends ConsumerState<RouteList> {
         (context, index) {
           final routeName = widget.routeNames[index]["place_name"];
           return Padding(
-            padding: const EdgeInsets.all(1.0),
+            padding: const EdgeInsets.all(0.0),
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -34,12 +34,13 @@ class _RouteListState extends ConsumerState<RouteList> {
                   color: Theme.of(context).brightness != Brightness.dark
                       ? Colors.white
                       : Colors.grey[800]!,
-                  width: 1,
+                  width:
+                      Theme.of(context).brightness != Brightness.dark ? 0 : 1,
                 ),
               ),
               elevation: 4,
               child: Padding(
-                padding: const EdgeInsets.all(3.0),
+                padding: const EdgeInsets.all(0.0),
                 child: BusTile(routeName: routeName),
               ),
             ),

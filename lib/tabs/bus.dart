@@ -41,9 +41,32 @@ class _BusTabState extends ConsumerState<BusTab> {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
+        SliverAppBar(
+          surfaceTintColor: Theme.of(context).brightness != Brightness.dark
+              ? Colors.transparent
+              : Colors.transparent,
+          scrolledUnderElevation: 0.0,
+          toolbarHeight: 50,
+          title: Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: Text(
+              "Buses",
+              style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).brightness != Brightness.dark
+                      ? Colors.black
+                      : Colors.white),
+            ),
+          ),
+          backgroundColor: Theme.of(context).brightness != Brightness.dark
+              ? Colors.white
+              : Colors.black12,
+          pinned: true,
+        ),
         const SliverToBoxAdapter(
           child: SizedBox(
-            height: 50,
+            height: 20,
           ),
         ),
         BusList(busNames: _busNames),

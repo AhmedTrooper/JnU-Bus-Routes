@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomeScreenTabBar extends ConsumerWidget {
@@ -7,45 +8,85 @@ class HomeScreenTabBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const TabBar(
+    return TabBar(
+      labelColor: Theme.of(context).brightness != Brightness.dark
+          ? Colors.black
+          : Colors.white,
+      unselectedLabelColor: const Color(0xff767676),
+      indicator: BoxDecoration(
+          color: Theme.of(context).brightness != Brightness.dark
+              ? Colors.white
+              : Colors.transparent),
       tabs: [
         Tab(
-          child: Icon(
-            LucideIcons.house,
-            color: Colors.white,
-            size: 25,
+          icon: const Icon(
+            Icons.home,
+            size: 20,
+          ),
+          child: Text(
+            "Home",
+            style: TextStyle(
+                fontSize: 11.5,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.bold),
           ),
         ),
         Tab(
-          child: Icon(
-            LucideIcons.map,
-            color: Colors.white,
-            size: 25,
+          icon: const Icon(
+            Icons.map,
+            size: 20,
+          ),
+          child: Text(
+            "Place",
+            style: TextStyle(
+                fontSize: 11.5,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.bold),
           ),
         ),
         Tab(
-          child: Icon(
+          icon: const Icon(
             LucideIcons.bus,
-            color: Colors.white,
-            size: 25,
+            size: 20,
+          ),
+          child: Text(
+            "Bus",
+            style: TextStyle(
+                fontSize: 11.5,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.bold),
           ),
         ),
         Tab(
-          child: Icon(
-            LucideIcons.settings,
-            color: Colors.white,
-            size: 25,
+          icon: const Icon(
+            LucideIcons.settings2,
+            size: 20,
+          ),
+          child: Text(
+            "Prefs",
+            style: TextStyle(
+                fontSize: 11.5,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.bold),
           ),
         ),
         Tab(
-          child: Icon(
-            LucideIcons.info,
-            color: Colors.white,
-            size: 25,
+          icon: const Icon(
+            Icons.info,
+            size: 20,
           ),
-        )
+          child: Text(
+            "Info",
+            style: TextStyle(
+                fontSize: 11.5,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
       ],
-      indicatorColor: Colors.white,
+      indicatorColor: Theme.of(context).brightness != Brightness.dark
+          ? Colors.black
+          : Colors.white,
       dividerColor: Colors.transparent,
     );
   }

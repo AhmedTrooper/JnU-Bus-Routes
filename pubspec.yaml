@@ -32,6 +32,9 @@ dependencies:
   
   # Utils
   url_launcher: ^6.3.1
+  
+  # Splash Screen
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +45,7 @@ dev_dependencies:
   build_runner: ^2.4.13
   custom_lint: ^0.7.6
   riverpod_lint: ^2.3.13
+  flutter_native_splash: ^2.4.7
 
 flutter:
   uses-material-design: true
@@ -57,3 +61,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Flutter Native Splash Configuration
+flutter_native_splash:
+  color: "#f50057"
+  color_dark: "#121212"
+  image: assets/images/splash.png
+  fullscreen: true
+  
+  android_12:
+    color: "#f50057"
+    color_dark: "#121212"
+    image: assets/images/splash.png
+  
+  android: true
+  ios: true
+  web: false

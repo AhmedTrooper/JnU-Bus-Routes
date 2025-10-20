@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:jnu_bus_routes/database/database_helper.dart';
 import 'package:jnu_bus_routes/providers/bus_provider.dart';
 import 'package:jnu_bus_routes/providers/place_provider.dart';
@@ -10,7 +11,10 @@ import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  
+  // Preserve splash screen
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   try {
     // Load initial data from SharedPreferences
@@ -115,6 +119,11 @@ class _MyAppState extends ConsumerState<MyApp> {
       }
       ref.read(busListForDestinationProvider.notifier).state = widget.busListForDestination;
       ref.read(routeListProvider.notifier).state = widget.routeList;
+      
+      // Remove splash screen after 3 seconds
+      Future.delayed(const Duration(seconds: 3), () {
+        FlutterNativeSplash.remove();
+      });
     });
   }
 

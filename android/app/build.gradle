@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.jnu_bus_routes"
+    namespace = "com.sutsoa.jnu_bus_routes"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.jnu_bus_routes"
+        applicationId = "com.sutsoa.jnu_bus_routes"
         minSdkVersion = flutter.minSdkVersion
         targetSdk = 36
         versionCode = 1

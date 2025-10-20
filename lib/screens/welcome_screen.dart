@@ -19,7 +19,7 @@ class WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     super.initState();
   }
 
-  Future<void> _onAgreePressed() async {
+  void _onAgreePressed() async {
     await SharedPreferencesHelper.setAgreementStatus(true);
     if (mounted) {
       context.go('/');
@@ -46,33 +46,48 @@ class WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Welcome to JnU Bus Routes Application",
+                  "JnU Bus Routes\nYour Campus Travel Guide",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontSize: 40,
-                      fontStyle: FontStyle.italic),
+                      fontStyle: FontStyle.italic,
+                      height: 1.2),
                 ),
-                ShadButton(
-                  onPressed: _onAgreePressed,
-                  backgroundColor: Color(stColor),
-                  size: ShadButtonSize.lg,
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        LucideIcons.handshake,
-                        color: Colors.white,
+                const SizedBox(height: 30),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _onAgreePressed,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 16),
+                      decoration: BoxDecoration(
+                        color: Color(stColor),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      SizedBox(width: 8),
-                      Text(
-                        "Agree",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                        ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            LucideIcons.handshake,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            "Agree",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
                 const Text(

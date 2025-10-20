@@ -4,8 +4,21 @@ A Flutter mobile application designed to help Jagannath University (JnU) student
 
 **Your Campus Travel Guide** - Find the right bus for your destination with ease!
 
-## 📋 Table of Contents
+## � Download
 
+**[Download Latest APK](https://github.com/AhmedTrooper/JnU-Bus-Routes/releases)** from the Releases section.
+
+Latest version includes:
+- 🎨 Native splash screen with 3-second display
+- 🌓 Dark mode by default with light mode toggle
+- 🚌 Bus route filtering with A-Z alphabet search
+- 📍 Place-based bus discovery
+- ⚙️ Customizable theme with 200+ colors
+- 📱 Optimized for Android 12+ with backward compatibility
+
+##  Table of Contents
+
+- [Download](#download)
 - [Project Overview](#project-overview)
 - [Features & Implementation](#features--implementation)
 - [Architecture & Code Structure](#architecture--code-structure)
@@ -14,6 +27,7 @@ A Flutter mobile application designed to help Jagannath University (JnU) student
 - [UI Components](#ui-components)
 - [Navigation System](#navigation-system)
 - [Theme & Customization](#theme--customization)
+- [Splash Screen](#splash-screen)
 - [Development Team](#development-team)
 - [Technical Dependencies](#technical-dependencies)
 - [Getting Started](#getting-started)
@@ -461,6 +475,49 @@ The app uses a pre-populated SQLite database (`assets/database/jnu.db`) with the
 - Custom color palette defined in `constants/color_list.dart`
 - Unpinned headers for smooth scrolling experience
 
+## 🎨 Splash Screen
+
+**Implementation**: Native splash screen using `flutter_native_splash` package  
+**File**: `flutter_native_splash.yaml`  
+**Implemented by**: Md. Ramjan Miah (AhmedTrooper)
+
+The app features a professional native splash screen that appears instantly on launch:
+
+```dart
+void main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  
+  // Preserve splash screen
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  
+  // ... app initialization ...
+  
+  // Remove splash after 3 seconds
+  Future.delayed(const Duration(seconds: 3), () {
+    FlutterNativeSplash.remove();
+  });
+}
+```
+
+**Splash Screen Features**:
+- **Display Duration**: 3 seconds
+- **Logo**: 1152×1152 px custom splash image
+- **Background Colors**: 
+  - Light mode: `#f50057` (brand pink)
+  - Dark mode: `#121212` (dark theme)
+- **Fullscreen**: Status bar hidden for immersive experience
+- **Platform Support**:
+  - Android 11 and below: Full splash with centered logo
+  - Android 12+: Native splash with circular crop (768px diameter safe area)
+  - iOS: LaunchScreen with custom assets
+- **Auto-generated**: Multiple density variants (mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi)
+
+**Design Specifications**:
+- Logo size: 1152×1152 pixels (PNG with transparency)
+- Safe design area: 768px diameter circle for Android 12+
+- Instant display before Flutter engine loads
+- Smooth transition to app content
+
 ## 👥 Development Team
 
 ### **Md. Ramjan Miah** (Lead Developer)
@@ -498,9 +555,11 @@ The app uses a pre-populated SQLite database (`assets/database/jnu.db`) with the
 ### Utilities
 - `path_provider: ^2.1.5` - File system access
 - `url_launcher: ^6.3.1` - External link handling
+- `flutter_native_splash: ^2.4.7` - Native splash screen generation
 
 ### Development Tools
 - `flutter_lints: ^5.0.0` - Code quality and standards
+- `flutter_native_splash: ^2.4.7` - Splash screen asset generation
 
 ### Android Configuration
 - **Compile SDK**: 36

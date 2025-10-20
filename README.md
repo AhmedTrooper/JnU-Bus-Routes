@@ -2,6 +2,8 @@
 
 A Flutter mobile application designed to help Jagannath University (JnU) students navigate the local bus system. This app provides comprehensive information about bus routes, schedules, and destinations around the university area.
 
+**Your Campus Travel Guide** - Find the right bus for your destination with ease!
+
 ## 📋 Table of Contents
 
 - [Project Overview](#project-overview)
@@ -22,6 +24,7 @@ This application serves as a digital bus guide for JnU students, providing real-
 
 **Target Users**: JnU students and commuters  
 **Platform**: Android/iOS (Flutter cross-platform)  
+**Package Name**: com.sutsoa.jnu_bus_routes  
 **Database**: SQLite with pre-populated bus route data
 
 ## 🚀 Features & Implementation
@@ -44,14 +47,16 @@ Future<void> _onAgreePressed() async {
 **Key Features**:
 - User agreement tracking via SharedPreferences
 - Background image integration (JnU campus)
+- Custom "Agree" button with proper styling (30px bold font)
+- Welcome message: "JnU Bus Routes - Your Campus Travel Guide"
 - Smooth navigation to main app using GoRouter
 - Customizable theme color integration
 
-### 2. Home Tab - Smart Bus Discovery
+### 2. Home Tab - Smart Bus Discovery ("Where to?")
 **File**: `lib/tabs/home.dart`  
 **Implemented by**: Md. Ramjan Miah (AhmedTrooper)
 
-The core functionality that allows users to find buses based on their destination:
+The core functionality that allows users to find buses based on their destination with an intuitive "Where to?" interface:
 
 ```dart
 // Real-time place search with filtering
@@ -75,6 +80,7 @@ onPressed: () async {
 ```
 
 **Key Features**:
+- Intuitive "Where to?" search interface
 - Live search functionality for destinations
 - Horizontal scrollable place selector
 - Dynamic bus suggestions based on selected destination  
@@ -123,7 +129,7 @@ Future<List<String>> getFilteredPlaceList(String filterLetter) async {
 **File**: `lib/tabs/bus.dart`  
 **Implemented by**: Md. Ramjan Miah (AhmedTrooper)
 
-Complete bus listing with detailed information display:
+Complete bus listing with detailed information display and alphabet-based filtering:
 
 ```dart
 Future<void> _loadBusNames() async {
@@ -140,10 +146,22 @@ Future<void> _loadBusNames() async {
     });
   }
 }
+
+// Alphabet-based filtering for buses
+void _filterBusName(String filterLetter) async {
+  final dbHelper = DatabaseHelper();
+  final busNames = await dbHelper.getFilteredBusList(filterLetter);
+  setState(() {
+    _filteredBusNames = busNames;
+  });
+}
 ```
 
 **Key Features**:
 - Complete bus directory
+- A-Z alphabet filter buttons (matching Places tab functionality)
+- Clear filter functionality
+- Horizontal scrollable alphabet navigation bar
 - Bus timing information (up_time, down_time)
 - Last stoppage details
 - Bus selection and bookmarking functionality
@@ -188,12 +206,26 @@ class DatabaseHelper {
         await db.rawQuery(placeDetailsQuery, [placeName]);
     return result;
   }
+  
+  // Filtered bus list query for alphabet filtering
+  Future<List<Map<String, dynamic>>> getFilteredBusList(String filterLetter) async {
+    const query = '''
+      SELECT DISTINCT bus.bus_name, bus.bus_type, bus.last_stoppage, bus.up_time, bus.down_time
+      FROM bus
+      WHERE LOWER(bus.bus_name) LIKE ?
+      ORDER BY bus.bus_name ASC;
+    ''';
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery(query, ['$filterLetter%']);
+    return result;
+  }
 }
 ```
 
 **Key Database Features**:
 - Asset-based database initialization
 - Complex relational queries with JOINs
+- Alphabet-based filtering for both buses and places
 - Multiple query methods for different use cases
 - Error handling and exception management
 - Efficient data retrieval with proper indexing
@@ -413,17 +445,21 @@ The app uses a pre-populated SQLite database (`assets/database/jnu.db`) with the
 **Design Philosophy**:
 - Material Design 3 principles
 - ShadCN UI component library integration
+- Dark mode by default with theme persistence
 - Responsive layouts with CustomScrollView
 - Smooth animations and transitions
+- Consistent icon colors across light/dark themes
 
 ## 🎨 Theme & Customization
 
 **Theme System Features**:
 - Dynamic color theming (200+ colors available)
-- Dark/Light mode support
-- Persistent theme preferences
+- Dark mode by default with toggle support
+- Light/Dark mode with persistent preferences
+- Consistent icon colors (black54 for light, white70 for dark)
 - Google Fonts integration (Poppins)
 - Custom color palette defined in `constants/color_list.dart`
+- Unpinned headers for smooth scrolling experience
 
 ## 👥 Development Team
 
@@ -444,31 +480,45 @@ The app uses a pre-populated SQLite database (`assets/database/jnu.db`) with the
 
 ## 🔧 Technical Dependencies
 
-**Core Flutter Dependencies**:
+### Flutter & Dart
+- **Flutter SDK**: 3.35.6
+- **Dart SDK**: 3.9.2
+
+### Core Dependencies
 - `flutter_riverpod: ^2.6.1` - State management
-- `go_router: ^14.8.0` - Navigation and routing
-- `sqflite: ^2.4.1` - SQLite database operations
-- `shared_preferences: ^2.5.2` - Local data persistence
+- `go_router: ^16.2.5` - Navigation and routing
+- `sqflite: ^2.3.3+2` - SQLite database operations
+- `shared_preferences: ^2.3.3` - Local data persistence
 
-**UI & Design**:
-- `shadcn_ui: ^0.16.3` - Modern UI components
+### UI & Design
+- `shadcn_ui: ^0.38.1` - Modern UI components
 - `google_fonts: ^6.2.1` - Typography (Poppins font)
+- `lucide_icons: ^0.469.0` - Icon library
 
-**Utilities**:
+### Utilities
 - `path_provider: ^2.1.5` - File system access
 - `url_launcher: ^6.3.1` - External link handling
 
-**Development Tools**:
-- `riverpod_generator: ^2.6.3` - Code generation for providers
-- `build_runner: ^2.4.13` - Build automation
-- `flutter_lints: ^4.0.0` - Code quality and standards
+### Development Tools
+- `flutter_lints: ^5.0.0` - Code quality and standards
+
+### Android Configuration
+- **Compile SDK**: 36
+- **Target SDK**: 36
+- **Min SDK**: 23
+- **NDK Version**: 27.0.12077973
+- **Gradle**: 8.11.1
+- **Kotlin**: 2.1.0
+- **Android Gradle Plugin**: 8.7.3
+- **Java**: 17
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Flutter SDK (3.5.4+)
-- Dart SDK
+- Flutter SDK (3.35.6 or compatible)
+- Dart SDK (3.9.2 or compatible)
 - Android Studio or VS Code with Flutter extensions
+- For Android builds: Java 17, Android SDK 36, NDK 27.0.12077973
 
 ### Installation Steps
 
@@ -483,15 +533,22 @@ The app uses a pre-populated SQLite database (`assets/database/jnu.db`) with the
    flutter pub get
    ```
 
-3. **Run code generation** (if needed):
+3. **Clean and rebuild** (recommended):
    ```bash
-   flutter packages pub run build_runner build
+   flutter clean
+   flutter pub get
    ```
 
 4. **Run the application**:
    ```bash
    flutter run
    ```
+
+5. **Build release APK**:
+   ```bash
+   flutter build apk --release
+   ```
+   The APK will be located at: `build/app/outputs/flutter-apk/app-release.apk`
 
 ### Database Setup
 The SQLite database (`jnu.db`) is included in the assets and will be automatically copied to the device on first launch.

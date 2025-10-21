@@ -16,9 +16,59 @@ Latest version includes:
 - ⚙️ Customizable theme with 200+ colors
 - 📱 Optimized for Android 12+ with backward compatibility
 
-##  Table of Contents
+## 📸 Screenshots
+
+### App Flow & Main Features
+
+<p align="center">
+  <img src="demo_assets/splash_screen.jpg" alt="Splash Screen" width="250"/>
+  <img src="demo_assets/welcome_screen.jpg" alt="Welcome Screen" width="250"/>
+  <img src="demo_assets/home_tab.jpg" alt="Home Tab" width="250"/>
+</p>
+
+<p align="center">
+  <em>Splash Screen • Welcome Screen • Home Tab (Where to?)</em>
+</p>
+
+### Bus & Place Discovery
+
+<p align="center">
+  <img src="demo_assets/Screenshot_2025-10-20-16-50-03-68_70e079728b17a4b8a3fabb8624bc0e50.jpg" alt="Bus List" width="250"/>
+  <img src="demo_assets/Screenshot_2025-10-20-16-50-12-37_70e079728b17a4b8a3fabb8624bc0e50.jpg" alt="Place List" width="250"/>
+  <img src="demo_assets/Screenshot_2025-10-20-16-50-18-14_70e079728b17a4b8a3fabb8624bc0e50.jpg" alt="Bus Details" width="250"/>
+</p>
+
+<p align="center">
+  <em>Bus Directory with A-Z Filter • Place Discovery • Bus Route Details</em>
+</p>
+
+### Route Visualization & Settings
+
+<p align="center">
+  <img src="demo_assets/Screenshot_2025-10-20-16-50-21-68_70e079728b17a4b8a3fabb8624bc0e50.jpg" alt="Route View" width="250"/>
+  <img src="demo_assets/Screenshot_2025-10-20-16-50-25-62_70e079728b17a4b8a3fabb8624bc0e50.jpg" alt="Place Details" width="250"/>
+  <img src="demo_assets/settings&developers.jpg" alt="Settings & Theme" width="250"/>
+</p>
+
+<p align="center">
+  <em>Route Visualization • Place Details • Settings & Customization</em>
+</p>
+
+### Dark Mode Support
+
+<p align="center">
+  <img src="demo_assets/Screenshot_2025-10-20-16-49-56-90_70e079728b17a4b8a3fabb8624bc0e50.jpg" alt="Dark Mode 1" width="250"/>
+  <img src="demo_assets/Screenshot_2025-10-20-16-50-37-00_70e079728b17a4b8a3fabb8624bc0e50.jpg" alt="Dark Mode 2" width="250"/>
+</p>
+
+<p align="center">
+  <em>Dark Mode Interface Examples</em>
+</p>
+
+## 📋 Table of Contents
 
 - [Download](#download)
+- [Screenshots](#screenshots)
 - [Project Overview](#project-overview)
 - [Features & Implementation](#features--implementation)
 - [Architecture & Code Structure](#architecture--code-structure)

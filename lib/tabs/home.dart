@@ -196,7 +196,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
         ),
         SliverToBoxAdapter(
           child: SizedBox(
-            height: 95,
+            height: 290,
             child: CustomScrollView(
               scrollDirection: Axis.horizontal,
               slivers: [
@@ -205,54 +205,38 @@ class _HomeTabState extends ConsumerState<HomeTab>
                     final placeName = filteredPlaceListArr[index];
                     return placeName != "Jagannath University"
                         ? Padding(
-                            padding: const EdgeInsets.all(0.0),
+                            padding: const EdgeInsets.all(20.0),
                             child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: BorderSide(
-                                  color: Theme.of(context).brightness !=
-                                          Brightness.dark
-                                      ? Colors.white12
-                                      : Colors.grey[800]!,
-                                  width: 1,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                    color: Theme.of(context).brightness !=
+                                            Brightness.dark
+                                        ? Colors.white12
+                                        : Colors.grey[800]!,
+                                    width: 1,
+                                  ),
                                 ),
-                              ),
-                              color: Colors.black12,
-                              elevation: 0.0,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: IconButton(
-                                  onPressed: () async {
-                                    SharedPreferencesHelper.setDestOrSource(
-                                        placeName);
-                                    ref
-                                        .read(destinationProvider.notifier)
-                                        .state = placeName;
-                                    ref
-                                            .read(busListForDestinationProvider
-                                                .notifier)
-                                            .state =
-                                        await DatabaseHelper()
-                                            .getBusInfo(placeName: placeName);
-                                    ref.read(busNameProvider.notifier).state =
-                                        null;
-                                    ref.read(routeListProvider.notifier).state =
-                                        [];
-                                    await SharedPreferencesHelper.setBusName(
-                                        "");
-                                  },
-                                  icon: Column(
+                                color: Colors.black12,
+                                elevation: 0.0,
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: Column(
                                     children: [
                                       Image.asset(
                                         "assets/images/station.png",
-                                        width: 30,
+                                        width: 100,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                        width: 0,
                                       ),
                                       FittedBox(
                                         fit: BoxFit.scaleDown,
                                         child: Text(
                                           placeName,
                                           style: TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: GoogleFonts.poppins()
                                                 .fontFamily,
@@ -262,11 +246,73 @@ class _HomeTabState extends ConsumerState<HomeTab>
                                           maxLines: 1,
                                         ),
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                        width: 0,
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          SharedPreferencesHelper
+                                              .setDestOrSource(placeName);
+                                          ref
+                                              .read(
+                                                  destinationProvider.notifier)
+                                              .state = placeName;
+                                          ref
+                                                  .read(
+                                                      busListForDestinationProvider
+                                                          .notifier)
+                                                  .state =
+                                              await DatabaseHelper().getBusInfo(
+                                                  placeName: placeName);
+                                          ref
+                                              .read(busNameProvider.notifier)
+                                              .state = null;
+                                          ref
+                                              .read(routeListProvider.notifier)
+                                              .state = [];
+                                          await SharedPreferencesHelper
+                                              .setBusName("");
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Theme.of(context).brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.black
+                                                  : Colors.transparent,
+                                          elevation: 0.0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            side: BorderSide(
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.transparent
+                                                  : Colors.grey[800]!,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 12),
+                                          fixedSize: const Size(200, 50),
+                                        ),
+                                        child: Text(
+                                          'Select',
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.white
+                                                  : Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ),
-                              ),
-                            ),
+                                )),
                           )
                         : const SizedBox(height: 0);
                   }, childCount: filteredPlaceListArr.length),
@@ -282,7 +328,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
                     child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        "Bus suggestions",
+                        "Buses to '$destination'",
                         style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -349,7 +395,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
                       ),
                       Center(
                         // padding: const EdgeInsets.all(10),
-                        child: (busName != null && busName != "")
+                        child: (busName != "")
                             ? FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
@@ -369,7 +415,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10),
-                        child: (busName != null && busName != "")
+                        child: (busName != "")
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

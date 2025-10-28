@@ -71,6 +71,8 @@ class _BusListState extends ConsumerState<BusList>
             // borderOnForeground: true,
             child: Container(
               width: 350,
+              // height: 800,
+              // color: Color(stColor),
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -157,6 +159,7 @@ class _BusListState extends ConsumerState<BusList>
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             "${busName['up_time']}-${busName['down_time']}",
@@ -171,43 +174,55 @@ class _BusListState extends ConsumerState<BusList>
                           ),
                         ],
                       ),
-                      IconButton(
-                        icon: Icon(
-                          LucideIcons.bookmarkPlus,
-                          color: Theme.of(context).brightness != Brightness.dark
-                              ? Colors.black54
-                              : Colors.white70,
-                          size: 30,
-                        ),
-                        onPressed: () async => {
-                          SharedPreferencesHelper.setBusName(
-                              busName['bus_name']),
-                          ref.read(busNameProvider.notifier).state =
-                              busName['bus_name'],
-                          ref.read(routeListProvider.notifier).state =
-                              await DatabaseHelper().getBusInfo(
-                                  busName: busName['bus_name'], busType: 1),
-                          if (context.mounted)
-                            {
-                              ShadToaster.of(context).show(
-                                const ShadToast(
-                                  title: Text('Selected'),
-                                  description: Text('Bus route has been selected'),
-                                ),
-                              ),
-                            }
-                        },
-                        // color: Color(stColor),
-                        style: ElevatedButton.styleFrom(
-                          // backgroundColor: Color(stColor),
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async => {
+                      SharedPreferencesHelper.setBusName(busName['bus_name']),
+                      ref.read(busNameProvider.notifier).state =
+                          busName['bus_name'],
+                      ref.read(routeListProvider.notifier).state =
+                          await DatabaseHelper().getBusInfo(
+                              busName: busName['bus_name'], busType: 1),
+                      if (context.mounted)
+                        {
+                          ShadToaster.of(context).show(
+                             ShadToast(
+                              title: Text('Selected'),
+                              description: Text('${busName['bus_name']} is selected'),
+                            ),
                           ),
-                          fixedSize: const Size(50, 50),
+                        }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Theme.of(context).brightness != Brightness.dark
+                              ? Colors.black
+                              : Colors.transparent,
+                      elevation: 0.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: Theme.of(context).brightness != Brightness.dark
+                              ? Colors.transparent
+                              : Colors.grey[800]!,
+                          width: 1,
                         ),
                       ),
-                    ],
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      fixedSize: const Size(200, 50),
+                    ),
+                    child: Text(
+                      'Select',
+                      style: TextStyle(
+                          color: Theme.of(context).brightness != Brightness.dark
+                              ? Colors.white
+                              : Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: GoogleFonts.poppins().fontFamily),
+                    ),
                   ),
                 ],
               ),

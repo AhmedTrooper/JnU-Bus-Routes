@@ -353,7 +353,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: SizedBox(
-                    height: 275,
+                    height: 330,
                     child: CustomScrollView(
                       scrollDirection: Axis.horizontal,
                       slivers: [BusList(busNames: busListForDestination)],
@@ -380,19 +380,19 @@ class _HomeTabState extends ConsumerState<HomeTab>
                   ),
                   child: Column(
                     children: [
-                      SizedBox(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            "Destination : $destination",
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: GoogleFonts.poppins().fontFamily,
-                            ),
-                          ),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   child: FittedBox(
+                      //     fit: BoxFit.scaleDown,
+                      //     child: Text(
+                      //       "Destination : $destination",
+                      //       style: TextStyle(
+                      //         fontSize: 25,
+                      //         fontWeight: FontWeight.bold,
+                      //         fontFamily: GoogleFonts.poppins().fontFamily,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       Center(
                         // padding: const EdgeInsets.all(10),
                         child: (busName != "")
@@ -420,20 +420,12 @@ class _HomeTabState extends ConsumerState<HomeTab>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ShadSwitch(
-                                    checkedTrackColor:
-                                        Theme.of(context).brightness !=
-                                                Brightness.dark
-                                            ? Colors.black54
-                                            : Colors.white70,
+                                    checkedTrackColor: Color(stColor),
                                     value: busOnUp,
                                     label: busOnUp
                                         ? Icon(
                                             LucideIcons.university,
-                                            color:
-                                                Theme.of(context).brightness !=
-                                                        Brightness.dark
-                                                    ? Colors.black54
-                                                    : Colors.white70,
+                                            color: Color(stColor),
                                             size: 30,
                                           )
                                         : Icon(

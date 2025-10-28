@@ -24,9 +24,9 @@ class PlaceList extends ConsumerStatefulWidget {
 class _PlaceListState extends ConsumerState<PlaceList> {
   @override
   Widget build(BuildContext context) {
-    final bgColor = ref.watch(backgroundColorProvider);
-    int stColor = bgColor.value;
-    final destination = ref.watch(destinationProvider);
+    // final bgColor = ref.watch(backgroundColorProvider);
+    // int stColor = bgColor.value;
+    // final destination = ref.watch(destinationProvider);
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -74,17 +74,9 @@ class _PlaceListState extends ConsumerState<PlaceList> {
                           ),
                           const SizedBox(height: 16),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.map,
-                                color: Theme.of(context).brightness !=
-                                        Brightness.dark
-                                    ? Colors.black54
-                                    : Colors.white70,
-                                size: 25,
-                              ),
                               ElevatedButton(
                                 onPressed: () =>
                                     context.push("/place/$placeName"),
@@ -121,64 +113,49 @@ class _PlaceListState extends ConsumerState<PlaceList> {
                                           GoogleFonts.poppins().fontFamily),
                                 ),
                               ),
-                              IconButton(
-                                onPressed: () async {
-                                  SharedPreferencesHelper.setDestOrSource(
-                                      placeName);
-                                  ref.read(destinationProvider.notifier).state =
-                                      placeName;
-                                  ref
-                                          .read(busListForDestinationProvider
-                                              .notifier)
-                                          .state =
-                                      await DatabaseHelper()
-                                          .getBusInfo(placeName: placeName);
-                                  SharedPreferencesHelper.setDestOrSource(
-                                      placeName);
-                                  ref.read(destinationProvider.notifier).state =
-                                      placeName;
-                                  ref
-                                          .read(busListForDestinationProvider
-                                              .notifier)
-                                          .state =
-                                      await DatabaseHelper()
-                                          .getBusInfo(placeName: placeName);
-                                  ref.read(busNameProvider.notifier).state =
-                                      null;
-                                  ref.read(routeListProvider.notifier).state =
-                                      [];
-                                  await SharedPreferencesHelper.setBusName("");
-                                  if (mounted) {
-                                    ShadToaster.of(context).show(
-                                      ShadToast(
-                                        title: Text(
-                                          'Selected',
-                                          style: TextStyle(
-                                              fontFamily: GoogleFonts.poppins()
-                                                  .fontFamily),
-                                        ),
-                                        description:
-                                            Text('$placeName is selected'),
-                                        action: ShadButton.outline(
-                                          child: const Text('Close'),
-                                          onPressed: () =>
-                                              ShadToaster.of(context).hide(),
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                icon: Icon(
-                                  LucideIcons.bookmarkPlus,
-                                  size: 25,
-                                  color: Theme.of(context).brightness !=
-                                          Brightness.dark
-                                      ? Colors.black54
-                                      : Colors.white70,
-                                ),
-                              ),
                             ],
                           ),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                              onPressed: () async => {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).brightness !=
+                                        Brightness.dark
+                                    ? Colors.black
+                                    : Colors.transparent,
+                                elevation: 0.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                    color: Theme.of(context).brightness !=
+                                            Brightness.dark
+                                        ? Colors.transparent
+                                        : Colors.grey[800]!,
+                                    width: 1,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                                fixedSize: const Size(200, 50),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Set as Destination',
+                                    style: TextStyle(
+                                        color: Theme.of(context).brightness !=
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily:
+                                            GoogleFonts.poppins().fontFamily),
+                                  ),
+                                  Icon(Icons.place)
+                                ],
+                              )),
                         ],
                       ),
                     ),

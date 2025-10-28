@@ -361,11 +361,10 @@ class _HomeTabState extends ConsumerState<HomeTab>
                   ),
                 ),
               ),
-        ((destination != null && destination != "") &&
-                (busName != null && busName != ""))
+        ((busName != null && busName != ""))
             ? SliverAppBar(
                 toolbarHeight: 150,
-                pinned: false,
+                pinned: true,
                 title: Container(
                   padding: const EdgeInsets.all(15),
                   margin: const EdgeInsets.all(15),

@@ -117,7 +117,52 @@ class _PlaceListState extends ConsumerState<PlaceList> {
                           ),
                           SizedBox(height: 10),
                           ElevatedButton(
-                              onPressed: () async => {},
+                              onPressed: () async {
+                                  SharedPreferencesHelper.setDestOrSource(
+                                      placeName);
+                                  ref.read(destinationProvider.notifier).state =
+                                      placeName;
+                                  ref
+                                          .read(busListForDestinationProvider
+                                              .notifier)
+                                          .state =
+                                      await DatabaseHelper()
+                                          .getBusInfo(placeName: placeName);
+                                  SharedPreferencesHelper.setDestOrSource(
+                                      placeName);
+                                  ref.read(destinationProvider.notifier).state =
+                                      placeName;
+                                  ref
+                                          .read(busListForDestinationProvider
+                                              .notifier)
+                                          .state =
+                                      await DatabaseHelper()
+                                          .getBusInfo(placeName: placeName);
+                                  ref.read(busNameProvider.notifier).state =
+                                      null;
+                                  ref.read(routeListProvider.notifier).state =
+                                      [];
+                                  await SharedPreferencesHelper.setBusName("");
+                                  if (mounted) {
+                                    ShadToaster.of(context).show(
+                                      ShadToast(
+                                        title: Text(
+                                          'Selected',
+                                          style: TextStyle(
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily),
+                                        ),
+                                        description:
+                                            Text('$placeName is selected'),
+                                        action: ShadButton.outline(
+                                          child: const Text('Close'),
+                                          onPressed: () =>
+                                              ShadToaster.of(context).hide(),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context).brightness !=
                                         Brightness.dark

@@ -2,12 +2,29 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+
 }
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 
 android {
     namespace = "com.sutsoa.jnu_bus_routes"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -22,24 +39,38 @@ android {
         applicationId = "com.sutsoa.jnu_bus_routes"
         minSdkVersion = flutter.minSdkVersion
         targetSdk = 36
-        versionCode = 3
-        versionName = "1.1.2"
+        versionCode = 5
+        versionName = "2.0.0"
         multiDexEnabled = true
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug
-            minifyEnabled = false
-            shrinkResources = false
+            // signingConfig = signingConfigs.debug
+            signingConfig = signingConfigs.release
+
+            minifyEnabled = true
+            shrinkResources = true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
     buildFeatures {
         buildConfig = true
     }
+  
+
 }
 
 flutter {
     source = "../.."
+}
+
+ dependencies {
+    // REMOVE this line:
+    // implementation 'com.google.android.play:core:1.10.3'
+
+    // ADD these (recommended by Google for SDK 34+):
+    implementation 'com.google.android.play:app-update:2.1.0'
+    implementation 'com.google.android.play:review:2.0.1'
 }

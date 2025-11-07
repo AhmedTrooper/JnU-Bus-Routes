@@ -363,99 +363,84 @@ class _HomeTabState extends ConsumerState<HomeTab>
               ),
         ((busName != null && busName != ""))
             ? SliverAppBar(
-                toolbarHeight: 90,
+                expandedHeight: 50,
+                collapsedHeight: 65,
+                toolbarHeight: 50,
                 pinned: true,
-                title: Container(
-                  padding: const EdgeInsets.all(15),
-                  margin: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.black12,
-                    border: Border.all(
+                flexibleSpace: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.black12,
+                      border: Border.all(
                         color: Theme.of(context).brightness != Brightness.dark
                             ? Colors.transparent
                             : Color(Colors.grey[800]!.value),
-                        width: 1),
-                  ),
-                  child: Column(
-                    children: [
-                      // SizedBox(
-                      //   child: FittedBox(
-                      //     fit: BoxFit.scaleDown,
-                      //     child: Text(
-                      //       "Destination : $destination",
-                      //       style: TextStyle(
-                      //         fontSize: 25,
-                      //         fontWeight: FontWeight.bold,
-                      //         fontFamily: GoogleFonts.poppins().fontFamily,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      Center(
-                        // padding: const EdgeInsets.all(10),
-                        child: (busName != "")
-                            ? FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  "Bus : $busName",
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(
-                                width: 0,
-                                height: 0,
-                              ),
+                        width: 1,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: (busName != "")
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ShadSwitch(
-                                    checkedTrackColor: Color(stColor),
-                                    value: busOnUp,
-                                    label: busOnUp
-                                        ? Icon(
-                                            LucideIcons.university,
-                                            color: Color(stColor),
-                                            size: 30,
-                                          )
-                                        : Icon(
-                                            LucideIcons.house,
-                                            color:
-                                                Theme.of(context).brightness !=
-                                                        Brightness.dark
-                                                    ? Colors.black54
-                                                    : Colors.white70,
-                                            size: 30,
-                                          ),
-                                    onChanged: (v) => {
-                                      setState(() => busOnUp = !busOnUp),
-                                      ref
-                                              .read(routeListProvider.notifier)
-                                              .state =
-                                          ref
-                                              .read(routeListProvider.notifier)
-                                              .state
-                                              .reversed
-                                              .toList()
-                                    },
-                                  )
-                                ],
-                              )
-                            : const SizedBox(
-                                width: 0,
-                                height: 0,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (busName != "")
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "Bus : $busName",
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                               ),
-                      ),
-                    ],
+                            ),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.all(1),
+                          child: (busName != "")
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ShadSwitch(
+                                      checkedTrackColor: Color(stColor),
+                                      value: busOnUp,
+                                      label: busOnUp
+                                          ? Icon(
+                                              LucideIcons.university,
+                                              color: Color(stColor),
+                                              size: 30,
+                                            )
+                                          : Icon(
+                                              LucideIcons.house,
+                                              color: Theme.of(context)
+                                                          .brightness !=
+                                                      Brightness.dark
+                                                  ? Colors.black54
+                                                  : Colors.white70,
+                                              size: 30,
+                                            ),
+                                      onChanged: (v) => {
+                                        setState(() => busOnUp = !busOnUp),
+                                        ref
+                                                .read(routeListProvider.notifier)
+                                                .state =
+                                            ref
+                                                .read(
+                                                    routeListProvider.notifier)
+                                                .state
+                                                .reversed
+                                                .toList()
+                                      },
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox(width: 0, height: 0),
+                        ),
+                        
+                      ],
+                    ),
                   ),
                 ),
               )

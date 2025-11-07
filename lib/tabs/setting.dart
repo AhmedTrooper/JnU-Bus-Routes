@@ -12,6 +12,7 @@ final Uri _urlDeveloperTwo =
     Uri.parse('https://www.facebook.com/mehrabhosen.mahi');
 final Uri _urlDeveloperThree =
     Uri.parse("https://www.facebook.com/asfi.sultan");
+final Uri _urlJnUClub = Uri.parse('https://www.facebook.com/jnucseclub');
 
 class SettingTab extends ConsumerStatefulWidget {
   const SettingTab({super.key});
@@ -49,181 +50,182 @@ class _SettingTabState extends ConsumerState<SettingTab> {
           ),
         ),
         SliverToBoxAdapter(
-            child: Padding(
-          padding: EdgeInsets.all(15),
-          child: Column(
-            children: [
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  "Color",
-                  style: TextStyle(
-                      // color: Color(stColor),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      fontFamily: GoogleFonts.poppins().fontFamily),
+          child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "Color",
+                    style: TextStyle(
+                        // color: Color(stColor),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        fontFamily: GoogleFonts.poppins().fontFamily),
+                  ),
                 ),
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: DropdownButton<Color>(
-                    icon: const Icon(LucideIcons.arrowDown),
-                    borderRadius: BorderRadius.circular(10),
-                    enableFeedback: true,
-                    underline: const SizedBox(
-                      height: 0,
-                    ),
-                    isExpanded: false,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(5),
-                    value: _selectedColor,
-                    autofocus: false,
-                    dropdownColor: Colors.transparent,
-                    focusColor: Colors.greenAccent,
-                    elevation: 0,
-                    iconSize: 0.0,
-                    items: backgroundColorList.map(
-                      (color) {
-                        return DropdownMenuItem<Color>(
-                          value: color,
-                          child: Container(
-                            width: 200,
-                            height: 40,
-                            color: color,
-                          ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(2),
+                    child: DropdownButton<Color>(
+                      icon: const Icon(LucideIcons.arrowDown),
+                      borderRadius: BorderRadius.circular(10),
+                      enableFeedback: true,
+                      underline: const SizedBox(
+                        height: 0,
+                      ),
+                      isExpanded: false,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(5),
+                      value: _selectedColor,
+                      autofocus: false,
+                      dropdownColor: Colors.transparent,
+                      focusColor: Colors.greenAccent,
+                      elevation: 0,
+                      iconSize: 0.0,
+                      items: backgroundColorList.map(
+                        (color) {
+                          return DropdownMenuItem<Color>(
+                            value: color,
+                            child: Container(
+                              width: 200,
+                              height: 40,
+                              color: color,
+                            ),
+                          );
+                        },
+                      ).toList(),
+                      onChanged: (Color? newValue) {
+                        setState(
+                          () {
+                            _selectedColor = newValue!;
+                            ref.read(backgroundColorProvider.notifier).state =
+                                newValue;
+                            SharedPreferencesHelper.setBgColor(newValue);
+                          },
                         );
                       },
-                    ).toList(),
-                    onChanged: (Color? newValue) {
-                      setState(
-                        () {
-                          _selectedColor = newValue!;
-                          ref.read(backgroundColorProvider.notifier).state = newValue;
-                          SharedPreferencesHelper.setBgColor(newValue);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Divider(
-                height: 5,
-                color: mounted
-                    ? Theme.of(context).brightness != Brightness.dark
-                        ? Colors.black12
-                        : Colors.grey[800]
-                    : Colors.grey,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      "Reset Color",
-                      style: TextStyle(
-                          // color: Color(stColor),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          fontFamily: GoogleFonts.poppins().fontFamily),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: IconButton(
-                      onPressed: () async {
-                        ref.read(backgroundColorProvider.notifier).state =
-                            const Color(0xfff50057);
-                        await SharedPreferencesHelper.setBgColor(
-                            const Color(0xfff50057));
-                      },
-                      icon: Icon(
-                        LucideIcons.undo2,
-                        color: Theme.of(context).brightness != Brightness.dark
-                            ? Colors.black54
-                            : Colors.white70,
-                        size: 25,
+                ),
+                Divider(
+                  height: 5,
+                  color: mounted
+                      ? Theme.of(context).brightness != Brightness.dark
+                          ? Colors.black12
+                          : Colors.grey[800]
+                      : Colors.grey,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Reset Color",
+                        style: TextStyle(
+                            // color: Color(stColor),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            fontFamily: GoogleFonts.poppins().fontFamily),
                       ),
                     ),
-                  )
-                ],
-              ),
-              Divider(
-                height: 5,
-                color: mounted
-                    ? Theme.of(context).brightness != Brightness.dark
-                        ? Colors.black12
-                        : Colors.grey[800]
-                    : Colors.grey,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      isDarkModeStatus ? "Dark Mode" : "Light Mode",
-                      style: TextStyle(
-                          // color: Color(stColor),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          fontFamily: GoogleFonts.poppins().fontFamily),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: IconButton(
-                      onPressed: () {
-                        ref.read(isDarkThemeProvider.notifier).state =
-                            !isDarkModeStatus;
-                        SharedPreferencesHelper.setThemeStatus(
-                            !isDarkModeStatus);
-                      },
-                      icon: isDarkModeStatus
-                          ? Icon(
-                              LucideIcons.sun,
-                              size: 25,
-                              color: Theme.of(context).brightness !=
-                                      Brightness.dark
-                                  ? Colors.black54
-                                  : Colors.white70,
-                            )
-                          : Icon(
-                              LucideIcons.moon,
-                              size: 25,
-                              color: Theme.of(context).brightness !=
-                                      Brightness.dark
-                                  ? Colors.black54
-                                  : Colors.white70,
-                            ),
-                    ),
-                  ),
-                ],
-              ),
-              Divider(
-                height: 5,
-                color: mounted
-                    ? Theme.of(context).brightness != Brightness.dark
-                        ? Colors.black12
-                        : Colors.grey[800]
-                    : Colors.grey,
-              ),
-              const SizedBox(height: 20),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  "Developers",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      fontFamily: GoogleFonts.poppins().fontFamily),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: IconButton(
+                        onPressed: () async {
+                          ref.read(backgroundColorProvider.notifier).state =
+                              const Color(0xfff50057);
+                          await SharedPreferencesHelper.setBgColor(
+                              const Color(0xfff50057));
+                        },
+                        icon: Icon(
+                          LucideIcons.undo2,
+                          color: Theme.of(context).brightness != Brightness.dark
+                              ? Colors.black54
+                              : Colors.white70,
+                          size: 25,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              ),
-              const SizedBox(height: 10),
-            ],
+                Divider(
+                  height: 5,
+                  color: mounted
+                      ? Theme.of(context).brightness != Brightness.dark
+                          ? Colors.black12
+                          : Colors.grey[800]
+                      : Colors.grey,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        isDarkModeStatus ? "Dark Mode" : "Light Mode",
+                        style: TextStyle(
+                            // color: Color(stColor),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            fontFamily: GoogleFonts.poppins().fontFamily),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: IconButton(
+                        onPressed: () {
+                          ref.read(isDarkThemeProvider.notifier).state =
+                              !isDarkModeStatus;
+                          SharedPreferencesHelper.setThemeStatus(
+                              !isDarkModeStatus);
+                        },
+                        icon: isDarkModeStatus
+                            ? Icon(
+                                LucideIcons.sun,
+                                size: 25,
+                                color: Theme.of(context).brightness !=
+                                        Brightness.dark
+                                    ? Colors.black54
+                                    : Colors.white70,
+                              )
+                            : Icon(
+                                LucideIcons.moon,
+                                size: 25,
+                                color: Theme.of(context).brightness !=
+                                        Brightness.dark
+                                    ? Colors.black54
+                                    : Colors.white70,
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+                Divider(
+                  height: 5,
+                  color: mounted
+                      ? Theme.of(context).brightness != Brightness.dark
+                          ? Colors.black12
+                          : Colors.grey[800]
+                      : Colors.grey,
+                ),
+                const SizedBox(height: 20),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "Developers",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        fontFamily: GoogleFonts.poppins().fontFamily),
+                  ),
+                ),
+              ],
+            ),
           ),
-        )),
+        ),
         SliverToBoxAdapter(
           child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -449,6 +451,85 @@ class _SettingTabState extends ConsumerState<SettingTab> {
             ),
           ),
         ),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 40,
+          ),
+        ),
+        SliverToBoxAdapter(
+            child: Column(
+          children: [
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                "Presented By",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    fontFamily: GoogleFonts.poppins().fontFamily),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  side: BorderSide(
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.white
+                        : Colors.grey[800]!,
+                    width: 1,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.group_rounded,size: 25,),
+                          Text(
+                            "JnU CSE Club",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 25),
+                          ),
+                        ],
+                      ),
+                      
+                      Text(
+                        "Department of Computer Science and Engineering",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 15),
+                      ),
+                      Text(
+                        "Jagannath University, Dhaka, Bangladesh",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 15),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: _launchUrlOfClub,
+                            icon: Icon(
+                              Icons.facebook_rounded,
+                              size: 40,
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        )),
         const SliverToBoxAdapter(
           child: SizedBox(height: 100),
         ),
@@ -471,6 +552,12 @@ Future<void> _launchUrlTwo() async {
 
 Future<void> _launchUrlThree() async {
   if (!await launchUrl(_urlDeveloperThree)) {
+    throw Exception('Could not launch $_urlDeveloperThree');
+  }
+}
+
+Future<void> _launchUrlOfClub() async {
+  if (!await launchUrl(_urlJnUClub)) {
     throw Exception('Could not launch $_urlDeveloperThree');
   }
 }

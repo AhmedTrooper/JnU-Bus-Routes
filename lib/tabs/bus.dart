@@ -158,7 +158,7 @@ class _BusTabState extends ConsumerState<BusTab> {
                 },
               ),
             ),
-            pinned: false,
+            pinned: true,
           ),
           _filteredBusNames.isNotEmpty
               ? BusList(busNames: _filteredBusNames)
@@ -180,7 +180,7 @@ class _BusTabState extends ConsumerState<BusTab> {
                     child: Text(
                       "Sorry! Your searched letter hasn't matched any bus!",
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                       ),

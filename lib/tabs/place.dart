@@ -158,7 +158,7 @@ class _PlaceTabState extends ConsumerState<PlaceTab> {
                 },
               ),
             ),
-            pinned: false,
+            pinned: true,
           ),
           _filteredPlaceNames.isNotEmpty
               ? PlaceList(placeNames: _filteredPlaceNames)
@@ -180,7 +180,7 @@ class _PlaceTabState extends ConsumerState<PlaceTab> {
                     child: Text(
                       "Sorry! Your searched letter hasn't matched any place !",
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                       ),

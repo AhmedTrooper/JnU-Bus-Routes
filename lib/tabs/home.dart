@@ -196,7 +196,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
         ),
         SliverToBoxAdapter(
           child: SizedBox(
-            height: 290,
+            height: 200,
             child: CustomScrollView(
               scrollDirection: Axis.horizontal,
               slivers: [
@@ -205,10 +205,10 @@ class _HomeTabState extends ConsumerState<HomeTab>
                     final placeName = filteredPlaceListArr[index];
                     return placeName != "Jagannath University"
                         ? Padding(
-                            padding: const EdgeInsets.all(20.0),
+                            padding: const EdgeInsets.all(5.0),
                             child: Card(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(5),
                                   side: BorderSide(
                                     color: Theme.of(context).brightness !=
                                             Brightness.dark
@@ -220,12 +220,12 @@ class _HomeTabState extends ConsumerState<HomeTab>
                                 color: Colors.black12,
                                 elevation: 0.0,
                                 child: Padding(
-                                  padding: EdgeInsets.all(20.0),
+                                  padding: EdgeInsets.all(8.0),
                                   child: Column(
                                     children: [
                                       Image.asset(
                                         "assets/images/station.png",
-                                        width: 100,
+                                        width: 60,
                                       ),
                                       SizedBox(
                                         height: 10,
@@ -236,7 +236,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
                                         child: Text(
                                           placeName,
                                           style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 15,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: GoogleFonts.poppins()
                                                 .fontFamily,
@@ -295,7 +295,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
                                           ),
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 16, vertical: 12),
-                                          fixedSize: const Size(200, 50),
+                                          fixedSize: const Size(150, 50),
                                         ),
                                         child: Text(
                                           'Select',
@@ -363,7 +363,7 @@ class _HomeTabState extends ConsumerState<HomeTab>
               ),
         ((busName != null && busName != ""))
             ? SliverAppBar(
-                toolbarHeight: 150,
+                toolbarHeight: 90,
                 pinned: true,
                 title: Container(
                   padding: const EdgeInsets.all(15),

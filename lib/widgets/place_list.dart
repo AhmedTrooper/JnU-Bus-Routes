@@ -6,7 +6,6 @@ import 'package:jnu_bus_routes/database/database_helper.dart';
 import 'package:jnu_bus_routes/providers/bus_provider.dart';
 import 'package:jnu_bus_routes/providers/place_provider.dart';
 import 'package:jnu_bus_routes/providers/route_provider.dart';
-import 'package:jnu_bus_routes/providers/theme_provider.dart';
 import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -198,7 +197,10 @@ class _PlaceListState extends ConsumerState<PlaceList> {
                                         fontFamily:
                                             GoogleFonts.poppins().fontFamily),
                                   ),
-                                  Icon(Icons.place)
+                                  Icon(Icons.place,color: Theme.of(context).brightness !=
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.white,)
                                 ],
                               )),
                         ],

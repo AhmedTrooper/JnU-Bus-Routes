@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jnu_bus_routes/core/constants/app_colors.dart';
+import 'package:jnu_bus_routes/core/services/location_service.dart';
 import 'package:jnu_bus_routes/core/widgets/glass_card.dart';
 import 'package:jnu_bus_routes/features/bus_routes/domain/models/bus_enums.dart';
 import 'package:jnu_bus_routes/features/bus_routes/presentation/providers/bus_providers.dart';
@@ -40,9 +41,12 @@ class _BusDetailScreenState extends ConsumerState<BusDetailScreen> {
           IconButton(
             icon: const Icon(Icons.map_rounded, color: AppColors.appleBlue),
             tooltip: 'Live Map',
-            onPressed: () {
-              final dirParam = (_direction == RouteDirection.up) ? 'up' : 'down';
-              context.push('/bus/${widget.busId}/map?direction=$dirParam');
+            onPressed: () async {
+              await LocationService.checkPermission();
+              if (context.mounted) {
+                final dirParam = (_direction == RouteDirection.up) ? 'up' : 'down';
+                context.push('/bus/${widget.busId}/map?direction=$dirParam');
+              }
             },
           ),
         ],
@@ -240,9 +244,12 @@ class _BusDetailScreenState extends ConsumerState<BusDetailScreen> {
         backgroundColor: AppColors.appleBlue,
         foregroundColor: Colors.white,
         elevation: 0,
-        onPressed: () {
-          final dirParam = (_direction == RouteDirection.up) ? 'up' : 'down';
-          context.push('/bus/${widget.busId}/map?direction=$dirParam');
+        onPressed: () async {
+          await LocationService.checkPermission();
+          if (context.mounted) {
+            final dirParam = (_direction == RouteDirection.up) ? 'up' : 'down';
+            context.push('/bus/${widget.busId}/map?direction=$dirParam');
+          }
         },
         icon: const Icon(Icons.navigation_rounded),
         label: const Text('Live Tracking', style: TextStyle(fontWeight: FontWeight.w600)),

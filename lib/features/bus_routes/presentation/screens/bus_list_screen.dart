@@ -8,6 +8,7 @@ import 'package:jnu_bus_routes/core/constants/app_colors.dart';
 import 'package:jnu_bus_routes/core/database/hive_service.dart';
 import 'package:jnu_bus_routes/core/utils/recommendation_engine.dart';
 import 'package:jnu_bus_routes/core/widgets/shadcn_components.dart';
+import 'package:jnu_bus_routes/core/services/location_service.dart';
 import 'package:jnu_bus_routes/features/bus_routes/data/models/bus_model.dart';
 import 'package:jnu_bus_routes/features/bus_routes/domain/models/bus_enums.dart';
 import 'package:jnu_bus_routes/features/bus_routes/presentation/providers/bus_providers.dart';
@@ -443,7 +444,12 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                         ),
                       ),
                       ElevatedButton.icon(
-                        onPressed: () => context.push('/bus/${primaryBus!.id}/map?direction=up'),
+                        onPressed: () async {
+                          await LocationService.checkPermission();
+                          if (context.mounted) {
+                            context.push('/bus/${primaryBus!.id}/map?direction=up');
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.shadcnEmerald,
                           foregroundColor: Colors.white,

@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jnu_bus_routes/core/utils/app_logger.dart';
 import '../config/env_config.dart';
 
 class HiveService {
@@ -7,10 +8,12 @@ class HiveService {
   static const String searchHistoryBoxName = 'search_history_box';
 
   static Future<void> init() async {
+    appLogger.i('Initializing Hive...');
     await Hive.initFlutter();
     await Hive.openBox(settingsBoxName);
     await Hive.openBox(favoritesBoxName);
     await Hive.openBox(searchHistoryBoxName);
+    appLogger.i('Hive initialized successfully.');
   }
 
   static Box get _settingsBox => Hive.box(settingsBoxName);

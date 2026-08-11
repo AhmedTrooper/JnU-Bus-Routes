@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jnu_bus_routes/core/constants/app_colors.dart';
+import 'package:jnu_bus_routes/core/services/location_service.dart';
 import 'package:jnu_bus_routes/core/widgets/shadcn_components.dart';
 import 'package:jnu_bus_routes/features/bus_routes/data/models/bus_model.dart';
 import 'package:jnu_bus_routes/features/bus_routes/domain/models/bus_enums.dart';
@@ -146,7 +147,12 @@ class BusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton(
-                  onPressed: () => context.push('/bus/${bus.id}/map?direction=up'),
+                  onPressed: () async {
+                    await LocationService.checkPermission();
+                    if (context.mounted) {
+                      context.push('/bus/${bus.id}/map?direction=up');
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isDark ? AppColors.darkForeground : AppColors.lightForeground,
                     foregroundColor: isDark ? AppColors.darkBackground : Colors.white,

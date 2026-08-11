@@ -40,8 +40,8 @@ enum BusType {
 
 /// Enum representing Up vs Down route trip direction
 enum RouteDirection {
-  up(0, 'Up Route (Campus Bound)', 'ক্যাম্পাস মুখী (সকাল)'),
-  down(1, 'Down Route (Home Bound)', 'বাসা মুখী (বিকাল)');
+  up(0, 'Up Route (Morning Trip)', 'আপ ট্রিপ (সকাল)'),
+  down(1, 'Down Route (Afternoon Trip)', 'ডাউন ট্রিপ (বিকাল)');
 
   final int code;
   final String englishLabel;

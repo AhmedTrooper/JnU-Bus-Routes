@@ -7,51 +7,72 @@ import 'package:jnu_bus_routes/features/bus_routes/domain/models/bus_enums.dart'
 class BusCard extends StatelessWidget {
   final BusModel bus;
   final bool isFavorite;
+  final bool isPrimary;
   final VoidCallback onToggleFavorite;
+  final VoidCallback? onSetPrimary;
 
   const BusCard({
     super.key,
     required this.bus,
     required this.isFavorite,
+    this.isPrimary = false,
     required this.onToggleFavorite,
+    this.onSetPrimary,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.uberDarkCard,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.uberBorder, width: 1),
+        color: theme.cardTheme.color,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: isPrimary
+              ? AppColors.primaryRed
+              : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+          width: isPrimary ? 2 : 1,
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withAlpha(8),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         onTap: () => context.push('/bus/${bus.id}'),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              // Bus Icon Badge
+              // Circular Bus Badge
               Container(
-                width: 46,
-                height: 46,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.uberDarkElevated,
+                  color: AppColors.primaryRed.withAlpha(20),
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.uberBorder),
+                  border: Border.all(color: AppColors.primaryRed.withAlpha(80), width: 1.5),
                 ),
                 child: const Center(
                   child: Icon(
                     Icons.directions_bus_filled_rounded,
-                    color: AppColors.uberGold,
-                    size: 22,
+                    color: AppColors.primaryRed,
+                    size: 24,
                   ),
                 ),
               ),
               const SizedBox(width: 14),
 
-              // Bus Details (Name, Destination, Demographics)
+              // Bus Name & Route Destination
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,10 +84,10 @@ class BusCard extends StatelessWidget {
                             bus.busName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
+                              color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
                             ),
                           ),
                         ),
@@ -76,7 +97,7 @@ class BusCard extends StatelessWidget {
                             padding: const EdgeInsets.all(4.0),
                             child: Icon(
                               isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
-                              color: isFavorite ? AppColors.uberGold : AppColors.textMuted,
+                              color: isFavorite ? AppColors.accentGold : AppColors.textDarkSecondary,
                               size: 20,
                             ),
                           ),
@@ -85,17 +106,20 @@ class BusCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'To ${bus.lastStoppage}',
+                      'Terminal: ${bus.lastStoppage}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
                         _buildSmallPill(bus.userType.englishLabel, _getUserTypeColor(bus.userType)),
                         const SizedBox(width: 6),
-                        _buildSmallPill(bus.busType.englishLabel, AppColors.textMuted),
+                        _buildSmallPill(bus.busType.englishLabel, AppColors.accentBlue),
                       ],
                     ),
                   ],
@@ -103,7 +127,7 @@ class BusCard extends StatelessWidget {
               ),
               const SizedBox(width: 10),
 
-              // Trip Schedule & Live Button
+              // Times & Action Button
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -112,16 +136,16 @@ class BusCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.uberBlue,
+                      color: AppColors.primaryRed,
                     ),
                   ),
                   const SizedBox(height: 2),
-                  const Text('Morning Up', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
+                  const Text('Morning Up', style: TextStyle(fontSize: 10, color: AppColors.textDarkSecondary)),
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () => context.push('/bus/${bus.id}/map?direction=up'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.uberBlue,
+                      backgroundColor: AppColors.primaryRed,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
@@ -142,14 +166,15 @@ class BusCard extends StatelessWidget {
 
   Widget _buildSmallPill(String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withAlpha(25),
-        borderRadius: BorderRadius.circular(6),
+        color: color.withAlpha(20),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withAlpha(60)),
       ),
       child: Text(
         text,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: color),
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
       ),
     );
   }
@@ -157,7 +182,7 @@ class BusCard extends StatelessWidget {
   Color _getUserTypeColor(UserType type) {
     switch (type) {
       case UserType.student:
-        return AppColors.uberGreen;
+        return AppColors.successGreen;
       case UserType.teacherAndOfficer:
         return Colors.purpleAccent;
       case UserType.staff:

@@ -13,7 +13,6 @@ class HiveService {
     await Hive.openBox(searchHistoryBoxName);
   }
 
-  // Settings getters & setters
   static Box get _settingsBox => Hive.box(settingsBoxName);
   static Box get _favoritesBox => Hive.box(favoritesBoxName);
   static Box get _searchBox => Hive.box(searchHistoryBoxName);
@@ -32,6 +31,27 @@ class HiveService {
         defaultValue: EnvConfig.mapApiKey,
       );
   static Future<void> setCustomApiKey(String key) => _settingsBox.put('custom_api_key', key);
+
+  // Permanent Primary Bus & Home Stoppage Selection
+  static int? get primaryBusId => _settingsBox.get('primary_bus_id') as int?;
+  static int? get primaryStoppageId => _settingsBox.get('primary_stoppage_id') as int?;
+  static String? get primaryStoppageName => _settingsBox.get('primary_stoppage_name') as String?;
+
+  static Future<void> setPrimaryRoute({
+    required int busId,
+    required int stoppageId,
+    required String stoppageName,
+  }) async {
+    await _settingsBox.put('primary_bus_id', busId);
+    await _settingsBox.put('primary_stoppage_id', stoppageId);
+    await _settingsBox.put('primary_stoppage_name', stoppageName);
+  }
+
+  static Future<void> clearPrimaryRoute() async {
+    await _settingsBox.delete('primary_bus_id');
+    await _settingsBox.delete('primary_stoppage_id');
+    await _settingsBox.delete('primary_stoppage_name');
+  }
 
   // Favorites
   static List<int> get favoriteBusIds =>

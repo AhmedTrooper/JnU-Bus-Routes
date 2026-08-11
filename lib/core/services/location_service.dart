@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:jnu_bus_routes/core/utils/app_logger.dart';
@@ -45,10 +46,27 @@ class LocationService {
   }
 
   static Stream<LatLng> getPositionStream() {
-    const locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 5, // update every 5 meters
-    );
+    late LocationSettings locationSettings;
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      locationSettings = AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 15, // Update when moving 15 meters
+        forceLocationManager: true,
+        intervalDuration: const Duration(seconds: 5), // Max update every 5 seconds
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 15, // Update when moving 15 meters
+        pauseLocationUpdatesAutomatically: true, // Auto-pause when stationary
+      );
+    } else {
+      locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 15,
+      );
+    }
 
     return Geolocator.getPositionStream(locationSettings: locationSettings).map(
       (pos) => LatLng(pos.latitude, pos.longitude),

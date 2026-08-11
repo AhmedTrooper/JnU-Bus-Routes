@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires access to your location to track JnU buses in real-time and estimate arrival times.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app requires access to your location to track JnU buses in real-time and estimate arrival times.</string>
 </dict>
 </plist>

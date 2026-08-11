@@ -45,23 +45,35 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/app/key.properties
           echo "storeFile=upload-keystore.jks" >> android/app/key.properties
 
+      - name: Extract Version
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: *//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "app_name=jnu_bus_routes" >> "$GITHUB_OUTPUT"
+
       - name: Build Android APK
         run: flutter build apk --release
 
       - name: Build Android AppBundle
         run: flutter build appbundle --release
 
+      - name: Rename Release Artifacts
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/${{ steps.version.outputs.app_name }}_v${{ steps.version.outputs.version }}.apk
+          mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/${{ steps.version.outputs.app_name }}_v${{ steps.version.outputs.version }}.aab
+
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: ${{ steps.version.outputs.app_name }}_v${{ steps.version.outputs.version }}_apk
+          path: build/app/outputs/flutter-apk/${{ steps.version.outputs.app_name }}_v${{ steps.version.outputs.version }}.apk
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-aab
-          path: build/app/outputs/bundle/release/app-release.aab
+          name: ${{ steps.version.outputs.app_name }}_v${{ steps.version.outputs.version }}_aab
+          path: build/app/outputs/bundle/release/${{ steps.version.outputs.app_name }}_v${{ steps.version.outputs.version }}.aab
 
       # Optional: Clean up secrets for extra safety (though ephemeral runners die anyway)
       - name: Clean up Keystore & Properties

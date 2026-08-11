@@ -22,6 +22,8 @@ final searchQueryProvider = StateProvider<String>((ref) => '');
 
 final selectedUserTypeFilterProvider = StateProvider<UserType?>((ref) => null);
 
+final homeRouteDirectionProvider = StateProvider<RouteDirection>((ref) => RouteDirection.up);
+
 final allBusesProvider = FutureProvider<List<BusModel>>((ref) async {
   final repo = ref.watch(busRepositoryProvider);
   return repo.getAllBuses();

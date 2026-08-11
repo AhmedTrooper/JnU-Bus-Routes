@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jnu_bus_routes/core/constants/app_colors.dart';
 import 'package:jnu_bus_routes/core/services/location_service.dart';
 import 'package:jnu_bus_routes/core/widgets/shadcn_components.dart';
 import 'package:jnu_bus_routes/features/bus_routes/data/models/bus_model.dart';
 import 'package:jnu_bus_routes/features/bus_routes/domain/models/bus_enums.dart';
+import 'package:jnu_bus_routes/features/bus_routes/presentation/providers/bus_providers.dart';
 
-class BusCard extends StatelessWidget {
+class BusCard extends ConsumerWidget {
   final BusModel bus;
   final bool isFavorite;
   final bool isPrimary;
@@ -23,12 +24,21 @@ class BusCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     final primaryTextColor = isDark ? AppColors.darkForeground : AppColors.lightForeground;
     final secondaryTextColor = isDark ? AppColors.darkMutedForeground : AppColors.lightMutedForeground;
+
+    // Get current global direction preference
+    final currentDirection = ref.watch(homeRouteDirectionProvider);
+    final isUp = currentDirection == RouteDirection.up;
+
+    // Dynamic strings based on direction
+    final destination = isUp ? 'JnU Campus' : bus.lastStoppage;
+    final scheduleTime = isUp ? bus.upTime : bus.downTime;
+    final scheduleLabel = isUp ? 'Morning (Up)' : 'Afternoon (Down)';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
@@ -98,7 +108,7 @@ class BusCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    'To ${bus.lastStoppage}',
+                    'To $destination',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -131,7 +141,7 @@ class BusCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  bus.upTime,
+                  scheduleTime,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -140,7 +150,7 @@ class BusCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Morning Up',
+                  scheduleLabel,
                   style: TextStyle(
                     fontSize: 10,
                     color: secondaryTextColor,
@@ -151,7 +161,7 @@ class BusCard extends StatelessWidget {
                   onPressed: () async {
                     await LocationService.checkPermission();
                     if (context.mounted) {
-                      context.push('/bus/${bus.id}/map?direction=up');
+                      context.push('/bus/${bus.id}/map?direction=${isUp ? 'up' : 'down'}');
                     }
                   },
                   style: ElevatedButton.styleFrom(

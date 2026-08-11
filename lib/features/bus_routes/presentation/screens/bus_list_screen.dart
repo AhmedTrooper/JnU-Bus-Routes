@@ -277,6 +277,32 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                             ),
                           ),
 
+                          // Direction Toggle (Morning / Afternoon)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: _directionToggle(
+                                    context: context,
+                                    label: 'Morning (To Campus)',
+                                    isSelected: ref.watch(homeRouteDirectionProvider) == RouteDirection.up,
+                                    onTap: () => ref.read(homeRouteDirectionProvider.notifier).state = RouteDirection.up,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: _directionToggle(
+                                    context: context,
+                                    label: 'Afternoon (Return)',
+                                    isSelected: ref.watch(homeRouteDirectionProvider) == RouteDirection.down,
+                                    onTap: () => ref.read(homeRouteDirectionProvider.notifier).state = RouteDirection.down,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
                           // Filter Segmented Pills
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
@@ -730,6 +756,44 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
             color: isSelected
                 ? (isDark ? AppColors.darkBackground : Colors.white)
                 : (isDark ? AppColors.darkMutedForeground : AppColors.lightMutedForeground),
+          ),
+        ),
+      ),
+    );
+  Widget _directionToggle({
+    required BuildContext context,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark ? AppColors.darkForeground : AppColors.lightForeground)
+              : (isDark ? AppColors.darkMuted : AppColors.lightMuted),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? Colors.transparent
+                : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: isSelected
+                  ? (isDark ? AppColors.darkBackground : Colors.white)
+                  : (isDark ? AppColors.darkMutedForeground : AppColors.lightMutedForeground),
+            ),
           ),
         ),
       ),

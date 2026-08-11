@@ -31,6 +31,7 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
     _sheetController.dispose();
     super.dispose();
   }
+  @override
   Widget build(BuildContext context) {
     final busesAsync = ref.watch(filteredBusesProvider);
     final allBusesAsync = ref.watch(allBusesProvider);
@@ -760,6 +761,8 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
         ),
       ),
     );
+  }
+
   Widget _directionToggle({
     required BuildContext context,
     required String label,

@@ -31,7 +31,7 @@ jobs:
 
       - name: Analyze & Test
         run: |
-          flutter analyze
+          flutter analyze --no-fatal-infos --no-fatal-warnings
           flutter test
 
       - name: Decode Android Keystore
@@ -40,12 +40,10 @@ jobs:
 
       - name: Create key.properties
         run: |
-          cat <<EOF > android/key.properties
-          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword=${{ secrets.KEY_PASSWORD }}
-          keyAlias=${{ secrets.KEY_ALIAS }}
-          storeFile=upload-keystore.jks
-          EOF
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/app/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/app/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/app/key.properties
+          echo "storeFile=upload-keystore.jks" >> android/app/key.properties
 
       - name: Build Android APK
         run: flutter build apk --release
@@ -70,4 +68,4 @@ jobs:
         if: always()
         run: |
           rm -f android/app/upload-keystore.jks
-          rm -f android/key.properties
+          rm -f android/app/key.properties

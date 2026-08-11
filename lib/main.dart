@@ -1,148 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:jnu_bus_routes/database/database_helper.dart';
-import 'package:jnu_bus_routes/providers/bus_provider.dart';
-import 'package:jnu_bus_routes/providers/place_provider.dart';
-import 'package:jnu_bus_routes/providers/route_provider.dart';
-import 'package:jnu_bus_routes/providers/theme_provider.dart';
-import 'package:jnu_bus_routes/routes/app_router.dart';
-import 'package:jnu_bus_routes/utils/shared_preferences_helper.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 
-void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  
-  // Preserve splash screen
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+void main() {
+  runApp(const MyApp());
+}
 
-  try {
-    // Load initial data from SharedPreferences
-    final hasAgreed = await SharedPreferencesHelper.getAgreementStatus() ?? false;
-    final isDarkMode = await SharedPreferencesHelper.getThemeStatus() ?? true;
-    final bgColor = await SharedPreferencesHelper.getBgColor();
-    final busName = await SharedPreferencesHelper.getBusName();
-    final destinationOrSourceName = await SharedPreferencesHelper.getDestOrSource();
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-    // Initialize database and load data
-    final dbHelper = DatabaseHelper();
-    final placeList = await dbHelper.getPlaceList();
-    
-    // Load bus route data if bus name is selected
-    final routeList = (busName != null && busName.isNotEmpty)
-        ? await dbHelper.getBusInfo(busName: busName, busType: 1)
-        : <Map<String, dynamic>>[];
-
-    // Load bus list for destination if selected
-    final busListForDestination = (destinationOrSourceName != null && destinationOrSourceName.isNotEmpty)
-        ? await dbHelper.getBusInfo(placeName: destinationOrSourceName)
-        : <Map<String, dynamic>>[];
-
-    // Determine initial route
-    final initialLocation = hasAgreed ? '/' : '/welcome';
-
-    runApp(
-      ProviderScope(
-        child: MyApp(
-          initialLocation: initialLocation,
-          isDarkMode: isDarkMode,
-          bgColor: bgColor,
-          placeList: placeList,
-          busName: busName,
-          destinationOrSourceName: destinationOrSourceName,
-          busListForDestination: busListForDestination,
-          routeList: routeList,
-        ),
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // TRY THIS: Try running your application with "flutter run". You'll see
+        // the application has a purple toolbar. Then, without quitting the app,
+        // try changing the seedColor in the colorScheme below to Colors.green
+        // and then invoke "hot reload" (save your changes or press the "hot
+        // reload" button in a Flutter-supported IDE, or press "r" if you used
+        // the command line to start the app).
+        //
+        // Notice that the counter didn't reset back to zero; the application
+        // state is not lost during the reload. To reset the state, use hot
+        // restart instead.
+        //
+        // This works for code too, not just values: Most code changes can be
+        // tested with just a hot reload.
+        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-    );
-  } catch (e) {
-    // Fallback in case of initialization error
-    debugPrint('Error during initialization: $e');
-    runApp(
-      ProviderScope(
-        child: MyApp(
-          initialLocation: '/welcome',
-          isDarkMode: true,
-          bgColor: const Color(0xfff50057),
-          placeList: const [],
-          busName: null,
-          destinationOrSourceName: null,
-          busListForDestination: const [],
-          routeList: const [],
-        ),
-      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyApp extends ConsumerStatefulWidget {
-  final String initialLocation;
-  final bool isDarkMode;
-  final Color bgColor;
-  final List<String> placeList;
-  final String? busName;
-  final String? destinationOrSourceName;
-  final List<Map<String, dynamic>> busListForDestination;
-  final List<Map<String, dynamic>> routeList;
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
 
-  const MyApp({
-    super.key,
-    required this.initialLocation,
-    required this.isDarkMode,
-    required this.bgColor,
-    required this.placeList,
-    this.busName,
-    this.destinationOrSourceName,
-    required this.busListForDestination,
-    required this.routeList,
-  });
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
+  final String title;
 
   @override
-  ConsumerState<MyApp> createState() => _MyAppState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyAppState extends ConsumerState<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    // Initialize providers with loaded data
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(isDarkThemeProvider.notifier).state = widget.isDarkMode;
-      ref.read(backgroundColorProvider.notifier).state = widget.bgColor;
-      ref.read(placeListProvider.notifier).state = widget.placeList;
-      ref.read(filteredPlaceListProvider.notifier).state = widget.placeList;
-      if (widget.busName != null) {
-        ref.read(busNameProvider.notifier).state = widget.busName;
-      }
-      if (widget.destinationOrSourceName != null) {
-        ref.read(destinationProvider.notifier).state = widget.destinationOrSourceName;
-      }
-      ref.read(busListForDestinationProvider.notifier).state = widget.busListForDestination;
-      ref.read(routeListProvider.notifier).state = widget.routeList;
-      
-      // Remove splash screen after 3 seconds
-      Future.delayed(const Duration(seconds: 3), () {
-        FlutterNativeSplash.remove();
-      });
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _counter++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = ref.watch(isDarkThemeProvider);
-    final router = AppRouter(initialLocation: widget.initialLocation).router;
-
-    return ShadApp.router(
-      routerConfig: router,
-      debugShowCheckedModeBanner: false,
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      theme: ShadThemeData(
-        brightness: Brightness.light,
-        colorScheme: ShadColorScheme.fromName('slate', brightness: Brightness.light),
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
+    return Scaffold(
+      appBar: AppBar(
+        // TRY THIS: Try changing the color here to a specific color (to
+        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+        // change color while the other colors stay the same.
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
       ),
-      darkTheme: ShadThemeData(
-        brightness: Brightness.dark,
-        colorScheme: ShadColorScheme.fromName('slate', brightness: Brightness.dark),
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          //
+          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+          // action in the IDE, or press "p" in the console), to see the
+          // wireframe for each widget.
+          mainAxisAlignment: .center,
+          children: [
+            const Text('You have pushed the button this many times:'),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
       ),
     );
   }

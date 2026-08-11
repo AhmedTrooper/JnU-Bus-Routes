@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/database/hive_service.dart';
-import '../../../bus_routes/domain/models/bus_enums.dart';
-import '../../../bus_routes/domain/models/route_stoppage.dart';
-import '../../../bus_routes/presentation/providers/bus_providers.dart';
-import '../providers/live_tracking_provider.dart';
-import '../../widgets/passed_upcoming_sheet.dart';
+import 'package:jnu_bus_routes/core/constants/app_colors.dart';
+import 'package:jnu_bus_routes/core/database/hive_service.dart';
+import 'package:jnu_bus_routes/features/bus_routes/domain/models/bus_enums.dart';
+import 'package:jnu_bus_routes/features/bus_routes/domain/models/route_stoppage.dart';
+import 'package:jnu_bus_routes/features/bus_routes/presentation/providers/bus_providers.dart';
+import 'package:jnu_bus_routes/features/tracking_map/presentation/providers/live_tracking_provider.dart';
+import 'package:jnu_bus_routes/features/tracking_map/widgets/passed_upcoming_sheet.dart';
 
 class LiveMapScreen extends ConsumerStatefulWidget {
   final int busId;
@@ -51,27 +51,10 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
     final tileUrl = HiveService.customTileUrl;
 
     return Scaffold(
-      appBar: AppBar(
-        title: busAsync.when(
-          data: (bus) => Text('${bus?.busName ?? 'Bus'} Map'),
-          loading: () => const Text('Loading Map...'),
-          error: (err, stack) => const Text('Live Map'),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              liveState.direction == RouteDirection.up
-                  ? Icons.arrow_upward_rounded
-                  : Icons.arrow_downward_rounded,
-              color: AppColors.accentGold,
-            ),
-            tooltip: 'Toggle Up/Down Direction',
-            onPressed: () => liveNotifier.toggleDirection(),
-          ),
-        ],
-      ),
+      backgroundColor: AppColors.pitchBlack,
       body: Stack(
         children: [
+          // CartoDB Dark Base Map Layer
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
@@ -86,6 +69,7 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                 userAgentPackageName: 'com.jnu.busroutes',
               ),
 
+              // Uber Signature Electric Blue Polyline Layer
               polylineAsync.when(
                 data: (points) {
                   if (points.isEmpty) return const SizedBox.shrink();
@@ -94,7 +78,7 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                       Polyline(
                         points: points,
                         strokeWidth: 5.0,
-                        color: AppColors.accent,
+                        color: AppColors.uberBlue,
                       ),
                     ],
                   );
@@ -103,6 +87,7 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                 error: (err, stack) => const SizedBox.shrink(),
               ),
 
+              // Marker Layer for Stoppages & Live Vehicle Marker
               stoppagesAsync.when(
                 data: (stoppages) {
                   final markers = <Marker>[];
@@ -112,9 +97,9 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                       markers.add(
                         Marker(
                           point: stop.coordinates!,
-                          width: 40,
-                          height: 40,
-                          child: _buildStoppageMarker(stop),
+                          width: 32,
+                          height: 32,
+                          child: _buildUberStoppageMarker(stop),
                         ),
                       );
                     }
@@ -124,25 +109,19 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                     markers.add(
                       Marker(
                         point: liveState.userLocation!,
-                        width: 48,
-                        height: 48,
+                        width: 50,
+                        height: 50,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.uberDarkCard,
                             shape: BoxShape.circle,
-                            boxShadow: const [
-                              BoxShadow(color: Colors.black38, blurRadius: 8, offset: Offset(0, 2)),
+                            border: Border.all(color: AppColors.uberGold, width: 3),
+                            boxShadow: [
+                              BoxShadow(color: AppColors.uberGold.withAlpha(120), blurRadius: 12, spreadRadius: 2),
                             ],
-                            border: Border.all(color: AppColors.accentGold, width: 3),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Image.asset(
-                              'assets/images/bus.png',
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.directions_bus_rounded, color: AppColors.accentGold);
-                              },
-                            ),
+                          child: const Center(
+                            child: Icon(Icons.directions_bus_filled_rounded, color: AppColors.uberGold, size: 24),
                           ),
                         ),
                       ),
@@ -157,25 +136,69 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
             ],
           ),
 
-          Positioned(
-            right: 16,
-            top: 16,
-            child: FloatingActionButton.small(
-              heroTag: 'recenter_fab',
-              backgroundColor: Theme.of(context).cardColor,
-              foregroundColor: AppColors.accentGold,
-              onPressed: () {
-                final target = liveState.userLocation ?? _dhakaDefaultCenter;
-                _mapController.move(target, 15.0);
-              },
-              child: const Icon(Icons.my_location_rounded),
+          // Uber Top Header Bar (Back button & Bus name title)
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: AppColors.uberDarkCard.withAlpha(240),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.uberDarkCard.withAlpha(240),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: AppColors.uberBorder),
+                      ),
+                      child: busAsync.when(
+                        data: (bus) => Row(
+                          children: [
+                            const Icon(Icons.directions_bus_rounded, color: AppColors.uberGold, size: 18),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                bus?.busName ?? 'Live Tracking',
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.textPrimary),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        loading: () => const Text('Loading...', style: TextStyle(color: AppColors.textSecondary)),
+                        error: (_, __) => const Text('Live Tracking', style: TextStyle(color: AppColors.textPrimary)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  CircleAvatar(
+                    backgroundColor: AppColors.uberDarkCard.withAlpha(240),
+                    child: IconButton(
+                      icon: const Icon(Icons.my_location_rounded, color: AppColors.uberGold),
+                      onPressed: () {
+                        final target = liveState.userLocation ?? _dhakaDefaultCenter;
+                        _mapController.move(target, 15.0);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
+          // Uber Bottom Sheet for Passed/Upcoming Stoppages
           DraggableScrollableSheet(
-            initialChildSize: 0.35,
-            minChildSize: 0.15,
-            maxChildSize: 0.85,
+            initialChildSize: 0.38,
+            minChildSize: 0.16,
+            maxChildSize: 0.88,
             builder: (context, scrollController) {
               return stoppagesAsync.when(
                 data: (stoppages) {
@@ -198,13 +221,13 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                   );
                 },
                 loading: () => Container(
-                  color: Theme.of(context).cardColor,
-                  child: const Center(child: CircularProgressIndicator()),
+                  color: AppColors.uberDarkCard,
+                  child: const Center(child: CircularProgressIndicator(color: AppColors.uberBlue)),
                 ),
                 error: (err, stack) => Container(
-                  color: Theme.of(context).cardColor,
+                  color: AppColors.uberDarkCard,
                   padding: const EdgeInsets.all(16),
-                  child: Text('Error: $err'),
+                  child: Text('Error: $err', style: const TextStyle(color: Colors.red)),
                 ),
               );
             },
@@ -214,22 +237,18 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
     );
   }
 
-  Widget _buildStoppageMarker(RouteStoppage stop) {
+  Widget _buildUberStoppageMarker(RouteStoppage stop) {
     Color color;
-    IconData icon;
 
     switch (stop.status) {
       case StoppageStatus.passed:
-        color = AppColors.passedStoppage;
-        icon = Icons.check_circle_rounded;
+        color = AppColors.uberGreen;
         break;
       case StoppageStatus.current:
-        color = AppColors.currentStoppage;
-        icon = Icons.star_rounded;
+        color = AppColors.uberGold;
         break;
       case StoppageStatus.upcoming:
-        color = AppColors.upcomingStoppage;
-        icon = Icons.location_on_rounded;
+        color = AppColors.textMuted;
         break;
     }
 
@@ -237,13 +256,17 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
       message: '${stop.stoppageNo}. ${stop.placeName}',
       child: Container(
         decoration: BoxDecoration(
-          color: color.withAlpha(220),
+          color: AppColors.uberDarkCard,
           shape: BoxShape.circle,
-          boxShadow: const [
-            BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
-          ],
+          border: Border.all(color: color, width: stop.status == StoppageStatus.current ? 3 : 2),
         ),
-        child: Icon(icon, color: Colors.white, size: 22),
+        child: Center(
+          child: Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+        ),
       ),
     );
   }

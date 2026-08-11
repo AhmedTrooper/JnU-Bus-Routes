@@ -6,83 +6,47 @@ abstract class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.darkBackground,
+      scaffoldBackgroundColor: AppColors.pitchBlack,
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.accentGold,
-        secondary: AppColors.accent,
-        surface: AppColors.darkSurface,
-        onSurface: AppColors.textPrimaryDark,
-        onPrimary: AppColors.primary,
+        primary: AppColors.uberBlue,
+        secondary: AppColors.uberGold,
+        surface: AppColors.uberDarkCard,
+        onSurface: AppColors.textPrimary,
+        onPrimary: Colors.white,
       ),
       cardTheme: CardThemeData(
-        color: AppColors.darkSurface,
+        color: AppColors.uberDarkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.darkBorder, width: 1),
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppColors.uberBorder, width: 1),
         ),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.darkBackground,
+        backgroundColor: AppColors.pitchBlack,
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         titleTextStyle: TextStyle(
-          color: AppColors.textPrimaryDark,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
+          color: AppColors.textPrimary,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          letterSpacing: -0.5,
         ),
-        iconTheme: IconThemeData(color: AppColors.textPrimaryDark),
+        iconTheme: IconThemeData(color: AppColors.textPrimary),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: AppColors.darkSurface,
-        modalBackgroundColor: AppColors.darkSurface,
+        backgroundColor: AppColors.uberDarkCard,
+        modalBackgroundColor: AppColors.uberDarkCard,
+        elevation: 12,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
       ),
-      dividerColor: AppColors.darkBorder,
+      dividerColor: AppColors.uberBorder,
     );
   }
 
   static ThemeData get lightTheme {
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColors.lightBackground,
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.primary,
-        secondary: AppColors.accent,
-        surface: AppColors.lightSurface,
-        onSurface: AppColors.textPrimaryLight,
-        onPrimary: Colors.white,
-      ),
-      cardTheme: CardThemeData(
-        color: AppColors.lightSurface,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.lightBorder, width: 1),
-        ),
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.lightBackground,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: AppColors.textPrimaryLight,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-        ),
-        iconTheme: IconThemeData(color: AppColors.textPrimaryLight),
-      ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: AppColors.lightSurface,
-        modalBackgroundColor: AppColors.lightSurface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-      ),
-      dividerColor: AppColors.lightBorder,
-    );
+    return darkTheme; // Default to signature dark mode for luxury Uber aesthetic
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:jnu_bus_routes/core/constants/app_colors.dart';
 import 'package:jnu_bus_routes/core/database/hive_service.dart';
 import 'package:jnu_bus_routes/core/utils/recommendation_engine.dart';
@@ -12,6 +14,8 @@ import 'package:jnu_bus_routes/features/bus_routes/presentation/widgets/bus_card
 class BusListScreen extends ConsumerWidget {
   const BusListScreen({super.key});
 
+  static final LatLng _dhakaCenter = LatLng(23.7087, 90.4118);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final busesAsync = ref.watch(filteredBusesProvider);
@@ -20,263 +24,364 @@ class BusListScreen extends ConsumerWidget {
     final searchQuery = ref.watch(searchQueryProvider);
     final favorites = ref.watch(favoritesProvider);
     final recentSearches = HiveService.recentSearches;
+    final tileUrl = HiveService.customTileUrl;
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(filteredBusesProvider);
-          ref.invalidate(allBusesProvider);
-        },
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverAppBar.large(
-              expandedHeight: 140,
-              floating: false,
-              pinned: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              title: Row(
+      body: Stack(
+        children: [
+          // 1. Uber Base Dark Map View
+          FlutterMap(
+            options: MapOptions(
+              initialCenter: _dhakaCenter,
+              initialZoom: 13.0,
+              minZoom: 5.0,
+              maxZoom: 18.0,
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: tileUrl,
+                userAgentPackageName: 'com.jnu.busroutes',
+              ),
+            ],
+          ),
+
+          // 2. Uber Floating Top Search Header
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: AppColors.accentGold,
-                      shape: BoxShape.circle,
+                  // Floating "Where to?" Search Card
+                  GestureDetector(
+                    onTap: () => context.push('/search'),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: AppColors.uberDarkCard.withAlpha(240),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: AppColors.uberBorder),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black45, blurRadius: 16, offset: Offset(0, 4)),
+                        ],
+                      ),
+                      child: Row(
+                        children: const [
+                          Icon(Icons.search_rounded, color: AppColors.uberGold, size: 22),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Where to? (Search bus or stoppage)',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Icon(Icons.tune_rounded, color: AppColors.textMuted, size: 20),
+                        ],
+                      ),
                     ),
-                    child: const Icon(Icons.directions_bus, color: Colors.black, size: 18),
                   ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'JnU Bus Routes',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.search_rounded),
-                  tooltip: 'Search Routes',
-                  onPressed: () => context.push('/search'),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.settings_rounded),
-                  tooltip: 'Settings & Map Config',
-                  onPressed: () => context.push('/settings'),
-                ),
-              ],
-            ),
+                  const SizedBox(height: 8),
 
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _FilterHeaderDelegate(
-                child: Container(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: SingleChildScrollView(
+                  // Quick Action Chips Row
+                  SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     child: Row(
                       children: [
-                        FilterChip(
-                          label: const Text('All Buses'),
-                          selected: selectedFilter == null,
-                          onSelected: (_) {
+                        _quickChip(
+                          icon: Icons.school_rounded,
+                          label: 'JnU Campus',
+                          onTap: () {
+                            ref.read(searchQueryProvider.notifier).state = 'Jagannath';
+                            context.push('/search');
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        _quickChip(
+                          icon: Icons.place_rounded,
+                          label: 'Jatrabari',
+                          onTap: () {
+                            ref.read(searchQueryProvider.notifier).state = 'Jatrabari';
+                            context.push('/search');
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        _quickChip(
+                          icon: Icons.star_rounded,
+                          label: 'Favorites (${favorites.length})',
+                          onTap: () {
+                            ref.read(searchQueryProvider.notifier).state = '';
                             ref.read(selectedUserTypeFilterProvider.notifier).state = null;
                           },
                         ),
                         const SizedBox(width: 8),
-                        FilterChip(
-                          label: const Text('Students (ছাত্র)'),
-                          selected: selectedFilter == UserType.student,
-                          onSelected: (sel) {
-                            ref.read(selectedUserTypeFilterProvider.notifier).state =
-                                sel ? UserType.student : null;
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        FilterChip(
-                          label: const Text('Teachers / Officers'),
-                          selected: selectedFilter == UserType.teacherAndOfficer,
-                          onSelected: (sel) {
-                            ref.read(selectedUserTypeFilterProvider.notifier).state =
-                                sel ? UserType.teacherAndOfficer : null;
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        FilterChip(
-                          label: const Text('Staff (কর্মচারী)'),
-                          selected: selectedFilter == UserType.staff,
-                          onSelected: (sel) {
-                            ref.read(selectedUserTypeFilterProvider.notifier).state =
-                                sel ? UserType.staff : null;
-                          },
+                        _quickChip(
+                          icon: Icons.settings_rounded,
+                          label: 'Settings',
+                          onTap: () => context.push('/settings'),
                         ),
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
             ),
+          ),
 
-            if (searchQuery.isEmpty && selectedFilter == null)
-              SliverToBoxAdapter(
-                child: allBusesAsync.when(
-                  data: (allBuses) {
-                    final rec = RecommendationEngine.getSmartRecommendations(
-                      allBuses: allBuses,
-                      favoriteBusIds: favorites,
-                      recentSearches: recentSearches,
-                    );
-
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.accent.withAlpha(40),
-                            AppColors.accentGold.withAlpha(20),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.accent.withAlpha(60)),
-                      ),
+          // 3. Uber Floating Bottom Bus Selection Sheet
+          DraggableScrollableSheet(
+            initialChildSize: 0.55,
+            minChildSize: 0.25,
+            maxChildSize: 0.90,
+            builder: (context, scrollController) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: AppColors.uberDarkCard,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black54, blurRadius: 20, offset: Offset(0, -6)),
+                  ],
+                ),
+                child: CustomScrollView(
+                  controller: scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    // Handle Bar & Title
+                    SliverToBoxAdapter(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.auto_awesome_rounded, color: AppColors.accentGold, size: 20),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  rec.recommendationReason,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                ),
+                          Center(
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 10, bottom: 8),
+                              width: 36,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: AppColors.uberBorder,
+                                borderRadius: BorderRadius.circular(2),
                               ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Select Bus Route',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.refresh_rounded, color: AppColors.textMuted, size: 20),
+                                  onPressed: () {
+                                    ref.invalidate(filteredBusesProvider);
+                                    ref.invalidate(allBusesProvider);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Filter Segmented Chips
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                             child: Row(
-                              children: rec.recommendedBuses.map((bus) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: ActionChip(
-                                    avatar: const Icon(Icons.directions_bus_rounded, size: 16),
-                                    label: Text(bus.busName),
-                                    onPressed: () => context.push('/bus/${bus.id}'),
-                                  ),
-                                );
-                              }).toList(),
+                              children: [
+                                _filterPill('All', selectedFilter == null, () {
+                                  ref.read(selectedUserTypeFilterProvider.notifier).state = null;
+                                }),
+                                const SizedBox(width: 8),
+                                _filterPill('Students (ছাত্র)', selectedFilter == UserType.student, () {
+                                  ref.read(selectedUserTypeFilterProvider.notifier).state =
+                                      selectedFilter == UserType.student ? null : UserType.student;
+                                }),
+                                const SizedBox(width: 8),
+                                _filterPill('Teachers / Officers', selectedFilter == UserType.teacherAndOfficer, () {
+                                  ref.read(selectedUserTypeFilterProvider.notifier).state =
+                                      selectedFilter == UserType.teacherAndOfficer ? null : UserType.teacherAndOfficer;
+                                }),
+                                const SizedBox(width: 8),
+                                _filterPill('Staff (কর্মচারী)', selectedFilter == UserType.staff, () {
+                                  ref.read(selectedUserTypeFilterProvider.notifier).state =
+                                      selectedFilter == UserType.staff ? null : UserType.staff;
+                                }),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ).animate().fadeIn(duration: 300.ms);
-                  },
-                  loading: () => const SizedBox.shrink(),
-                  error: (err, stack) => const SizedBox.shrink(),
-                ),
-              ),
+                    ),
 
-            busesAsync.when(
-              data: (buses) {
-                if (buses.isEmpty) {
-                  return SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.directions_bus_filled_outlined, size: 64, color: Colors.grey),
-                          const SizedBox(height: 16),
-                          Text(
-                            searchQuery.isNotEmpty
-                                ? 'No buses matching "$searchQuery"'
-                                : 'No buses found',
-                            style: const TextStyle(fontSize: 16, color: Colors.grey),
+                    // Smart Recommendation Banner
+                    if (searchQuery.isEmpty && selectedFilter == null)
+                      SliverToBoxAdapter(
+                        child: allBusesAsync.when(
+                          data: (allBuses) {
+                            final rec = RecommendationEngine.getSmartRecommendations(
+                              allBuses: allBuses,
+                              favoriteBusIds: favorites,
+                              recentSearches: recentSearches,
+                            );
+
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: AppColors.uberDarkElevated,
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(color: AppColors.uberBlue.withAlpha(80)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.auto_awesome_rounded, color: AppColors.uberGold, size: 18),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          rec.recommendationReason,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                            color: AppColors.textPrimary,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    physics: const BouncingScrollPhysics(),
+                                    child: Row(
+                                      children: rec.recommendedBuses.map((bus) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(right: 6.0),
+                                          child: ActionChip(
+                                            backgroundColor: AppColors.uberDarkCard,
+                                            side: BorderSide(color: AppColors.uberBorder),
+                                            avatar: const Icon(Icons.directions_bus_rounded, size: 14, color: AppColors.uberGold),
+                                            label: Text(bus.busName, style: const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
+                                            onPressed: () => context.push('/bus/${bus.id}'),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ).animate().fadeIn(duration: 300.ms);
+                          },
+                          loading: () => const SizedBox.shrink(),
+                          error: (_, __) => const SizedBox.shrink(),
+                        ),
+                      ),
+
+                    // Buses List
+                    busesAsync.when(
+                      data: (buses) {
+                        if (buses.isEmpty) {
+                          return const SliverFillRemaining(
+                            child: Center(
+                              child: Text('No buses found', style: TextStyle(color: AppColors.textSecondary)),
+                            ),
+                          );
+                        }
+
+                        return SliverPadding(
+                          padding: const EdgeInsets.only(bottom: 24),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                final bus = buses[index];
+                                final isFav = favorites.contains(bus.id);
+
+                                return BusCard(
+                                  bus: bus,
+                                  isFavorite: isFav,
+                                  onToggleFavorite: () {
+                                    ref.read(favoritesProvider.notifier).toggle(bus.id);
+                                  },
+                                ).animate().fadeIn(duration: 200.ms, delay: (index * 20).ms);
+                              },
+                              childCount: buses.length,
+                            ),
                           ),
-                        ],
+                        );
+                      },
+                      loading: () => const SliverFillRemaining(
+                        child: Center(child: CircularProgressIndicator(color: AppColors.uberBlue)),
+                      ),
+                      error: (err, stack) => SliverFillRemaining(
+                        child: Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
                       ),
                     ),
-                  );
-                }
-
-                return SliverPadding(
-                  padding: const EdgeInsets.only(bottom: 32),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final bus = buses[index];
-                        final isFav = favorites.contains(bus.id);
-
-                        return BusCard(
-                          bus: bus,
-                          isFavorite: isFav,
-                          onToggleFavorite: () {
-                            ref.read(favoritesProvider.notifier).toggle(bus.id);
-                          },
-                        ).animate().fadeIn(duration: 250.ms, delay: (index * 25).ms);
-                      },
-                      childCount: buses.length,
-                    ),
-                  ),
-                );
-              },
-              loading: () => const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (err, stack) => SliverFillRemaining(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.error_outline_rounded, color: Colors.red, size: 48),
-                        const SizedBox(height: 12),
-                        Text('Error loading database: $err', textAlign: TextAlign.center),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () => ref.invalidate(filteredBusesProvider),
-                          child: const Text('Retry'),
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
-              ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _quickChip({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.uberDarkCard.withAlpha(230),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.uberBorder),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 14, color: AppColors.uberGold),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 12, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class _FilterHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-
-  _FilterHeaderDelegate({required this.child});
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return child;
-  }
-
-  @override
-  double get maxExtent => 48.0;
-
-  @override
-  double get minExtent => 48.0;
-
-  @override
-  bool shouldRebuild(covariant _FilterHeaderDelegate oldDelegate) {
-    return oldDelegate.child != child;
+  Widget _filterPill(String label, bool isSelected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.textPrimary : AppColors.uberDarkElevated,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: isSelected ? AppColors.textPrimary : AppColors.uberBorder),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: isSelected ? AppColors.pitchBlack : AppColors.textSecondary,
+          ),
+        ),
+      ),
+    );
   }
 }

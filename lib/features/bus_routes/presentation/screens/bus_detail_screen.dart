@@ -31,12 +31,14 @@ class _BusDetailScreenState extends ConsumerState<BusDetailScreen> {
     );
 
     return Scaffold(
+      backgroundColor: AppColors.pitchBlack,
       appBar: AppBar(
-        title: const Text('Route & Stoppages'),
+        backgroundColor: AppColors.pitchBlack,
+        title: const Text('Route Stoppages'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.map_rounded, color: AppColors.accentGold),
-            tooltip: 'Track Live on Map',
+            icon: const Icon(Icons.map_rounded, color: AppColors.uberGold),
+            tooltip: 'Live Map',
             onPressed: () {
               final dirParam = (_direction == RouteDirection.up) ? 'up' : 'down';
               context.push('/bus/${widget.busId}/map?direction=$dirParam');
@@ -47,58 +49,79 @@ class _BusDetailScreenState extends ConsumerState<BusDetailScreen> {
       body: busAsync.when(
         data: (bus) {
           if (bus == null) {
-            return const Center(child: Text('Bus not found'));
+            return const Center(child: Text('Bus not found', style: TextStyle(color: AppColors.textSecondary)));
           }
 
           return Column(
             children: [
+              // Header Card
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Theme.of(context).dividerColor),
+                  color: AppColors.uberDarkCard,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: AppColors.uberBorder),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.directions_bus_rounded, color: AppColors.accentGold, size: 28),
-                        const SizedBox(width: 10),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.uberDarkElevated,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.uberBorder),
+                          ),
+                          child: const Icon(Icons.directions_bus_filled_rounded, color: AppColors.uberGold, size: 24),
+                        ),
+                        const SizedBox(width: 12),
                         Expanded(
-                          child: Text(
-                            bus.busName,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                bus.busName,
+                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Terminal: ${bus.lastStoppage}',
+                                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
-                        _infoBadge(bus.userType.englishLabel, Colors.green),
+                        _infoTag(bus.userType.englishLabel, AppColors.uberGreen),
                         const SizedBox(width: 8),
-                        _infoBadge(bus.busType.englishLabel, AppColors.accentGold),
+                        _infoTag(bus.busType.englishLabel, AppColors.uberGold),
                       ],
                     ),
+                    const SizedBox(height: 16),
+                    const Divider(height: 1, color: AppColors.uberBorder),
                     const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _timeText('Up Trip', bus.upTime, Icons.wb_sunny_rounded, Colors.amber),
-                        _timeText('Down Trip', bus.downTime, Icons.nights_stay_rounded, Colors.blueAccent),
-                        _timeText('Terminal', bus.lastStoppage, Icons.pin_drop_rounded, Colors.redAccent),
+                        _timeCol('Up Trip Departure', bus.upTime, Icons.wb_sunny_rounded, AppColors.uberGold),
+                        _timeCol('Down Trip Departure', bus.downTime, Icons.nights_stay_rounded, AppColors.uberBlue),
                       ],
                     ),
                   ],
                 ),
               ),
 
+              // Route Direction Switcher
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 child: SegmentedButton<RouteDirection>(
                   segments: const [
                     ButtonSegment(
@@ -122,23 +145,22 @@ class _BusDetailScreenState extends ConsumerState<BusDetailScreen> {
               ),
               const SizedBox(height: 8),
 
+              // Timeline List
               Expanded(
                 child: stoppagesAsync.when(
                   data: (stoppages) {
                     if (stoppages.isEmpty) {
-                      return const Center(
-                        child: Text('No stoppages found for this route'),
-                      );
+                      return const Center(child: Text('No stoppages found', style: TextStyle(color: AppColors.textSecondary)));
                     }
 
                     return ListView.separated(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       itemCount: stoppages.length,
                       separatorBuilder: (context, index) => Container(
-                        margin: const EdgeInsets.only(left: 14),
-                        height: 16,
+                        margin: const EdgeInsets.only(left: 15),
+                        height: 14,
                         width: 2,
-                        color: Colors.grey.withAlpha(80),
+                        color: AppColors.uberBorder,
                       ),
                       itemBuilder: (context, index) {
                         final stop = stoppages[index];
@@ -148,19 +170,18 @@ class _BusDetailScreenState extends ConsumerState<BusDetailScreen> {
                         return Row(
                           children: [
                             Container(
-                              width: 30,
-                              height: 30,
+                              width: 32,
+                              height: 32,
                               decoration: BoxDecoration(
-                                color: isFirst
-                                    ? Colors.green
-                                    : (isLast ? Colors.red : AppColors.accent),
+                                color: isFirst ? AppColors.uberGreen : (isLast ? AppColors.uberRed : AppColors.uberDarkElevated),
                                 shape: BoxShape.circle,
+                                border: Border.all(color: AppColors.uberBorder),
                               ),
                               child: Center(
                                 child: Text(
                                   '${stop.stoppageNo}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: (isFirst || isLast) ? Colors.white : AppColors.textPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                   ),
@@ -174,78 +195,78 @@ class _BusDetailScreenState extends ConsumerState<BusDetailScreen> {
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
                             ),
                             if (isFirst)
-                              _labelTag('ORIGIN', Colors.green)
+                              _tag('START', AppColors.uberGreen)
                             else if (isLast)
-                              _labelTag('DESTINATION', Colors.red),
+                              _tag('TERMINAL', AppColors.uberRed),
                           ],
-                        ).animate().fadeIn(duration: 200.ms, delay: (index * 20).ms);
+                        ).animate().fadeIn(duration: 150.ms, delay: (index * 15).ms);
                       },
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (err, stack) => Center(child: Text('Error: $err')),
+                  loading: () => const Center(child: CircularProgressIndicator(color: AppColors.uberBlue)),
+                  error: (err, stack) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
                 ),
               ),
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
+        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.uberBlue)),
+        error: (err, stack) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: AppColors.accent,
+        backgroundColor: AppColors.uberBlue,
         foregroundColor: Colors.white,
         onPressed: () {
           final dirParam = (_direction == RouteDirection.up) ? 'up' : 'down';
           context.push('/bus/${widget.busId}/map?direction=$dirParam');
         },
         icon: const Icon(Icons.navigation_rounded),
-        label: const Text('Live Tracking'),
+        label: const Text('Live Tracking', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
     );
   }
 
-  Widget _infoBadge(String label, Color color) {
+  Widget _infoTag(String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withAlpha(30),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withAlpha(100)),
+        color: color.withAlpha(25),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withAlpha(80)),
       ),
       child: Text(
-        label,
+        text,
         style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11),
       ),
     );
   }
 
-  Widget _timeText(String label, String time, IconData icon, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _timeCol(String label, String time, IconData icon, Color color) {
+    return Row(
       children: [
-        Row(
+        Icon(icon, size: 16, color: color),
+        const SizedBox(width: 6),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 14, color: color),
-            const SizedBox(width: 4),
-            Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+            Text(label, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+            Text(time, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.textPrimary)),
           ],
         ),
-        const SizedBox(height: 2),
-        Text(time, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
       ],
     );
   }
 
-  Widget _labelTag(String text, Color color) {
+  Widget _tag(String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withAlpha(30),
+        color: color.withAlpha(25),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(

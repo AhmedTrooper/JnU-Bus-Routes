@@ -1,8 +1,8 @@
 abstract class EnvConfig {
-  /// OpenStreetMap / Custom Map Tile URL (configurable via --dart-define=MAP_TILE_URL=...)
+  /// Default CartoDB Dark Map Tiles for signature Uber dark aesthetic
   static const String defaultMapTileUrl = String.fromEnvironment(
     'MAP_TILE_URL',
-    defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    defaultValue: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
   );
 
   /// Optional Custom API Key (configurable via --dart-define=MAP_API_KEY=...)
@@ -11,7 +11,7 @@ abstract class EnvConfig {
     defaultValue: '',
   );
 
-  /// App environment mode (development, staging, production)
+  /// App environment mode
   static const String environment = String.fromEnvironment(
     'APP_ENV',
     defaultValue: 'production',

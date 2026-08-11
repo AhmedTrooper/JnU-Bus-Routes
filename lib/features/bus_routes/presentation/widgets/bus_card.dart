@@ -18,220 +18,150 @@ class BusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.uberDarkCard,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.uberBorder, width: 1),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => context.push('/bus/${bus.id}'),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              // Bus Icon Badge
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: AppColors.uberDarkElevated,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.uberBorder),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.directions_bus_filled_rounded,
+                    color: AppColors.uberGold,
+                    size: 22,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 14),
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isVerySmall = constraints.maxWidth < 280;
+              // Bus Details (Name, Destination, Demographics)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            bus.busName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: onToggleFavorite,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Icon(
+                              isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
+                              color: isFavorite ? AppColors.uberGold : AppColors.textMuted,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'To ${bus.lastStoppage}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        _buildSmallPill(bus.userType.englishLabel, _getUserTypeColor(bus.userType)),
+                        const SizedBox(width: 6),
+                        _buildSmallPill(bus.busType.englishLabel, AppColors.textMuted),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
 
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: () => context.push('/bus/${bus.id}'),
-            child: Padding(
-              padding: EdgeInsets.all(isVerySmall ? 8.0 : 14.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Trip Schedule & Live Button
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(isVerySmall ? 6 : 8),
-                              decoration: BoxDecoration(
-                                color: AppColors.accentGold.withAlpha(30),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.directions_bus_rounded,
-                                color: AppColors.accentGold,
-                                size: isVerySmall ? 18 : 22,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                bus.busName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: isVerySmall ? 14 : 16,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(4),
-                        icon: Icon(
-                          isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
-                          color: isFavorite ? Colors.amber : Colors.grey,
-                          size: isVerySmall ? 20 : 24,
-                        ),
-                        onPressed: onToggleFavorite,
-                      ),
-                    ],
+                  Text(
+                    bus.upTime,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.uberBlue,
+                    ),
                   ),
+                  const SizedBox(height: 2),
+                  const Text('Morning Up', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
                   const SizedBox(height: 8),
-
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    children: [
-                      _buildChip(
-                        label: isVerySmall ? bus.userType.englishLabel : '${bus.userType.englishLabel} (${bus.userType.bnLabel})',
-                        color: _getUserTypeColor(bus.userType),
-                      ),
-                      _buildChip(
-                        label: bus.busType.englishLabel,
-                        color: _getBusTypeColor(bus.busType),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-
-                  const Divider(height: 1),
-                  const SizedBox(height: 8),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildTimeInfo(
-                          icon: Icons.wb_sunny_rounded,
-                          label: 'Up Trip',
-                          time: bus.upTime,
-                          color: Colors.orangeAccent,
-                          isVerySmall: isVerySmall,
-                        ),
-                      ),
-                      Expanded(
-                        child: _buildTimeInfo(
-                          icon: Icons.nights_stay_rounded,
-                          label: 'Down Trip',
-                          time: bus.downTime,
-                          color: Colors.blueAccent,
-                          isVerySmall: isVerySmall,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on_outlined, size: 14, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          'Term: ${bus.lastStoppage}',
-                          style: TextStyle(fontSize: isVerySmall ? 11 : 12, color: Colors.grey),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => context.push('/bus/${bus.id}/map?direction=up'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppColors.accent,
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Row(
-                          children: const [
-                            Icon(Icons.map_rounded, size: 14),
-                            SizedBox(width: 4),
-                            Text('Live', style: TextStyle(fontSize: 11)),
-                          ],
-                        ),
-                      ),
-                    ],
+                  ElevatedButton(
+                    onPressed: () => context.push('/bus/${bus.id}/map?direction=up'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.uberBlue,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                    child: const Text('Live', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   ),
                 ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildChip({required String label, required Color color}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withAlpha(25),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withAlpha(90), width: 1),
-      ),
-      child: Text(
-        label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: color,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTimeInfo({
-    required IconData icon,
-    required String label,
-    required String time,
-    required Color color,
-    required bool isVerySmall,
-  }) {
-    return Row(
-      children: [
-        Icon(icon, size: isVerySmall ? 12 : 14, color: color),
-        const SizedBox(width: 4),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
-              Text(
-                time,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: isVerySmall ? 11 : 12, fontWeight: FontWeight.w600),
               ),
             ],
           ),
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildSmallPill(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withAlpha(25),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: color),
+      ),
     );
   }
 
   Color _getUserTypeColor(UserType type) {
     switch (type) {
       case UserType.student:
-        return Colors.green;
+        return AppColors.uberGreen;
       case UserType.teacherAndOfficer:
         return Colors.purpleAccent;
       case UserType.staff:
         return Colors.orangeAccent;
-    }
-  }
-
-  Color _getBusTypeColor(BusType type) {
-    switch (type) {
-      case BusType.singleDecker:
-        return Colors.blue;
-      case BusType.doubleDecker:
-        return AppColors.accentGold;
-      case BusType.acOrSpecial:
-        return Colors.tealAccent;
     }
   }
 }

@@ -27,15 +27,35 @@ final allBusesProvider = FutureProvider<List<BusModel>>((ref) async {
   return repo.getAllBuses();
 });
 
+enum BusSortMode { name, upTime, downTime }
+
+final busSortModeProvider = StateProvider<BusSortMode>((ref) => BusSortMode.name);
+
 final filteredBusesProvider = FutureProvider<List<BusModel>>((ref) async {
   final repo = ref.watch(busRepositoryProvider);
   final query = ref.watch(searchQueryProvider);
   final selectedFilter = ref.watch(selectedUserTypeFilterProvider);
+  final sortMode = ref.watch(busSortModeProvider);
 
-  final buses = await repo.searchBuses(query);
+  List<BusModel> buses = await repo.searchBuses(query);
 
-  if (selectedFilter == null) return buses;
-  return buses.where((b) => b.userType == selectedFilter).toList();
+  if (selectedFilter != null) {
+    buses = buses.where((b) => b.userType == selectedFilter).toList();
+  }
+
+  // Apply sorting
+  buses.sort((a, b) {
+    switch (sortMode) {
+      case BusSortMode.name:
+        return a.busName.compareTo(b.busName);
+      case BusSortMode.upTime:
+        return a.upTime.compareTo(b.upTime);
+      case BusSortMode.downTime:
+        return a.downTime.compareTo(b.downTime);
+    }
+  });
+
+  return buses;
 });
 
 final busDetailProvider = FutureProvider.family<BusModel?, int>((ref, busId) async {

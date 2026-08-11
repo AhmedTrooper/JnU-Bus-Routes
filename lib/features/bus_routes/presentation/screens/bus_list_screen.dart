@@ -212,12 +212,38 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                                     color: primaryTextColor,
                                   ),
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.refresh_rounded, color: secondaryTextColor, size: 20),
-                                  onPressed: () {
-                                    ref.invalidate(filteredBusesProvider);
-                                    ref.invalidate(allBusesProvider);
-                                  },
+                                Row(
+                                  children: [
+                                    PopupMenuButton<BusSortMode>(
+                                      icon: Icon(Icons.sort_rounded, color: secondaryTextColor, size: 20),
+                                      tooltip: 'Sort Buses',
+                                      color: isDark ? AppColors.darkBackground : Colors.white,
+                                      onSelected: (mode) {
+                                        ref.read(busSortModeProvider.notifier).state = mode;
+                                      },
+                                      itemBuilder: (context) => [
+                                        const PopupMenuItem(
+                                          value: BusSortMode.name,
+                                          child: Text('Sort by Name (A-Z)'),
+                                        ),
+                                        const PopupMenuItem(
+                                          value: BusSortMode.upTime,
+                                          child: Text('Sort by Up Time'),
+                                        ),
+                                        const PopupMenuItem(
+                                          value: BusSortMode.downTime,
+                                          child: Text('Sort by Down Time'),
+                                        ),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.refresh_rounded, color: secondaryTextColor, size: 20),
+                                      onPressed: () {
+                                        ref.invalidate(filteredBusesProvider);
+                                        ref.invalidate(allBusesProvider);
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -333,23 +359,57 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
 
                         return SliverPadding(
                           padding: const EdgeInsets.only(bottom: 24),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                final bus = buses[index];
-                                final isFav = favorites.contains(bus.id);
+                          sliver: SliverLayoutBuilder(
+                            builder: (context, constraints) {
+                              final crossAxisExtent = constraints.crossAxisExtent;
+                              if (crossAxisExtent > 600) {
+                                // Tablet / Desktop Grid View
+                                return SliverGrid(
+                                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                    maxCrossAxisExtent: 450,
+                                    mainAxisExtent: 160,
+                                    crossAxisSpacing: 8,
+                                    mainAxisSpacing: 8,
+                                  ),
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                      final bus = buses[index];
+                                      final isFav = favorites.contains(bus.id);
 
-                                return BusCard(
-                                  bus: bus,
-                                  isFavorite: isFav,
-                                  isPrimary: bus.id == primaryBusId,
-                                  onToggleFavorite: () {
-                                    ref.read(favoritesProvider.notifier).toggle(bus.id);
+                                      return BusCard(
+                                        bus: bus,
+                                        isFavorite: isFav,
+                                        isPrimary: bus.id == primaryBusId,
+                                        onToggleFavorite: () {
+                                          ref.read(favoritesProvider.notifier).toggle(bus.id);
+                                        },
+                                      ).animate().fadeIn(duration: 200.ms, delay: (index * 20).ms);
+                                    },
+                                    childCount: buses.length,
+                                  ),
+                                );
+                              }
+
+                              // Mobile List View
+                              return SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    final bus = buses[index];
+                                    final isFav = favorites.contains(bus.id);
+
+                                    return BusCard(
+                                      bus: bus,
+                                      isFavorite: isFav,
+                                      isPrimary: bus.id == primaryBusId,
+                                      onToggleFavorite: () {
+                                        ref.read(favoritesProvider.notifier).toggle(bus.id);
+                                      },
+                                    ).animate().fadeIn(duration: 200.ms, delay: (index * 20).ms);
                                   },
-                                ).animate().fadeIn(duration: 200.ms, delay: (index * 20).ms);
-                              },
-                              childCount: buses.length,
-                            ),
+                                  childCount: buses.length,
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
@@ -484,43 +544,86 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return ShadcnCard(
-          borderRadius: 24,
-          padding: const EdgeInsets.all(20),
-          margin: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Set Primary Daily Bus', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
-              const Text('Select your bus to permanently save your commute route:', style: TextStyle(fontSize: 12, color: Colors.grey)),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.5,
-                child: ListView.builder(
-                  itemCount: buses.length,
-                  itemBuilder: (context, index) {
-                    final bus = buses[index];
-                    return ListTile(
-                      leading: const Icon(Icons.directions_bus_rounded, color: AppColors.shadcnBlue),
-                      title: Text(bus.busName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text('Terminal: ${bus.lastStoppage}'),
-                      onTap: () async {
-                        await HiveService.setPrimaryRoute(
-                          busId: bus.id,
-                          stoppageId: 1,
-                          stoppageName: bus.lastStoppage,
-                        );
-                        if (ctx.mounted) Navigator.pop(ctx);
-                        setState(() {});
+        String modalSearchQuery = '';
+        
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            
+            // Filter and sort buses based on modalSearchQuery
+            final filteredBuses = buses.where((bus) {
+              final lowerQuery = modalSearchQuery.toLowerCase();
+              return bus.busName.toLowerCase().contains(lowerQuery) ||
+                     bus.lastStoppage.toLowerCase().contains(lowerQuery);
+            }).toList();
+            
+            // Simple A-Z sort by bus name
+            filteredBuses.sort((a, b) => a.busName.compareTo(b.busName));
+
+            return Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+              child: ShadcnCard(
+                borderRadius: 24,
+                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Set Primary Daily Bus', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    const Text('Select your bus to permanently save your commute route:', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    const SizedBox(height: 12),
+                    
+                    // Search Bar
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search by bus name or stoppage...',
+                        prefixIcon: const Icon(Icons.search_rounded),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      onChanged: (val) {
+                        setModalState(() {
+                          modalSearchQuery = val;
+                        });
                       },
-                    );
-                  },
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    SizedBox(
+                      height: MediaQuery.of(ctx).size.height * 0.45,
+                      child: filteredBuses.isEmpty
+                          ? const Center(child: Text('No buses found.'))
+                          : ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: filteredBuses.length,
+                              itemBuilder: (context, index) {
+                                final bus = filteredBuses[index];
+                                return ListTile(
+                                  leading: const Icon(Icons.directions_bus_rounded, color: AppColors.shadcnBlue),
+                                  title: Text(bus.busName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  subtitle: Text('Terminal: ${bus.lastStoppage}'),
+                                  onTap: () async {
+                                    await HiveService.setPrimaryRoute(
+                                      busId: bus.id,
+                                      stoppageId: 1, // Future enhancement: map it to user's stoppage
+                                      stoppageName: bus.lastStoppage,
+                                    );
+                                    if (ctx.mounted) Navigator.pop(ctx);
+                                    setState(() {});
+                                  },
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            );
+          }
         );
       },
     );

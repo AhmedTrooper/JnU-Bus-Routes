@@ -139,18 +139,47 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   );
                 }
 
-                return ListView.builder(
-                  itemCount: buses.length,
-                  padding: const EdgeInsets.only(bottom: 24),
-                  itemBuilder: (context, index) {
-                    final bus = buses[index];
-                    final isFav = favorites.contains(bus.id);
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    if (constraints.maxWidth > 600) {
+                      return GridView.builder(
+                        padding: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 450,
+                          mainAxisExtent: 160,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemCount: buses.length,
+                        itemBuilder: (context, index) {
+                          final bus = buses[index];
+                          final isFav = favorites.contains(bus.id);
 
-                    return BusCard(
-                      bus: bus,
-                      isFavorite: isFav,
-                      onToggleFavorite: () {
-                        ref.read(favoritesProvider.notifier).toggle(bus.id);
+                          return BusCard(
+                            bus: bus,
+                            isFavorite: isFav,
+                            onToggleFavorite: () {
+                              ref.read(favoritesProvider.notifier).toggle(bus.id);
+                            },
+                          );
+                        },
+                      );
+                    }
+
+                    return ListView.builder(
+                      itemCount: buses.length,
+                      padding: const EdgeInsets.only(bottom: 24),
+                      itemBuilder: (context, index) {
+                        final bus = buses[index];
+                        final isFav = favorites.contains(bus.id);
+
+                        return BusCard(
+                          bus: bus,
+                          isFavorite: isFav,
+                          onToggleFavorite: () {
+                            ref.read(favoritesProvider.notifier).toggle(bus.id);
+                          },
+                        );
                       },
                     );
                   },

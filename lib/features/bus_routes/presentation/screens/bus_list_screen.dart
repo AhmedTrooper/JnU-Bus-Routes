@@ -65,95 +65,98 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
 
           // Floating Top Header with Search & Direct Theme Toggle
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      // Shadcn Input Search Bar with ⌘K Badge
-                      Expanded(
-                        child: ShadcnInputBar(
-                          hintText: 'Search bus or stoppage (⌘K)...',
-                          onTap: () => context.push('/search'),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-
-                      // Direct Theme Switcher Button
-                      Container(
-                        decoration: BoxDecoration(
-                          color: theme.cardTheme.color,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                          ),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            isDark ? Icons.wb_sunny_rounded : Icons.nights_stay_rounded,
-                            color: isDark ? AppColors.shadcnAmber : AppColors.shadcnBlue,
-                            size: 20,
-                          ),
-                          tooltip: 'Toggle Theme',
-                          onPressed: () async {
-                            final next = !isDark;
-                            await HiveService.setDarkMode(next);
-                            ref.read(themeModeProvider.notifier).state = next;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Quick Action Chips Row
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    child: Row(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
                       children: [
-                        _shadcnQuickChip(
-                          context,
-                          icon: Icons.school_rounded,
-                          label: 'JnU Campus',
-                          onTap: () {
-                            ref.read(searchQueryProvider.notifier).state = 'Jagannath';
-                            context.push('/search');
-                          },
+                        // Shadcn Input Search Bar with ⌘K Badge
+                        Expanded(
+                          child: ShadcnInputBar(
+                            hintText: 'Search bus or stoppage (⌘K)...',
+                            onTap: () => context.push('/search'),
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        _shadcnQuickChip(
-                          context,
-                          icon: Icons.place_rounded,
-                          label: 'Jatrabari',
-                          onTap: () {
-                            ref.read(searchQueryProvider.notifier).state = 'Jatrabari';
-                            context.push('/search');
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        _shadcnQuickChip(
-                          context,
-                          icon: Icons.star_rounded,
-                          label: 'Favorites (${favorites.length})',
-                          onTap: () {
-                            ref.read(searchQueryProvider.notifier).state = '';
-                            ref.read(selectedUserTypeFilterProvider.notifier).state = null;
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        _shadcnQuickChip(
-                          context,
-                          icon: Icons.settings_rounded,
-                          label: 'Settings',
-                          onTap: () => context.push('/settings'),
+                        const SizedBox(width: 10),
+
+                        // Direct Theme Switcher Button
+                        Container(
+                          decoration: BoxDecoration(
+                            color: theme.cardTheme.color,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                            ),
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              isDark ? Icons.wb_sunny_rounded : Icons.nights_stay_rounded,
+                              color: isDark ? AppColors.shadcnAmber : AppColors.shadcnBlue,
+                              size: 20,
+                            ),
+                            tooltip: 'Toggle Theme',
+                            onPressed: () async {
+                              final next = !isDark;
+                              await HiveService.setDarkMode(next);
+                              ref.read(themeModeProvider.notifier).state = next;
+                            },
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+
+                    // Quick Action Chips Row
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: [
+                          _shadcnQuickChip(
+                            context,
+                            icon: Icons.school_rounded,
+                            label: 'JnU Campus',
+                            onTap: () {
+                              ref.read(searchQueryProvider.notifier).state = 'Jagannath';
+                              context.push('/search');
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          _shadcnQuickChip(
+                            context,
+                            icon: Icons.place_rounded,
+                            label: 'Jatrabari',
+                            onTap: () {
+                              ref.read(searchQueryProvider.notifier).state = 'Jatrabari';
+                              context.push('/search');
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          _shadcnQuickChip(
+                            context,
+                            icon: Icons.star_rounded,
+                            label: 'Favorites (${favorites.length})',
+                            onTap: () {
+                              ref.read(searchQueryProvider.notifier).state = '';
+                              ref.read(selectedUserTypeFilterProvider.notifier).state = null;
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          _shadcnQuickChip(
+                            context,
+                            icon: Icons.settings_rounded,
+                            label: 'Settings',
+                            onTap: () => context.push('/settings'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -458,10 +461,14 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 4,
                   children: [
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: const [
                         Icon(Icons.pin_drop_rounded, color: AppColors.shadcnBlue, size: 16),
                         SizedBox(width: 6),

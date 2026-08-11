@@ -107,13 +107,14 @@ class BusCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Row(
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
                     children: [
                       ShadcnBadge(
                         label: bus.userType.englishLabel,
                         color: _getUserTypeColor(bus.userType),
                       ),
-                      const SizedBox(width: 6),
                       ShadcnBadge(
                         label: bus.busType.englishLabel,
                         color: secondaryTextColor,

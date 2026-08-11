@@ -8,7 +8,7 @@ This document covers everything a developer needs to clone, build, test, sign, a
 
 | Requirement | Version |
 |---|---|
-| **Flutter SDK** | 3.24.x or later (stable channel) |
+| **Flutter SDK** | 3.44.x or later (stable channel) |
 | **Dart SDK** | 3.12.2+ (bundled with Flutter) |
 | **Java / JDK** | 17 (required by Android Gradle Plugin) |
 | **Android SDK** | API 21+ (minSdk) |

@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:jnu_bus_routes/core/constants/app_colors.dart';
 import 'package:jnu_bus_routes/core/database/hive_service.dart';
 import 'package:jnu_bus_routes/core/utils/recommendation_engine.dart';
+import 'package:jnu_bus_routes/core/widgets/glass_card.dart';
 import 'package:jnu_bus_routes/features/bus_routes/data/models/bus_model.dart';
 import 'package:jnu_bus_routes/features/bus_routes/domain/models/bus_enums.dart';
 import 'package:jnu_bus_routes/features/bus_routes/presentation/providers/bus_providers.dart';
@@ -37,12 +38,11 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
     final primaryStoppageName = HiveService.primaryStoppageName;
 
     final tileUrl = isDark ? AppColors.darkTileUrl : AppColors.lightTileUrl;
-    final theme = Theme.of(context);
 
     return Scaffold(
       body: Stack(
         children: [
-          // 1. Interactive Map View
+          // 1. Fullscreen Map Background
           FlutterMap(
             options: MapOptions(
               initialCenter: _dhakaCenter,
@@ -58,7 +58,7 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
             ],
           ),
 
-          // 2. Floating Top Header with Direct Theme Toggle & Search Bar
+          // 2. Apple Glassmorphic Floating Top Header
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -67,51 +67,41 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                 children: [
                   Row(
                     children: [
-                      // Floating Search Card
+                      // Floating Search Glass Pill
                       Expanded(
-                        child: GestureDetector(
+                        child: GlassCard(
+                          borderRadius: 30,
                           onTap: () => context.push('/search'),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                            decoration: BoxDecoration(
-                              color: theme.cardTheme.color?.withAlpha(240),
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(
-                                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                              ),
-                              boxShadow: const [
-                                BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, 4)),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.search_rounded, color: AppColors.primaryRed, size: 22),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    'Where to? (Search bus or stoppage)',
-                                    style: TextStyle(
-                                      color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          child: Row(
+                            children: [
+                              Icon(Icons.search_rounded, color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary, size: 20),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Search bus or stoppage...',
+                                  style: TextStyle(
+                                    color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       const SizedBox(width: 10),
 
-                      // Direct Theme Toggle Button (Sun / Moon)
-                      CircleAvatar(
-                        radius: 24,
-                        backgroundColor: theme.cardTheme.color?.withAlpha(240),
+                      // Direct Sun / Moon Theme Toggle Button
+                      GlassCard(
+                        borderRadius: 24,
+                        padding: const EdgeInsets.all(4),
                         child: IconButton(
                           icon: Icon(
                             isDark ? Icons.wb_sunny_rounded : Icons.nights_stay_rounded,
-                            color: isDark ? AppColors.accentGold : AppColors.primaryRed,
+                            color: isDark ? AppColors.appleOrange : AppColors.appleBlue,
+                            size: 20,
                           ),
                           tooltip: 'Toggle Theme',
                           onPressed: () async {
@@ -125,13 +115,13 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Quick Action Chips
+                  // Floating Action Pills
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     child: Row(
                       children: [
-                        _quickChip(
+                        _glassQuickChip(
                           context,
                           icon: Icons.school_rounded,
                           label: 'JnU Campus',
@@ -141,7 +131,7 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                           },
                         ),
                         const SizedBox(width: 8),
-                        _quickChip(
+                        _glassQuickChip(
                           context,
                           icon: Icons.place_rounded,
                           label: 'Jatrabari',
@@ -151,7 +141,7 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                           },
                         ),
                         const SizedBox(width: 8),
-                        _quickChip(
+                        _glassQuickChip(
                           context,
                           icon: Icons.star_rounded,
                           label: 'Favorites (${favorites.length})',
@@ -161,7 +151,7 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                           },
                         ),
                         const SizedBox(width: 8),
-                        _quickChip(
+                        _glassQuickChip(
                           context,
                           icon: Icons.settings_rounded,
                           label: 'Settings',
@@ -175,20 +165,15 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
             ),
           ),
 
-          // 3. Floating Bottom Sheet
+          // 3. Apple Glass Bottom Sheet
           DraggableScrollableSheet(
             initialChildSize: 0.58,
             minChildSize: 0.25,
             maxChildSize: 0.92,
             builder: (context, scrollController) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: theme.cardTheme.color,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                  boxShadow: const [
-                    BoxShadow(color: Colors.black38, blurRadius: 20, offset: Offset(0, -6)),
-                  ],
-                ),
+              return GlassCard(
+                borderRadius: 32,
+                padding: EdgeInsets.zero,
                 child: CustomScrollView(
                   controller: scrollController,
                   physics: const BouncingScrollPhysics(),
@@ -202,16 +187,16 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                               width: 36,
                               height: 4,
                               decoration: BoxDecoration(
-                                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                                color: isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder,
                                 borderRadius: BorderRadius.circular(2),
                               ),
                             ),
                           ),
 
-                          // Permanent Daily Commute Selection Card
+                          // Daily Commute Route Card
                           _buildDailyCommuteCard(context, ref, allBusesAsync, primaryBusId, primaryStoppageName),
 
-                          // Header Title & Refresh
+                          // Route List Header
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
                             child: Row(
@@ -221,12 +206,17 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                                   'JnU Bus Routes',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: -0.4,
                                     color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
                                   ),
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.refresh_rounded, color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary, size: 20),
+                                  icon: Icon(
+                                    Icons.refresh_rounded,
+                                    color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
+                                    size: 18,
+                                  ),
                                   onPressed: () {
                                     ref.invalidate(filteredBusesProvider);
                                     ref.invalidate(allBusesProvider);
@@ -236,7 +226,7 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                             ),
                           ),
 
-                          // Filter Segmented Chips
+                          // Filter Segmented Pills
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -246,17 +236,17 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                                   ref.read(selectedUserTypeFilterProvider.notifier).state = null;
                                 }),
                                 const SizedBox(width: 8),
-                                _filterPill(context, 'Students (ছাত্র)', selectedFilter == UserType.student, () {
+                                _filterPill(context, 'Students', selectedFilter == UserType.student, () {
                                   ref.read(selectedUserTypeFilterProvider.notifier).state =
                                       selectedFilter == UserType.student ? null : UserType.student;
                                 }),
                                 const SizedBox(width: 8),
-                                _filterPill(context, 'Teachers / Officers', selectedFilter == UserType.teacherAndOfficer, () {
+                                _filterPill(context, 'Teachers', selectedFilter == UserType.teacherAndOfficer, () {
                                   ref.read(selectedUserTypeFilterProvider.notifier).state =
                                       selectedFilter == UserType.teacherAndOfficer ? null : UserType.teacherAndOfficer;
                                 }),
                                 const SizedBox(width: 8),
-                                _filterPill(context, 'Staff (কর্মচারী)', selectedFilter == UserType.staff, () {
+                                _filterPill(context, 'Staff', selectedFilter == UserType.staff, () {
                                   ref.read(selectedUserTypeFilterProvider.notifier).state =
                                       selectedFilter == UserType.staff ? null : UserType.staff;
                                 }),
@@ -278,54 +268,53 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                               recentSearches: recentSearches,
                             );
 
-                            return Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                              padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                color: isDark ? AppColors.darkElevated : AppColors.lightElevated,
-                                borderRadius: BorderRadius.circular(18),
-                                border: Border.all(color: AppColors.primaryRed.withAlpha(60)),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.auto_awesome_rounded, color: AppColors.primaryRed, size: 18),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          rec.recommendationReason,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                            color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              child: GlassCard(
+                                borderRadius: 20,
+                                padding: const EdgeInsets.all(14),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.auto_awesome_rounded, color: AppColors.appleOrange, size: 16),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            rec.recommendationReason,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                              color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    physics: const BouncingScrollPhysics(),
-                                    child: Row(
-                                      children: rec.recommendedBuses.map((bus) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(right: 6.0),
-                                          child: ActionChip(
-                                            backgroundColor: theme.cardTheme.color,
-                                            avatar: const Icon(Icons.directions_bus_rounded, size: 14, color: AppColors.primaryRed),
-                                            label: Text(bus.busName, style: TextStyle(fontSize: 12, color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary)),
-                                            onPressed: () => context.push('/bus/${bus.id}'),
-                                          ),
-                                        );
-                                      }).toList(),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(height: 8),
+                                    SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      physics: const BouncingScrollPhysics(),
+                                      child: Row(
+                                        children: rec.recommendedBuses.map((bus) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(right: 6.0),
+                                            child: ActionChip(
+                                              backgroundColor: Colors.transparent,
+                                              side: BorderSide(color: isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder, width: 0.5),
+                                              avatar: const Icon(Icons.directions_bus_rounded, size: 14, color: AppColors.appleBlue),
+                                              label: Text(bus.busName, style: TextStyle(fontSize: 12, color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary)),
+                                              onPressed: () => context.push('/bus/${bus.id}'),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ).animate().fadeIn(duration: 300.ms);
+                            ).animate().fadeIn(duration: 250.ms);
                           },
                           loading: () => const SizedBox.shrink(),
                           error: (_, __) => const SizedBox.shrink(),
@@ -366,7 +355,7 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                         );
                       },
                       loading: () => const SliverFillRemaining(
-                        child: Center(child: CircularProgressIndicator(color: AppColors.primaryRed)),
+                        child: Center(child: CircularProgressIndicator(color: AppColors.appleBlue)),
                       ),
                       error: (err, stack) => SliverFillRemaining(
                         child: Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
@@ -398,78 +387,82 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
           primaryBus = buses.firstWhere((b) => b.id == primaryBusId, orElse: () => buses.first);
         }
 
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkElevated : AppColors.lightElevated,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.primaryRed.withAlpha(120), width: 1.5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: const [
-                      Icon(Icons.pin_drop_rounded, color: AppColors.primaryRed, size: 18),
-                      SizedBox(width: 6),
-                      Text(
-                        'MY DAILY COMMUTE ROUTE',
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.0, color: AppColors.primaryRed),
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () => _showSelectPrimaryModal(context, ref, buses),
-                    child: Text(
-                      primaryBus != null ? 'Change' : 'Set Stoppage',
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.accentBlue),
-                    ),
-                  ),
-                ],
-              ),
-              if (primaryBus != null && primaryStoppageName != null) ...[
-                const SizedBox(height: 6),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: GlassCard(
+            borderRadius: 22,
+            customBorderColor: AppColors.appleBlue.withAlpha(100),
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Bus: ${primaryBus.busName}',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary),
-                          ),
-                          Text(
-                            'My Stop: $primaryStoppageName',
-                            style: TextStyle(fontSize: 13, color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      children: const [
+                        Icon(Icons.pin_drop_rounded, color: AppColors.appleBlue, size: 16),
+                        SizedBox(width: 6),
+                        Text(
+                          'MY DAILY COMMUTE',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: AppColors.appleBlue),
+                        ),
+                      ],
                     ),
-                    ElevatedButton.icon(
-                      onPressed: () => context.push('/bus/${primaryBus!.id}/map?direction=up'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.successGreen,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    TextButton(
+                      onPressed: () => _showSelectPrimaryModal(context, ref, buses),
+                      style: TextButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
                       ),
-                      icon: const Icon(Icons.navigation_rounded, size: 16),
-                      label: const Text('Track Now', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                      child: Text(
+                        primaryBus != null ? 'Change' : 'Set Stoppage',
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.appleBlue),
+                      ),
                     ),
                   ],
                 ),
-              ] else ...[
-                const SizedBox(height: 4),
-                const Text(
-                  'No primary bus/stoppage set. Click "Set Stoppage" to save your daily bus route for 1-tap live tracking!',
-                  style: TextStyle(fontSize: 12, color: AppColors.textDarkSecondary),
-                ),
+                if (primaryBus != null && primaryStoppageName != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              primaryBus.busName,
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary),
+                            ),
+                            Text(
+                              'My Stop: $primaryStoppageName',
+                              style: TextStyle(fontSize: 13, color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () => context.push('/bus/${primaryBus!.id}/map?direction=up'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.appleGreen,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        icon: const Icon(Icons.navigation_rounded, size: 14),
+                        label: const Text('Track', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                      ),
+                    ],
+                  ),
+                ] else ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    'Set your primary bus and home stoppage for 1-tap live tracking!',
+                    style: TextStyle(fontSize: 12, color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         );
       },
@@ -482,25 +475,29 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.7,
+        return GlassCard(
+          borderRadius: 32,
           padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(12),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Set Your Primary Daily Bus', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text('Set Primary Daily Bus', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
               const SizedBox(height: 4),
               const Text('Select your bus to permanently save your commute route:', style: TextStyle(fontSize: 12, color: Colors.grey)),
               const SizedBox(height: 12),
-              Expanded(
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
                 child: ListView.builder(
                   itemCount: buses.length,
                   itemBuilder: (context, index) {
                     final bus = buses[index];
                     return ListTile(
-                      leading: const Icon(Icons.directions_bus_rounded, color: AppColors.primaryRed),
-                      title: Text(bus.busName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      leading: const Icon(Icons.directions_bus_rounded, color: AppColors.appleBlue),
+                      title: Text(bus.busName, style: const TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: Text('Terminal: ${bus.lastStoppage}'),
                       onTap: () async {
                         await HiveService.setPrimaryRoute(
@@ -522,61 +519,63 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
     );
   }
 
-  Widget _quickChip(
+  Widget _glassQuickChip(
     BuildContext context, {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
+
+    return GlassCard(
+      borderRadius: 20,
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardTheme.color?.withAlpha(230),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 14, color: AppColors.primaryRed),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
-                fontWeight: FontWeight.w500,
-              ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 14, color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+              fontWeight: FontWeight.w500,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _filterPill(BuildContext context, String label, bool isSelected, VoidCallback onTap) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primaryRed
-              : (isDark ? AppColors.darkElevated : AppColors.lightElevated),
+              ? (isDark ? Colors.white : Colors.black)
+              : (isDark ? AppColors.darkGlassElevated : AppColors.lightGlassElevated),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.primaryRed : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            color: isSelected
+                ? (isDark ? Colors.white : Colors.black)
+                : (isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder),
+            width: 0.5,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.white : (isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary),
+            fontWeight: FontWeight.w600,
+            color: isSelected
+                ? (isDark ? Colors.black : Colors.white)
+                : (isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary),
           ),
         ),
       ),

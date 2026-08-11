@@ -1,46 +1,54 @@
 import 'package:flutter/material.dart';
 
-/// World-Class Luxury Palette with Dark & Light Mode Theme Support
+/// Minimalist Apple Glassmorphism Color Palette
 abstract class AppColors {
-  // Brand Accents
-  static const Color primaryRed = Color(0xFFDC2626); // Crimson Red
-  static const Color accentBlue = Color(0xFF2563EB); // Electric Royal Blue
-  static const Color accentGold = Color(0xFFF59E0B); // Gold Yellow
-  static const Color successGreen = Color(0xFF10B981); // Emerald Green
+  // Apple Dark Mode Glass Colors
+  static const Color darkCanvas = Color(0xFF000000); // Pure Apple Black
+  static const Color darkGlassSurface = Color(0xCC1C1C1E); // 80% opacity dark glass
+  static const Color darkGlassBorder = Color(0x33FFFFFF); // 20% opacity white edge
+  static const Color darkGlassElevated = Color(0x992C2C2E);
 
-  // Dark Theme Palette (Obsidian Black Canvas & Circle Badges)
-  static const Color darkCanvas = Color(0xFF09090B);
-  static const Color darkCard = Color(0xFF18181B);
-  static const Color darkElevated = Color(0xFF27272A);
-  static const Color darkBorder = Color(0xFF3F3F46);
+  // Apple Light Mode Glass Colors
+  static const Color lightCanvas = Color(0xFFF2F2F7); // Apple System Gray 6
+  static const Color lightGlassSurface = Color(0xCCFFFFFF); // 80% opacity white glass
+  static const Color lightGlassBorder = Color(0x1F000000); // 12% opacity black edge
+  static const Color lightGlassElevated = Color(0xE5F2F2F7);
 
-  // Light Theme Palette (Pristine White Canvas & Crisp Red/Green Accents)
-  static const Color lightCanvas = Color(0xFFFAFAFA);
-  static const Color lightCard = Color(0xFFFFFFFF);
-  static const Color lightElevated = Color(0xFFF4F4F5);
-  static const Color lightBorder = Color(0xFFE4E4E7);
+  // Apple System Accents
+  static const Color appleBlue = Color(0xFF0A84FF); // Apple Dark Mode Blue
+  static const Color appleGreen = Color(0xFF30D158); // Apple System Green
+  static const Color appleOrange = Color(0xFFFF9F0A); // Apple System Orange
+  static const Color appleRed = Color(0xFFFF453A); // Apple System Red
 
   // Text Colors
-  static const Color textDarkPrimary = Color(0xFFFAFAFA);
-  static const Color textDarkSecondary = Color(0xFFA1A1AA);
-  static const Color textLightPrimary = Color(0xFF09090B);
-  static const Color textLightSecondary = Color(0xFF71717A);
+  static const Color textDarkPrimary = Color(0xFFFFFFFF);
+  static const Color textDarkSecondary = Color(0x99EBF5FF);
+  static const Color textDarkMuted = Color(0x66EBF5FF);
 
-  // Aliases for compatibility
+  static const Color textLightPrimary = Color(0xFF000000);
+  static const Color textLightSecondary = Color(0x993C3C43);
+  static const Color textLightMuted = Color(0x4D3C3C43);
+
+  // Compatibility Aliases
   static const Color pitchBlack = darkCanvas;
-  static const Color uberDarkCard = darkCard;
-  static const Color uberDarkElevated = darkElevated;
-  static const Color uberBorder = darkBorder;
-  static const Color uberBlue = accentBlue;
-  static const Color uberGold = accentGold;
-  static const Color uberGreen = successGreen;
-  static const Color uberRed = primaryRed;
+  static const Color uberDarkCard = darkGlassSurface;
+  static const Color uberDarkElevated = darkGlassElevated;
+  static const Color uberBorder = darkGlassBorder;
+  static const Color uberBlue = appleBlue;
+  static const Color uberGold = appleOrange;
+  static const Color uberGreen = appleGreen;
+  static const Color uberRed = appleRed;
+
+  static const Color primaryRed = appleRed;
+  static const Color accentBlue = appleBlue;
+  static const Color accentGold = appleOrange;
+  static const Color successGreen = appleGreen;
 
   static const Color textPrimary = textDarkPrimary;
   static const Color textSecondary = textDarkSecondary;
-  static const Color textMuted = textDarkSecondary;
+  static const Color textMuted = textDarkMuted;
 
-  // Tile Providers
+  // Map Tile Providers
   static const String darkTileUrl = 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
   static const String lightTileUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 }

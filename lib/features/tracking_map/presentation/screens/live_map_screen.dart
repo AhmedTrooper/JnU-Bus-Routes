@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:jnu_bus_routes/core/constants/app_colors.dart';
 import 'package:jnu_bus_routes/core/database/hive_service.dart';
+import 'package:jnu_bus_routes/core/widgets/glass_card.dart';
 import 'package:jnu_bus_routes/features/bus_routes/domain/models/bus_enums.dart';
 import 'package:jnu_bus_routes/features/bus_routes/domain/models/route_stoppage.dart';
 import 'package:jnu_bus_routes/features/bus_routes/presentation/providers/bus_providers.dart';
@@ -33,6 +34,7 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
   Widget build(BuildContext context) {
     final liveState = ref.watch(liveTrackingProvider(widget.busId));
     final liveNotifier = ref.read(liveTrackingProvider(widget.busId).notifier);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final busAsync = ref.watch(busDetailProvider(widget.busId));
 
@@ -51,10 +53,9 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
     final tileUrl = HiveService.customTileUrl;
 
     return Scaffold(
-      backgroundColor: AppColors.pitchBlack,
       body: Stack(
         children: [
-          // CartoDB Dark Base Map Layer
+          // Base Map Layer
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
@@ -69,7 +70,7 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                 userAgentPackageName: 'com.jnu.busroutes',
               ),
 
-              // Uber Signature Electric Blue Polyline Layer
+              // Polyline Layer
               polylineAsync.when(
                 data: (points) {
                   if (points.isEmpty) return const SizedBox.shrink();
@@ -77,8 +78,8 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                     polylines: [
                       Polyline(
                         points: points,
-                        strokeWidth: 5.0,
-                        color: AppColors.uberBlue,
+                        strokeWidth: 4.5,
+                        color: AppColors.appleBlue,
                       ),
                     ],
                   );
@@ -87,7 +88,7 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                 error: (err, stack) => const SizedBox.shrink(),
               ),
 
-              // Marker Layer for Stoppages & Live Vehicle Marker
+              // Marker Layer
               stoppagesAsync.when(
                 data: (stoppages) {
                   final markers = <Marker>[];
@@ -97,9 +98,9 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                       markers.add(
                         Marker(
                           point: stop.coordinates!,
-                          width: 32,
-                          height: 32,
-                          child: _buildUberStoppageMarker(stop),
+                          width: 28,
+                          height: 28,
+                          child: _buildAppleStoppageMarker(context, stop),
                         ),
                       );
                     }
@@ -109,19 +110,23 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                     markers.add(
                       Marker(
                         point: liveState.userLocation!,
-                        width: 50,
-                        height: 50,
+                        width: 44,
+                        height: 44,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.uberDarkCard,
+                            color: isDark ? AppColors.darkCanvas : AppColors.lightCanvas,
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.uberGold, width: 3),
+                            border: Border.all(color: AppColors.appleBlue, width: 3),
                             boxShadow: [
-                              BoxShadow(color: AppColors.uberGold.withAlpha(120), blurRadius: 12, spreadRadius: 2),
+                              BoxShadow(color: AppColors.appleBlue.withAlpha(80), blurRadius: 10, spreadRadius: 1),
                             ],
                           ),
-                          child: const Center(
-                            child: Icon(Icons.directions_bus_filled_rounded, color: AppColors.uberGold, size: 24),
+                          child: Center(
+                            child: Icon(
+                              Icons.directions_bus_rounded,
+                              color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+                              size: 20,
+                            ),
                           ),
                         ),
                       ),
@@ -136,53 +141,60 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
             ],
           ),
 
-          // Uber Top Header Bar (Back button & Bus name title)
+          // Floating Glass Top Navigation Header
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: AppColors.uberDarkCard.withAlpha(240),
+                  GlassCard(
+                    borderRadius: 24,
+                    padding: const EdgeInsets.all(4),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                      icon: Icon(
+                        Icons.arrow_back_rounded,
+                        color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
+
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: AppColors.uberDarkCard.withAlpha(240),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: AppColors.uberBorder),
-                      ),
+                    child: GlassCard(
+                      borderRadius: 24,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: busAsync.when(
                         data: (bus) => Row(
                           children: [
-                            const Icon(Icons.directions_bus_rounded, color: AppColors.uberGold, size: 18),
+                            Icon(Icons.directions_bus_rounded, color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary, size: 18),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 bus?.busName ?? 'Live Tracking',
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.textPrimary),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                  color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
                         ),
-                        loading: () => const Text('Loading...', style: TextStyle(color: AppColors.textSecondary)),
-                        error: (_, __) => const Text('Live Tracking', style: TextStyle(color: AppColors.textPrimary)),
+                        loading: () => Text('Loading...', style: TextStyle(color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary)),
+                        error: (_, __) => Text('Live Tracking', style: TextStyle(color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary)),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  CircleAvatar(
-                    backgroundColor: AppColors.uberDarkCard.withAlpha(240),
+                  const SizedBox(width: 10),
+
+                  GlassCard(
+                    borderRadius: 24,
+                    padding: const EdgeInsets.all(4),
                     child: IconButton(
-                      icon: const Icon(Icons.my_location_rounded, color: AppColors.uberGold),
+                      icon: const Icon(Icons.my_location_rounded, color: AppColors.appleBlue),
                       onPressed: () {
                         final target = liveState.userLocation ?? _dhakaDefaultCenter;
                         _mapController.move(target, 15.0);
@@ -194,7 +206,7 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
             ),
           ),
 
-          // Uber Bottom Sheet for Passed/Upcoming Stoppages
+          // Floating Glass Bottom Sheet
           DraggableScrollableSheet(
             initialChildSize: 0.38,
             minChildSize: 0.16,
@@ -220,12 +232,10 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
                     },
                   );
                 },
-                loading: () => Container(
-                  color: AppColors.uberDarkCard,
-                  child: const Center(child: CircularProgressIndicator(color: AppColors.uberBlue)),
+                loading: () => GlassCard(
+                  child: const Center(child: CircularProgressIndicator(color: AppColors.appleBlue)),
                 ),
-                error: (err, stack) => Container(
-                  color: AppColors.uberDarkCard,
+                error: (err, stack) => GlassCard(
                   padding: const EdgeInsets.all(16),
                   child: Text('Error: $err', style: const TextStyle(color: Colors.red)),
                 ),
@@ -237,18 +247,19 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
     );
   }
 
-  Widget _buildUberStoppageMarker(RouteStoppage stop) {
+  Widget _buildAppleStoppageMarker(BuildContext context, RouteStoppage stop) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     Color color;
 
     switch (stop.status) {
       case StoppageStatus.passed:
-        color = AppColors.uberGreen;
+        color = AppColors.appleGreen;
         break;
       case StoppageStatus.current:
-        color = AppColors.uberGold;
+        color = AppColors.appleOrange;
         break;
       case StoppageStatus.upcoming:
-        color = AppColors.textMuted;
+        color = isDark ? AppColors.textDarkMuted : AppColors.textLightMuted;
         break;
     }
 
@@ -256,9 +267,9 @@ class _LiveMapScreenState extends ConsumerState<LiveMapScreen> {
       message: '${stop.stoppageNo}. ${stop.placeName}',
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.uberDarkCard,
+          color: isDark ? AppColors.darkCanvas : AppColors.lightCanvas,
           shape: BoxShape.circle,
-          border: Border.all(color: color, width: stop.status == StoppageStatus.current ? 3 : 2),
+          border: Border.all(color: color, width: stop.status == StoppageStatus.current ? 2.5 : 1.5),
         ),
         child: Center(
           child: Container(

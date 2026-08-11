@@ -39,19 +39,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final busesAsync = ref.watch(filteredBusesProvider);
     final favorites = ref.watch(favoritesProvider);
     final recentSearches = HiveService.recentSearches;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.pitchBlack,
       appBar: AppBar(
-        backgroundColor: AppColors.pitchBlack,
         titleSpacing: 0,
         title: TextField(
           controller: _controller,
           autofocus: true,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
-          decoration: const InputDecoration(
+          style: TextStyle(
+            color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+            fontSize: 16,
+          ),
+          decoration: InputDecoration(
             hintText: 'Search bus or stoppage (e.g. Uttoron, Jatrabari)...',
-            hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
+            hintStyle: TextStyle(
+              color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
+              fontSize: 15,
+            ),
             border: InputBorder.none,
           ),
           onChanged: (text) {
@@ -62,7 +67,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         actions: [
           if (_controller.text.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.clear_rounded, color: AppColors.textMuted),
+              icon: Icon(
+                Icons.clear_rounded,
+                color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
+              ),
               onPressed: () {
                 _controller.clear();
                 ref.read(searchQueryProvider.notifier).state = '';
@@ -78,9 +86,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'RECENT SEARCHES',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.textMuted, letterSpacing: 1.0),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 11,
+                      color: isDark ? AppColors.textDarkMuted : AppColors.textLightMuted,
+                      letterSpacing: 1.0,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Wrap(
@@ -88,9 +101,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     runSpacing: 8,
                     children: recentSearches.map((term) {
                       return ActionChip(
-                        backgroundColor: AppColors.uberDarkElevated,
-                        side: const BorderSide(color: AppColors.uberBorder),
-                        label: Text(term, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13)),
+                        backgroundColor: isDark ? AppColors.darkGlassElevated : AppColors.lightGlassElevated,
+                        side: BorderSide(
+                          color: isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder,
+                          width: 0.5,
+                        ),
+                        label: Text(
+                          term,
+                          style: TextStyle(
+                            color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+                            fontSize: 13,
+                          ),
+                        ),
                         onPressed: () {
                           _controller.text = term;
                           ref.read(searchQueryProvider.notifier).state = term;
@@ -107,8 +129,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: busesAsync.when(
               data: (buses) {
                 if (buses.isEmpty) {
-                  return const Center(
-                    child: Text('No buses or stoppages match your search', style: TextStyle(color: AppColors.textSecondary)),
+                  return Center(
+                    child: Text(
+                      'No buses or stoppages match your search',
+                      style: TextStyle(
+                        color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
+                      ),
+                    ),
                   );
                 }
 
@@ -129,7 +156,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   },
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator(color: AppColors.uberBlue)),
+              loading: () => const Center(child: CircularProgressIndicator(color: AppColors.appleBlue)),
               error: (err, stack) => Center(child: Text('Search error: $err', style: const TextStyle(color: Colors.red))),
             ),
           ),

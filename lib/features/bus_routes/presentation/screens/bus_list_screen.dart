@@ -24,8 +24,13 @@ class BusListScreen extends ConsumerStatefulWidget {
 
 class _BusListScreenState extends ConsumerState<BusListScreen> {
   static final LatLng _dhakaCenter = LatLng(23.7087, 90.4118);
+  final DraggableScrollableController _sheetController = DraggableScrollableController();
 
   @override
+  void dispose() {
+    _sheetController.dispose();
+    super.dispose();
+  }
   Widget build(BuildContext context) {
     final busesAsync = ref.watch(filteredBusesProvider);
     final allBusesAsync = ref.watch(allBusesProvider);
@@ -163,6 +168,7 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
 
           // Floating Bottom Sheet
           DraggableScrollableSheet(
+            controller: _sheetController,
             initialChildSize: 0.58,
             minChildSize: 0.25,
             maxChildSize: 0.92,
@@ -186,14 +192,33 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                     SliverToBoxAdapter(
                       child: Column(
                         children: [
-                          Center(
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 10, bottom: 8),
-                              width: 36,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                                borderRadius: BorderRadius.circular(2),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onVerticalDragUpdate: (details) {
+                              if (!context.mounted) return;
+                              double dragDelta = -details.primaryDelta! / MediaQuery.of(context).size.height;
+                              double newSize = (_sheetController.size + dragDelta).clamp(0.25, 0.92);
+                              _sheetController.jumpTo(newSize);
+                            },
+                            onTap: () {
+                              if (_sheetController.size > 0.5) {
+                                _sheetController.animateTo(0.25, duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
+                              } else {
+                                _sheetController.animateTo(0.92, duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
+                              }
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 10, bottom: 8),
+                                  width: 48,
+                                  height: 5,
+                                  decoration: BoxDecoration(
+                                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
                               ),
                             ),
                           ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:jnu_bus_routes/core/constants/app_colors.dart';
 import 'package:jnu_bus_routes/core/utils/location_helper.dart';
-import 'package:jnu_bus_routes/core/widgets/glass_card.dart';
+import 'package:jnu_bus_routes/core/widgets/shadcn_components.dart';
 import 'package:jnu_bus_routes/features/bus_routes/domain/models/route_stoppage.dart';
 
 class PassedUpcomingSheet extends StatelessWidget {
@@ -23,7 +23,11 @@ class PassedUpcomingSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final primaryTextColor = isDark ? AppColors.darkForeground : AppColors.lightForeground;
+    final secondaryTextColor = isDark ? AppColors.darkMutedForeground : AppColors.lightMutedForeground;
 
     final currentStop = stoppages.firstWhere(
       (s) => s.status == StoppageStatus.current,
@@ -41,9 +45,15 @@ class PassedUpcomingSheet extends StatelessWidget {
         ? LocationHelper.formatDistance(currentStop.distanceInMeters)
         : '2.5 km away';
 
-    return GlassCard(
-      borderRadius: 32,
-      padding: EdgeInsets.zero,
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, -4)),
+        ],
+      ),
       child: Column(
         children: [
           // Drag Handle Bar
@@ -53,13 +63,13 @@ class PassedUpcomingSheet extends StatelessWidget {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder,
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
 
-          // Apple Next Stop & Control Banner
+          // Next Stop & Control Banner
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Row(
@@ -72,9 +82,9 @@ class PassedUpcomingSheet extends StatelessWidget {
                         'NEXT STOPPAGE',
                         style: TextStyle(
                           fontSize: 10,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.bold,
                           letterSpacing: 1.0,
-                          color: AppColors.appleBlue,
+                          color: AppColors.shadcnBlue,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -82,9 +92,8 @@ class PassedUpcomingSheet extends StatelessWidget {
                         currentStop.placeName,
                         style: TextStyle(
                           fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: -0.3,
-                          color: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+                          fontWeight: FontWeight.bold,
+                          color: primaryTextColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -94,7 +103,7 @@ class PassedUpcomingSheet extends StatelessWidget {
                         'ETA: Approx $nextDistance',
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
+                          color: secondaryTextColor,
                         ),
                       ),
                     ],
@@ -104,8 +113,8 @@ class PassedUpcomingSheet extends StatelessWidget {
                   onPressed: onToggleDirection,
                   tooltip: 'Switch Trip Direction',
                   style: IconButton.styleFrom(
-                    backgroundColor: isDark ? AppColors.darkGlassElevated : AppColors.lightGlassElevated,
-                    foregroundColor: isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary,
+                    backgroundColor: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                    foregroundColor: primaryTextColor,
                   ),
                   icon: const Icon(Icons.swap_vert_rounded, size: 20),
                 ),
@@ -113,25 +122,25 @@ class PassedUpcomingSheet extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: onToggleSimulation,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isSimulating ? AppColors.appleRed : AppColors.appleBlue,
+                    backgroundColor: isSimulating ? AppColors.shadcnRose : AppColors.shadcnBlue,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   icon: Icon(isSimulating ? Icons.pause_rounded : Icons.play_arrow_rounded, size: 16),
                   label: Text(
                     isSimulating ? 'Pause' : 'Live Sim',
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                 ),
               ],
             ),
           ),
 
-          Divider(height: 1, color: isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder),
+          Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
 
-          // Apple Route Timeline List
+          // Route Timeline List
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -142,7 +151,7 @@ class PassedUpcomingSheet extends StatelessWidget {
                   margin: const EdgeInsets.only(left: 35),
                   height: 14,
                   width: 1.5,
-                  color: isPassed ? AppColors.appleGreen : (isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder),
+                  color: isPassed ? AppColors.shadcnEmerald : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
                 );
               },
               itemBuilder: (context, index) {
@@ -158,6 +167,8 @@ class PassedUpcomingSheet extends StatelessWidget {
 
   Widget _buildTimelineItem(BuildContext context, RouteStoppage stop, int index) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryTextColor = isDark ? AppColors.darkForeground : AppColors.lightForeground;
+    final secondaryTextColor = isDark ? AppColors.darkMutedForeground : AppColors.lightMutedForeground;
 
     Widget statusIndicator;
     String badgeLabel;
@@ -168,18 +179,18 @@ class PassedUpcomingSheet extends StatelessWidget {
         statusIndicator = Container(
           width: 24,
           height: 24,
-          decoration: const BoxDecoration(color: AppColors.appleGreen, shape: BoxShape.circle),
+          decoration: const BoxDecoration(color: AppColors.shadcnEmerald, shape: BoxShape.circle),
           child: const Icon(Icons.check_rounded, color: Colors.white, size: 14),
         );
         badgeLabel = 'Passed';
-        badgeColor = AppColors.appleGreen;
+        badgeColor = AppColors.shadcnEmerald;
         break;
       case StoppageStatus.current:
         statusIndicator = Container(
           width: 24,
           height: 24,
           decoration: const BoxDecoration(
-            color: AppColors.appleOrange,
+            color: AppColors.shadcnAmber,
             shape: BoxShape.circle,
           ),
           child: const Center(
@@ -187,23 +198,23 @@ class PassedUpcomingSheet extends StatelessWidget {
           ),
         );
         badgeLabel = 'Next Stop';
-        badgeColor = AppColors.appleOrange;
+        badgeColor = AppColors.shadcnAmber;
         break;
       case StoppageStatus.upcoming:
         statusIndicator = Container(
           width: 24,
           height: 24,
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkGlassElevated : AppColors.lightGlassElevated,
+            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
             shape: BoxShape.circle,
             border: Border.all(
-              color: isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder,
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
               width: 1.5,
             ),
           ),
         );
         badgeLabel = 'Upcoming';
-        badgeColor = isDark ? AppColors.textDarkMuted : AppColors.textLightMuted;
+        badgeColor = secondaryTextColor;
         break;
     }
 
@@ -225,34 +236,22 @@ class PassedUpcomingSheet extends StatelessWidget {
                     stop.placeName,
                     style: TextStyle(
                       fontSize: stop.status == StoppageStatus.current ? 16 : 14,
-                      fontWeight: stop.status == StoppageStatus.current ? FontWeight.w600 : FontWeight.w400,
-                      color: stop.status == StoppageStatus.passed
-                          ? (isDark ? AppColors.textDarkMuted : AppColors.textLightMuted)
-                          : (isDark ? AppColors.textDarkPrimary : AppColors.textLightPrimary),
+                      fontWeight: stop.status == StoppageStatus.current ? FontWeight.bold : FontWeight.w500,
+                      color: stop.status == StoppageStatus.passed ? secondaryTextColor : primaryTextColor,
                     ),
                   ),
                   if (stop.distanceInMeters != null)
                     Text(
                       LocationHelper.formatDistance(stop.distanceInMeters),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary,
-                      ),
+                      style: TextStyle(fontSize: 11, color: secondaryTextColor),
                     ),
                 ],
               ),
             ),
 
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: badgeColor.withAlpha(20),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                badgeLabel,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: badgeColor),
-              ),
+            ShadcnBadge(
+              label: badgeLabel,
+              color: badgeColor,
             ),
           ],
         ),

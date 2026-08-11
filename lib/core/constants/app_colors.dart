@@ -1,52 +1,70 @@
 import 'package:flutter/material.dart';
 
-/// Minimalist Apple Glassmorphism Color Palette
+/// Production-Grade Shadcn UI Design Tokens (Zinc Dark & Light Palette)
 abstract class AppColors {
-  // Apple Dark Mode Glass Colors
-  static const Color darkCanvas = Color(0xFF000000); // Pure Apple Black
-  static const Color darkGlassSurface = Color(0xCC1C1C1E); // 80% opacity dark glass
-  static const Color darkGlassBorder = Color(0x33FFFFFF); // 20% opacity white edge
-  static const Color darkGlassElevated = Color(0x992C2C2E);
+  // Dark Theme Tokens (Shadcn Zinc 950)
+  static const Color darkBackground = Color(0xFF09090B); // zinc-950
+  static const Color darkCard = Color(0xFF18181B); // zinc-900
+  static const Color darkMuted = Color(0xFF27272A); // zinc-800
+  static const Color darkBorder = Color(0xFF27272A); // zinc-800 border
+  static const Color darkBorderActive = Color(0xFF3F3F46); // zinc-700
+  static const Color darkForeground = Color(0xFFFAFAFA); // zinc-50
+  static const Color darkMutedForeground = Color(0xFFA1A1AA); // zinc-400
 
-  // Apple Light Mode Glass Colors
-  static const Color lightCanvas = Color(0xFFF2F2F7); // Apple System Gray 6
-  static const Color lightGlassSurface = Color(0xCCFFFFFF); // 80% opacity white glass
-  static const Color lightGlassBorder = Color(0x1F000000); // 12% opacity black edge
-  static const Color lightGlassElevated = Color(0xE5F2F2F7);
+  // Light Theme Tokens (Shadcn Zinc 50)
+  static const Color lightBackground = Color(0xFFFAFAFA); // zinc-50
+  static const Color lightCard = Color(0xFFFFFFFF); // white
+  static const Color lightMuted = Color(0xFFF4F4F5); // zinc-100
+  static const Color lightBorder = Color(0xFFE4E4E7); // zinc-200
+  static const Color lightBorderActive = Color(0xFFD4D4D8); // zinc-300
+  static const Color lightForeground = Color(0xFF09090B); // zinc-950
+  static const Color lightMutedForeground = Color(0xFF71717A); // zinc-500
 
-  // Apple System Accents
-  static const Color appleBlue = Color(0xFF0A84FF); // Apple Dark Mode Blue
-  static const Color appleGreen = Color(0xFF30D158); // Apple System Green
-  static const Color appleOrange = Color(0xFFFF9F0A); // Apple System Orange
-  static const Color appleRed = Color(0xFFFF453A); // Apple System Red
+  // Shadcn Brand & Status Tokens
+  static const Color shadcnPrimary = Color(0xFF18181B); // zinc-900
+  static const Color shadcnBlue = Color(0xFF2563EB); // blue-600
+  static const Color shadcnEmerald = Color(0xFF10B981); // emerald-500
+  static const Color shadcnAmber = Color(0xFFF59E0B); // amber-500
+  static const Color shadcnRose = Color(0xFFF43F5E); // rose-500
 
-  // Text Colors
-  static const Color textDarkPrimary = Color(0xFFFFFFFF);
-  static const Color textDarkSecondary = Color(0x99EBF5FF);
-  static const Color textDarkMuted = Color(0x66EBF5FF);
+  // Legacy Aliases for seamless compatibility
+  static const Color darkCanvas = darkBackground;
+  static const Color lightCanvas = lightBackground;
+  static const Color darkGlassSurface = darkCard;
+  static const Color darkGlassBorder = darkBorder;
+  static const Color darkGlassElevated = darkMuted;
+  static const Color lightGlassSurface = lightCard;
+  static const Color lightGlassBorder = lightBorder;
+  static const Color lightGlassElevated = lightMuted;
 
-  static const Color textLightPrimary = Color(0xFF000000);
-  static const Color textLightSecondary = Color(0x993C3C43);
-  static const Color textLightMuted = Color(0x4D3C3C43);
+  static const Color pitchBlack = darkBackground;
+  static const Color uberDarkCard = darkCard;
+  static const Color uberDarkElevated = darkMuted;
+  static const Color uberBorder = darkBorder;
+  static const Color uberBlue = shadcnBlue;
+  static const Color uberGold = shadcnAmber;
+  static const Color uberGreen = shadcnEmerald;
+  static const Color uberRed = shadcnRose;
 
-  // Compatibility Aliases
-  static const Color pitchBlack = darkCanvas;
-  static const Color uberDarkCard = darkGlassSurface;
-  static const Color uberDarkElevated = darkGlassElevated;
-  static const Color uberBorder = darkGlassBorder;
-  static const Color uberBlue = appleBlue;
-  static const Color uberGold = appleOrange;
-  static const Color uberGreen = appleGreen;
-  static const Color uberRed = appleRed;
+  static const Color primaryRed = shadcnRose;
+  static const Color accentBlue = shadcnBlue;
+  static const Color accentGold = shadcnAmber;
+  static const Color successGreen = shadcnEmerald;
+  static const Color appleBlue = shadcnBlue;
+  static const Color appleGreen = shadcnEmerald;
+  static const Color appleOrange = shadcnAmber;
+  static const Color appleRed = shadcnRose;
 
-  static const Color primaryRed = appleRed;
-  static const Color accentBlue = appleBlue;
-  static const Color accentGold = appleOrange;
-  static const Color successGreen = appleGreen;
+  static const Color textDarkPrimary = darkForeground;
+  static const Color textDarkSecondary = darkMutedForeground;
+  static const Color textDarkMuted = darkMutedForeground;
+  static const Color textLightPrimary = lightForeground;
+  static const Color textLightSecondary = lightMutedForeground;
+  static const Color textLightMuted = lightMutedForeground;
 
-  static const Color textPrimary = textDarkPrimary;
-  static const Color textSecondary = textDarkSecondary;
-  static const Color textMuted = textDarkMuted;
+  static const Color textPrimary = darkForeground;
+  static const Color textSecondary = darkMutedForeground;
+  static const Color textMuted = darkMutedForeground;
 
   // Map Tile Providers
   static const String darkTileUrl = 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';

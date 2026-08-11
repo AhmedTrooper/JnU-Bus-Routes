@@ -186,21 +186,22 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                     BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, -4)),
                   ],
                 ),
-                child: CustomScrollView(
-                  controller: scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    // Sticky Header Section (pinned to top of sheet)
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onVerticalDragUpdate: (details) {
+                        if (!context.mounted) return;
+                        double dragDelta = -details.primaryDelta! / MediaQuery.of(context).size.height;
+                        double newSize = (_sheetController.size + dragDelta).clamp(0.25, 0.92);
+                        _sheetController.jumpTo(newSize);
+                      },
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onVerticalDragUpdate: (details) {
-                              if (!context.mounted) return;
-                              double dragDelta = -details.primaryDelta! / MediaQuery.of(context).size.height;
-                              double newSize = (_sheetController.size + dragDelta).clamp(0.25, 0.92);
-                              _sheetController.jumpTo(newSize);
-                            },
                             onTap: () {
                               if (_sheetController.size > 0.5) {
                                 _sheetController.animateTo(0.25, duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
@@ -331,9 +332,17 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                               ],
                             ),
                           ),
+                          const SizedBox(height: 6),
                         ],
                       ),
                     ),
+
+                    // Scrollable List of Buses
+                    Expanded(
+                      child: CustomScrollView(
+                        controller: scrollController,
+                        physics: const BouncingScrollPhysics(),
+                        slivers: [
 
                     // Smart Recommendation Banner
                     if (searchQuery.isEmpty && selectedFilter == null)
@@ -473,6 +482,9 @@ class _BusListScreenState extends ConsumerState<BusListScreen> {
                       ),
                       error: (err, stack) => SliverFillRemaining(
                         child: Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
+                      ),
+                    ),
+                        ],
                       ),
                     ),
                   ],
